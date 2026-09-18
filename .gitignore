@@ -1,0 +1,16 @@
+﻿node_modules/
+.env
+.env.raspberry
+.env.test
+package-lock.json
+logs/
+temp/
+dump/
+backup/
+*.log
+.DS_Store
+.vscode/
+.idea/
+coverage/
+dist/
+build/

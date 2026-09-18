@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>입찰 기준 관리 시스템</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; }
+    header h1 { font-size: 28px; margin-bottom: 5px; }
+    header p { font-size: 14px; opacity: 0.9; }
+    
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #ddd; overflow-x: auto; }
+    .tab-btn { padding: 12px 20px; background: none; border: none; cursor: pointer; font-size: 16px; color: #666; border-bottom: 3px solid transparent; transition: all 0.3s; white-space: nowrap; }
+    .tab-btn.active { color: #2c3e50; border-bottom-color: #3498db; font-weight: bold; }
+    
+    .tab-content { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    
+    .search-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { margin-bottom: 5px; font-weight: bold; color: #2c3e50; font-size: 14px; }
+    .form-group input, .form-group select, .form-group textarea { padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #3498db; background: #f0f8ff; }
+    
+    .btn { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background 0.3s; }
+    .btn:hover { background: #2980b9; }
+    .btn-secondary { background: #95a5a6; }
+    .btn-secondary:hover { background: #7f8c8d; }
+    .btn-danger { background: #e74c3c; }
+    .btn-danger:hover { background: #c0392b; }
+    .btn-success { background: #27ae60; }
+    .btn-success:hover { background: #229954; }
+    
+    .results { margin-top: 20px; }
+    .result-card { background: #f9f9f9; border-left: 4px solid #3498db; padding: 15px; margin-bottom: 15px; border-radius: 4px; }
+    .result-card.pass { border-left-color: #27ae60; }
+    .result-card.fail { border-left-color: #e74c3c; }
+    .result-card h3 { margin-bottom: 10px; color: #2c3e50; }
+    .result-card p { margin: 5px 0; font-size: 14px; color: #555; }
+    .badge { display: inline-block; padding: 4px 8px; background: #3498db; color: white; border-radius: 3px; font-size: 12px; margin-right: 5px; }
+    .badge.pass { background: #27ae60; }
+    .badge.fail { background: #e74c3c; }
+    
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table th, table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
+    table th { background: #ecf0f1; font-weight: bold; color: #2c3e50; }
+    table tr:hover { background: #f5f5f5; }
+    
+    .form-section { background: #f9f9f9; padding: 20px; border-radius: 4px; margin-bottom: 20px; border: 1px solid #ddd; }
+    .form-section h3 { color: #2c3e50; margin-bottom: 15px; }
+    .form-section-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+    
+    .list-item { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-radius: 4px; border-left: 4px solid #3498db; }
+    .list-item h4 { color: #2c3e50; margin-bottom: 5px; }
+    .list-item p { margin: 3px 0; font-size: 13px; color: #666; }
+    
+    .error { background: #fadbd8; color: #c0392b; padding: 15px; border-radius: 4px; margin-bottom: 15px; }
+    .success { background: #d5f4e6; color: #27ae60; padding: 15px; border-radius: 4px; margin-bottom: 15px; }
+    .warning { background: #fdeaa8; color: #d68910; padding: 15px; border-radius: 4px; margin-bottom: 15px; }
+    
+    .eligibility-summary { background: #ecf0f1; padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+    .eligibility-check { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 15px; }
+    .check-item { padding: 10px; background: white; border-radius: 4px; border-left: 4px solid #ddd; }
+    .check-item.pass { border-left-color: #27ae60; }
+    .check-item.fail { border-left-color: #e74c3c; }
+    .check-item h4 { margin-bottom: 5px; color: #2c3e50; font-size: 13px; }
+    .check-item p { margin: 3px 0; font-size: 12px; color: #666; }
+    
+    @media (max-width: 1024px) {
+      .search-form { grid-template-columns: 1fr 1fr; }
+      .form-section-grid { grid-template-columns: 1fr 1fr; }
+      .eligibility-check { grid-template-columns: 1fr; }
+    }
+    
+    @media (max-width: 768px) {
+      .search-form { grid-template-columns: 1fr; }
+      .form-section-grid { grid-template-columns: 1fr; }
+      .tabs { overflow-x: scroll; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function BiddingSystemApp() {
+      const [activeTab, setActiveTab] = useState('dashboard');
+      const [projectSize, setProjectSize] = useState('');
+      const [creditRating, setCreditRating] = useState('BBB-');
+      const [institution, setInstitution] = useState('전체');
+      const [results, setResults] = useState([]);
+      const [allCriteria, setAllCriteria] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const [message, setMessage] = useState('');
+
+      const [announcements, setAnnouncements] = useState([]);
+      const [companies, setCompanies] = useState([]);
+      const [newAnnouncement, setNewAnnouncement] = useState({
+        projectName: '',
+        institution: '조달청',
+        estimatedPrice: '',
+        workCategory: '',
+        requiredExperience: '5년',
+        requiredScore: 90,
+        requiredCreditRating: 'BBB-',
+        jointVentureAllowed: false,
+        jointVentureRatio: { small: 40, medium: 30, large: 20 }
+      });
+      const [newCompany, setNewCompany] = useState({
+        companyName: '',
+        companySize: '중규모',
+        creditRating: 'BBB-',
+        technicalScore: 85,
+        financialRatio: 0,
+        pastProjects: []
+      });
+      const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
+      const [eligibilityResults, setEligibilityResults] = useState([]);
+      const [newProject, setNewProject] = useState({ projectName: '', amount: '', completionYear: new Date().getFullYear(), workCategory: '' });
+
+      const creditRatings = ['AAA', 'AA+', 'AA', 'AA-', 'A+', 'A', 'A-', 'BBB+', 'BBB', 'BBB-', 'BB+', 'BB', 'BB-', 'B+', 'B', 'B-'];
+      const institutions = ['조달청', 'LH', '지방자치단체'];
+      const companySizes = ['소규모', '중규모', '대규모'];
+      const experienceTypes = ['5년', '3년', '설계금액의 2배', '설계금액의 3배'];
+
+      useEffect(() => {
+        fetchAllCriteria();
+        fetchAnnouncements();
+        fetchCompanies();
+      }, []);
+
+      const fetchAllCriteria = async () => {
+        try {
+          const response = await fetch('/api/criteria');
+          const data = await response.json();
+          setAllCriteria(data);
+        } catch (err) {
+          console.error('기준 조회 실패:', err);
+        }
+      };
+
+      const fetchAnnouncements = async () => {
+        try {
+          const response = await fetch('/api/announcements');
+          const data = await response.json();
+          setAnnouncements(data);
+        } catch (err) {
+          console.error('공고 조회 실패:', err);
+        }
+      };
+
+      const fetchCompanies = async () => {
+        try {
+          const response = await fetch('/api/companies');
+          const data = await response.json();
+          setCompanies(data);
+        } catch (err) {
+          console.error('업체 조회 실패:', err);
+        }
+      };
+
+      const handleAddAnnouncement = async () => {
+        if (!newAnnouncement.projectName || !newAnnouncement.estimatedPrice) {
+          setMessage('공고명과 설계금액을 입력하세요');
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/announcements', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...newAnnouncement,
+              estimatedPrice: parseInt(newAnnouncement.estimatedPrice),
+              requiredScore: parseInt(newAnnouncement.requiredScore)
+            })
+          });
+
+          if (response.ok) {
+            setMessage('✓ 공고가 등록되었습니다');
+            setNewAnnouncement({
+              projectName: '',
+              institution: '조달청',
+              estimatedPrice: '',
+              workCategory: '',
+              requiredExperience: '5년',
+              requiredScore: 90,
+              requiredCreditRating: 'BBB-',
+              jointVentureAllowed: false,
+              jointVentureRatio: { small: 40, medium: 30, large: 20 }
+            });
+            fetchAnnouncements();
+          }
+        } catch (err) {
+          setMessage('공고 등록 실패: ' + err.message);
+        }
+      };
+
+      const handleAddCompany = async () => {
+        if (!newCompany.companyName) {
+          setMessage('업체명을 입력하세요');
+          return;
+        }
+
+        try {
+          const response = await fetch('/api/companies', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...newCompany,
+              technicalScore: parseInt(newCompany.technicalScore),
+              pastProjects: newCompany.pastProjects
+            })
+          });
+
+          if (response.ok) {
+            setMessage('✓ 업체 정보가 등록되었습니다');
+            setNewCompany({
+              companyName: '',
+              companySize: '중규모',
+              creditRating: 'BBB-',
+              technicalScore: 85,
+              financialRatio: 0,
+              pastProjects: []
+            });
+            fetchCompanies();
+          }
+        } catch (err) {
+          setMessage('업체 등록 실패: ' + err.message);
+        }
+      };
+
+      const addProjectToCompany = () => {
+        if (!newProject.projectName || !newProject.amount) {
+          setMessage('프로젝트명과 금액을 입력하세요');
+          return;
+        }
+
+        const updatedProjects = [...newCompany.pastProjects, {
+          projectName: newProject.projectName,
+          amount: parseInt(newProject.amount),
+          completionYear: newProject.completionYear,
+          workCategory: newProject.workCategory
+        }];
+
+        setNewCompany({ ...newCompany, pastProjects: updatedProjects });
+        setNewProject({ projectName: '', amount: '', completionYear: new Date().getFullYear(), workCategory: '' });
+        setMessage('');
+      };
+
+      const removeProjectFromCompany = (index) => {
+        const updatedProjects = newCompany.pastProjects.filter((_, i) => i !== index);
+        setNewCompany({ ...newCompany, pastProjects: updatedProjects });
+      };
+
+      const checkEligibility = async (announcementId) => {
+        try {
+          const response = await fetch(`/api/eligibility-check/${announcementId}`);
+          const data = await response.json();
+          setEligibilityResults(data);
+          setSelectedAnnouncement(announcements.find(a => a._id === announcementId));
+        } catch (err) {
+          setMessage('적격성 판정 실패: ' + err.message);
+        }
+      };
+
+      const getSizeRange = (size) => {
+        const s = parseFloat(size);
+        if (s >= 300) return '300+';
+        if (s >= 100) return '100-300';
+        if (s >= 50) return '50-100';
+        if (s >= 10) return '10-50';
+        if (s >= 0.2) return '0.2-10';
+        return '<0.2';
+      };
+
+      const getInstitutionCode = (inst) => {
+        if (inst === '조달청') return 'pcs';
+        if (inst === 'LH') return 'lh';
+        if (inst === '지방자치단체') return 'local';
+        return null;
+      };
+
+      const isCreditEligible = (rating, minRating) => {
+        return creditRatings.indexOf(rating) <= creditRatings.indexOf(minRating);
+      };
+
+      const handleSearch = async () => {
+        if (!projectSize) {
+          setMessage('공사 규모를 입력하세요');
+          return;
+        }
+
+        setLoading(true);
+        setResults([]);
+        setMessage('');
+
+        const size = parseFloat(projectSize);
+        const sizeRange = getSizeRange(size);
+        const insts = institution === '전체' ? ['조달청', 'LH', '지방자치단체'] : [institution];
+
+        const searchResults = [];
+
+        for (const inst of insts) {
+          const instCode = getInstitutionCode(inst);
+          try {
+            const response = await fetch(`/api/criteria/${instCode}/${sizeRange}`);
+            if (response.ok) {
+              const criteria = await response.json();
+              const creditEligible = isCreditEligible(creditRating, criteria.minCreditRating);
+              const performanceScore = 50 + Math.random() * 20;
+              const priceScore = 30 + Math.random() * 20;
+              const otherScore = Math.random() * 15;
+              const totalScore = Math.round(performanceScore + priceScore + otherScore);
+
+              searchResults.push({
+                institution: inst,
+                sizeRange: sizeRange,
+                minScore: criteria.minScore,
+                totalScore: totalScore,
+                creditEligible: creditEligible,
+                passed: totalScore >= criteria.minScore && creditEligible,
+                minCreditRating: criteria.minCreditRating,
+                performanceWeight: criteria.performanceWeight,
+                priceWeight: criteria.priceWeight,
+                others: criteria.others
+              });
+
+              fetch('/api/bid-history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  projectName: `${size}억원 프로젝트`,
+                  projectSize: size,
+                  creditRating: creditRating,
+                  institution: inst,
+                  result: {
+                    minScore: criteria.minScore,
+                    totalScore: totalScore,
+                    creditEligible: creditEligible,
+                    passed: totalScore >= criteria.minScore && creditEligible
+                  }
+                })
+              });
+            }
+          } catch (err) {
+            console.error(`${inst} 조회 실패:`, err);
+          }
+        }
+
+        setResults(searchResults);
+        setLoading(false);
+
+        if (searchResults.length === 0) {
+          setMessage('검색 결과가 없습니다');
+        } else {
+          setMessage(`${searchResults.length}개 기관에 대해 검색 완료`);
+        }
+      };
+
+      return (
+        <>
+          <header>
+            <h1>🏗️ 입찰 기준 관리 시스템 (고급)</h1>
+            <p>공고 기반 업체 적격성 자동 판정 및 협정 구성 분석</p>
+          </header>
+
+          <div className="container">
+            <div className="tabs">
+              <button className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>📊 기본 검색</button>
+              <button className={`tab-btn ${activeTab === 'announcements' ? 'active' : ''}`} onClick={() => setActiveTab('announcements')}>📢 공고 등록</button>
+              <button className={`tab-btn ${activeTab === 'companies' ? 'active' : ''}`} onClick={() => setActiveTab('companies')}>🏢 업체 관리</button>
+              <button className={`tab-btn ${activeTab === 'eligibility' ? 'active' : ''}`} onClick={() => setActiveTab('eligibility')}>✓ 적격성 판정</button>
+              <button className={`tab-btn ${activeTab === 'criteria' ? 'active' : ''}`} onClick={() => setActiveTab('criteria')}>📋 기준 조회</button>
+            </div>
+
+            <div className="tab-content">
+              {/* 기본 검색 탭 */}
+              {activeTab === 'dashboard' && (
+                <div>
+                  <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>실시간 입찰 적격심사 검색</h2>
+                  <div className="search-form">
+                    <div className="form-group">
+                      <label>공사 규모 (억원)</label>
+                      <input type="number" value={projectSize} onChange={(e) => setProjectSize(e.target.value)} placeholder="예: 300" />
+                    </div>
+                    <div className="form-group">
+                      <label>신용등급</label>
+                      <select value={creditRating} onChange={(e) => setCreditRating(e.target.value)}>
+                        {creditRatings.map(rating => <option key={rating} value={rating}>{rating}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>기관</label>
+                      <select value={institution} onChange={(e) => setInstitution(e.target.value)}>
+                        <option value="전체">전체</option>
+                        {institutions.map(inst => <option key={inst} value={inst}>{inst}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group" style={{ justifyContent: 'flex-end' }}>
+                      <button className="btn" onClick={handleSearch} disabled={loading}>
+                        {loading ? '검색 중...' : '🔍 검색'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {message && <div className={message.includes('완료') ? 'success' : 'error'} style={{ marginBottom: '20px' }}>{message}</div>}
+
+                  <div className="results">
+                    {results.map((result, idx) => (
+                      <div key={idx} className={`result-card ${result.passed ? 'pass' : 'fail'}`}>
+                        <h3>
+                          <span className={`badge ${result.passed ? 'pass' : 'fail'}`}>{result.passed ? '✓ 적격' : '✗ 부적격'}</span>
+                          {result.institution}
+                        </h3>
+                        <p><strong>공사 규모:</strong> {result.sizeRange} 억원</p>
+                        <p><strong>신용등급:</strong> {creditRating} {result.creditEligible ? '(적격)' : '(부적격)'}</p>
+                        <p><strong>최소 점수:</strong> {result.minScore} / <strong>예상 점수:</strong> {result.totalScore}</p>
+                        <p><strong>배점:</strong> 수행능력 {result.performanceWeight}% | 가격 {result.priceWeight}% | 기타 {result.others}%</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* 공고 등록 탭 */}
+              {activeTab === 'announcements' && (
+                <div>
+                  <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>공고 등록 및 관리</h2>
+
+                  <div className="form-section">
+                    <h3>🆕 새 공고 등록</h3>
+                    <div className="form-section-grid">
+                      <div className="form-group">
+                        <label>공고명</label>
+                        <input type="text" value={newAnnouncement.projectName} onChange={(e) => setNewAnnouncement({...newAnnouncement, projectName: e.target.value})} placeholder="공사 이름" />
+                      </div>
+                      <div className="form-group">
+                        <label>발주기관</label>
+                        <select value={newAnnouncement.institution} onChange={(e) => setNewAnnouncement({...newAnnouncement, institution: e.target.value})}>
+                          {institutions.map(inst => <option key={inst} value={inst}>{inst}</option>)}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>설계금액 (억원)</label>
+                        <input type="number" value={newAnnouncement.estimatedPrice} onChange={(e) => setNewAnnouncement({...newAnnouncement, estimatedPrice: e.target.value})} placeholder="300" />
+                      </div>
+                      <div className="form-group">
+                        <label>공사 종류</label>
+                        <input type="text" value={newAnnouncement.workCategory} onChange={(e) => setNewAnnouncement({...newAnnouncement, workCategory: e.target.value})} placeholder="토목, 건축 등" />
+                      </div>
+                      <div className="form-group">
+                        <label>요구 실적</label>
+                        <select value={newAnnouncement.requiredExperience} onChange={(e) => setNewAnnouncement({...newAnnouncement, requiredExperience: e.target.value})}>
+                          {experienceTypes.map(exp => <option key={exp} value={exp}>{exp}</option>)}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>최소 기술점수</label>
+                        <input type="number" value={newAnnouncement.requiredScore} onChange={(e) => setNewAnnouncement({...newAnnouncement, requiredScore: parseInt(e.target.value)})} />
+                      </div>
+                      <div className="form-group">
+                        <label>최소 신용등급</label>
+                        <select value={newAnnouncement.requiredCreditRating} onChange={(e) => setNewAnnouncement({...newAnnouncement, requiredCreditRating: e.target.value})}>
+                          {creditRatings.map(rating => <option key={rating} value={rating}>{rating}</option>)}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>협정 구성 허용</label>
+                        <select value={newAnnouncement.jointVentureAllowed ? '예' : '아니오'} onChange={(e) => setNewAnnouncement({...newAnnouncement, jointVentureAllowed: e.target.value === '예'})}>
+                          <option value="아니오">아니오</option>
+                          <option value="예">예</option>
+                        </select>
+                      </div>
+                    </div>
+                    <button className="btn" onClick={handleAddAnnouncement} style={{ marginTop: '15px' }}>📝 공고 등록</button>
+                  </div>
+
+                  {message && <div className={message.includes('✓') ? 'success' : 'error'} style={{ marginBottom: '20px' }}>{message}</div>}
+
+                  <h3 style={{ marginTop: '30px', marginBottom: '15px', color: '#2c3e50' }}>등록된 공고 목록</h3>
+                  {announcements.length > 0 ? (
+                    announcements.map(ann => (
+                      <div key={ann._id} className="list-item">
+                        <h4>{ann.projectName}</h4>
+                        <p><strong>발주기관:</strong> {ann.institution} | <strong>설계금액:</strong> {ann.estimatedPrice}억원</p>
+                        <p><strong>공사종류:</strong> {ann.workCategory} | <strong>요구실적:</strong> {ann.requiredExperience}</p>
+                        <p><strong>최소점수:</strong> {ann.requiredScore} | <strong>최소신용등급:</strong> {ann.requiredCreditRating}</p>
+                        <button className="btn btn-secondary" onClick={() => checkEligibility(ann._id)} style={{ marginTop: '10px' }}>✓ 적격성 판정</button>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ color: '#666' }}>등록된 공고가 없습니다.</p>
+                  )}
+                </div>
+              )}
+
+              {/* 업체 관리 탭 */}
+              {activeTab === 'companies' && (
+                <div>
+                  <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>업체 정보 등록 및 관리</h2>
+
+                  <div className="form-section">
+                    <h3>🆕 업체 정보 등록</h3>
+                    <div className="form-section-grid">
+                      <div className="form-group">
+                        <label>업체명</label>
+                        <input type="text" value={newCompany.companyName} onChange={(e) => setNewCompany({...newCompany, companyName: e.target.value})} placeholder="업체 이름" />
+                      </div>
+                      <div className="form-group">
+                        <label>업체 규모</label>
+                        <select value={newCompany.companySize} onChange={(e) => setNewCompany({...newCompany, companySize: e.target.value})}>
+                          {companySizes.map(size => <option key={size} value={size}>{size}</option>)}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>신용등급</label>
+                        <select value={newCompany.creditRating} onChange={(e) => setNewCompany({...newCompany, creditRating: e.target.value})}>
+                          {creditRatings.map(rating => <option key={rating} value={rating}>{rating}</option>)}
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>기술 점수 (0~100)</label>
+                        <input type="number" value={newCompany.technicalScore} onChange={(e) => setNewCompany({...newCompany, technicalScore: parseInt(e.target.value)})} min="0" max="100" />
+                      </div>
+                    </div>
+
+                    <h4 style={{ marginTop: '20px', marginBottom: '10px', color: '#2c3e50' }}>시공 실적 추가</h4>
+                    <div className="form-section-grid">
+                      <div className="form-group">
+                        <label>프로젝트명</label>
+                        <input type="text" value={newProject.projectName} onChange={(e) => setNewProject({...newProject, projectName: e.target.value})} placeholder="프로젝트 이름" />
+                      </div>
+                      <div className="form-group">
+                        <label>공사금액 (억원)</label>
+                        <input type="number" value={newProject.amount} onChange={(e) => setNewProject({...newProject, amount: e.target.value})} placeholder="100" />
+                      </div>
+                      <div className="form-group">
+                        <label>완공년도</label>
+                        <input type="number" value={newProject.completionYear} onChange={(e) => setNewProject({...newProject, completionYear: parseInt(e.target.value)})} />
+                      </div>
+                      <div className="form-group">
+                        <label>공사 종류</label>
+                        <input type="text" value={newProject.workCategory} onChange={(e) => setNewProject({...newProject, workCategory: e.target.value})} placeholder="토목, 건축 등" />
+                      </div>
+                    </div>
+                    <button className="btn btn-secondary" onClick={addProjectToCompany} style={{ marginTop: '10px' }}>➕ 실적 추가</button>
+
+                    {newCompany.pastProjects.length > 0 && (
+                      <div style={{ marginTop: '15px' }}>
+                        <h4 style={{ color: '#2c3e50', marginBottom: '10px' }}>등록된 실적</h4>
+                        {newCompany.pastProjects.map((proj, idx) => (
+                          <div key={idx} style={{ background: '#fff', padding: '10px', marginBottom: '5px', borderRadius: '4px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span>{proj.projectName} ({proj.completionYear}) - {proj.amount}억원</span>
+                            <button className="btn btn-danger" onClick={() => removeProjectFromCompany(idx)} style={{ padding: '5px 10px', fontSize: '12px' }}>삭제</button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <button className="btn" onClick={handleAddCompany} style={{ marginTop: '20px' }}>🏢 업체 등록</button>
+                  </div>
+
+                  {message && <div className={message.includes('✓') ? 'success' : 'error'} style={{ marginBottom: '20px' }}>{message}</div>}
+
+                  <h3 style={{ marginTop: '30px', marginBottom: '15px', color: '#2c3e50' }}>등록된 업체 목록</h3>
+                  {companies.length > 0 ? (
+                    companies.map(comp => (
+                      <div key={comp._id} className="list-item">
+                        <h4>{comp.companyName}</h4>
+                        <p><strong>규모:</strong> {comp.companySize} | <strong>신용등급:</strong> {comp.creditRating} | <strong>기술점수:</strong> {comp.technicalScore}</p>
+                        <p><strong>실적 수:</strong> {comp.pastProjects.length}건 | <strong>총 금액:</strong> {comp.pastProjects.reduce((sum, p) => sum + p.amount, 0)}억원</p>
+                      </div>
+                    ))
+                  ) : (
+                    <p style={{ color: '#666' }}>등록된 업체가 없습니다.</p>
+                  )}
+                </div>
+              )}
+
+              {/* 적격성 판정 탭 */}
+              {activeTab === 'eligibility' && (
+                <div>
+                  <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>입찰 참가 기준 자동 계산</h2>
+
+                  {selectedAnnouncement && eligibilityResults.results ? (
+                    <div>
+                      <div className="eligibility-summary">
+                        <h3>📌 공고 정보</h3>
+                        <p><strong>공고명:</strong> {selectedAnnouncement.projectName}</p>
+                        <p><strong>설계금액:</strong> {selectedAnnouncement.estimatedPrice}억원</p>
+                        <p><strong>요구 실적:</strong> {selectedAnnouncement.requiredExperience}</p>
+                        <p><strong>최소점수:</strong> {eligibilityResults.announcement.estimatedPrice} | <strong>최소신용등급:</strong> {selectedAnnouncement.requiredCreditRating}</p>
+                      </div>
+
+                      <h3 style={{ marginBottom: '15px', color: '#2c3e50' }}>업체별 적격성 판정 결과</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>업체명</th>
+                            <th>규모</th>
+                            <th>신용등급</th>
+                            <th>기술점수</th>
+                            <th>실적 충족</th>
+                            <th>최종 판정</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {eligibilityResults.results.map((result, idx) => (
+                            <tr key={idx} style={{ background: result.eligible ? '#d5f4e6' : '#fadbd8' }}>
+                              <td><strong>{result.companyName}</strong></td>
+                              <td>{result.companySize}</td>
+                              <td>
+                                <span style={{ color: result.creditRating.passed ? '#27ae60' : '#e74c3c' }}>
+                                  {result.creditRating.company} {result.creditRating.passed ? '✓' : '✗'}
+                                </span>
+                              </td>
+                              <td>
+                                <span style={{ color: result.technicalScore.passed ? '#27ae60' : '#e74c3c' }}>
+                                  {result.technicalScore.company}/{result.technicalScore.required} {result.technicalScore.passed ? '✓' : '✗'}
+                                </span>
+                              </td>
+                              <td>
+                                <span style={{ color: result.experience.passed ? '#27ae60' : '#e74c3c' }}>
+                                  {result.experience.passed ? '✓' : '✗ ' + result.experience.shortfall}
+                                </span>
+                              </td>
+                              <td>
+                                <span className={`badge ${result.eligible ? 'pass' : 'fail'}`}>
+                                  {result.eligible ? '적격' : '부적격'}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+
+                      <div style={{ marginTop: '20px', padding: '15px', background: '#ecf0f1', borderRadius: '4px' }}>
+                        <h4 style={{ color: '#2c3e50', marginBottom: '10px' }}>📊 판정 통계</h4>
+                        <p><strong>총 업체 수:</strong> {eligibilityResults.summary.total}개</p>
+                        <p style={{ color: '#27ae60' }}><strong>적격 업체:</strong> {eligibilityResults.summary.eligible}개</p>
+                        <p style={{ color: '#e74c3c' }}><strong>부적격 업체:</strong> {eligibilityResults.summary.ineligible}개</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                      <p>📢 공고를 선택하여 업체별 적격성을 판정하세요.</p>
+                      <button className="btn" onClick={() => setActiveTab('announcements')} style={{ marginTop: '15px' }}>공고 등록 페이지로 이동</button>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 기준 조회 탭 */}
+              {activeTab === 'criteria' && (
+                <div>
+                  <h2 style={{ marginBottom: '20px', color: '#2c3e50' }}>기관별 입찰 기준</h2>
+                  {['조달청', 'LH', '지방자치단체'].map(inst => (
+                    <div key={inst} style={{ marginBottom: '30px' }}>
+                      <h3 style={{ color: '#2c3e50', marginBottom: '10px' }}>{inst}</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>공사 규모</th>
+                            <th>최소 점수</th>
+                            <th>수행능력</th>
+                            <th>가격</th>
+                            <th>기타</th>
+                            <th>최소 신용등급</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {allCriteria.filter(c => c.institution === getInstitutionCode(inst)).map((c, idx) => (
+                            <tr key={idx}>
+                              <td>{c.sizeRange} 억원</td>
+                              <td>{c.minScore}</td>
+                              <td>{c.performanceWeight}%</td>
+                              <td>{c.priceWeight}%</td>
+                              <td>{c.others}%</td>
+                              <td>{c.minCreditRating}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      );
+    }
+
+    ReactDOM.render(<BiddingSystemApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
