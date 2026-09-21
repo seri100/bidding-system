@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>입찰 적격성 평가 시스템</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; }
+    .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+    .header h1 { font-size: 24px; margin-bottom: 5px; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; background: #bdc3c7; color: #2c3e50; }
+    .tab-btn.active { background: #3498db; color: white; }
+    .tab-content { display: none; background: white; padding: 20px; border-radius: 4px; }
+    .tab-content.active { display: block; }
+    .filter-group { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
+    .filter-group div { display: flex; flex-direction: column; }
+    select { padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; }
+    button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #229954; }
+    button.secondary { background: #95a5a6; }
+    .announcement-item { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; }
+    .announcement-item h4 { color: #2c3e50; margin-bottom: 8px; }
+    .announcement-item p { color: #7f8c8d; font-size: 13px; margin: 5px 0; }
+    .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
+    .info { color: #3498db; padding: 10px; background: #d6eaf8; border-radius: 4px; margin-bottom: 10px; }
+    .error { color: #e74c3c; padding: 10px; background: #fadbd8; border-radius: 4px; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 입찰 적격성 평가 시스템</h1>
+    <p>공고 관리 및 입찰 정보 검색</p>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('search')">🔍 공고 검색</button>
+      <button class="tab-btn" onclick="showTab('all')">📊 전체 공고</button>
+    </div>
+
+    <div id="search" class="tab-content active">
+      <h2>공고 검색</h2>
+      <div class="filter-group">
+        <div>
+          <label>기관</label>
+          <select id="agencySelect">
+            <option value="all">모든 기관</option>
+          </select>
+        </div>
+        <div>
+          <label>공종</label>
+          <select id="workTypeSelect">
+            <option value="all">모든 공종</option>
+          </select>
+        </div>
+        <div>
+          <label>지역</label>
+          <select id="regionSelect">
+            <option value="all">모든 지역</option>
+          </select>
+        </div>
+        <button onclick="searchAnnouncements()">🔍 공고 검색</button>
+        <button class="secondary" onclick="resetSearch()">초기화</button>
+      </div>
+      <div id="searchResult"></div>
+    </div>
+
+    <div id="all" class="tab-content">
+      <h2>전체 공고</h2>
+      <button onclick="loadAllAnnouncements()">📥 전체 공고 로드</button>
+      <div id="allResult"></div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+      
+      if (tabName === 'all') {
+        loadAllAnnouncements();
+      }
+    }
+
+    function loadFilterOptions() {
+      fetch('/api/filter-options')
+        .then(response => response.json())
+        .then(data => {
+          const agencySelect = document.getElementById('agencySelect');
+          const workTypeSelect = document.getElementById('workTypeSelect');
+          const regionSelect = document.getElementById('regionSelect');
+          
+          data.agencies.forEach(agency => {
+            const option = document.createElement('option');
+            option.value = agency;
+            option.textContent = agency;
+            agencySelect.appendChild(option);
+          });
+          
+          data.workTypes.forEach(workType => {
+            const option = document.createElement('option');
+            option.value = workType;
+            option.textContent = workType;
+            workTypeSelect.appendChild(option);
+          });
+          
+          data.regions.forEach(region => {
+            const option = document.createElement('option');
+            option.value = region;
+            option.textContent = region;
+            regionSelect.appendChild(option);
+          });
+        })
+        .catch(error => console.error('필터 로드 오류:', error));
+    }
+
+    function searchAnnouncements() {
+      const agencyName = document.getElementById('agencySelect').value;
+      const workType = document.getElementById('workTypeSelect').value;
+      const region = document.getElementById('regionSelect').value;
+      
+      const params = new URLSearchParams();
+      if (agencyName !== 'all') params.append('agencyName', agencyName);
+      if (workType !== 'all') params.append('workType', workType);
+      if (region !== 'all') params.append('region', region);
+      
+      fetch('/api/announcements/search?' + params.toString())
+        .then(response => response.json())
+        .then(data => {
+          const resultDiv = document.getElementById('searchResult');
+          
+          if (!data.success || data.count === 0) {
+            resultDiv.innerHTML = '<div class="info">검색 결과가 없습니다.</div>';
+            return;
+          }
+          
+          let html = '<div class="success">✅ ' + data.count + '개의 공고를 찾았습니다.</div>';
+          data.data.forEach(ann => {
+            html += '<div class="announcement-item">';
+            html += '<h4>' + ann.title + '</h4>';
+            html += '<p>기관: <strong>' + ann.agencyName + '</strong> | 공종: <strong>' + ann.workType + '</strong> | 지역: <strong>' + ann.region + '</strong></p>';
+            html += '<p>💰 기초금액: <strong>' + (ann.basicAmount || 0).toLocaleString('ko-KR') + '원</strong></p>';
+            html += '</div>';
+          });
+          
+          resultDiv.innerHTML = html;
+        })
+        .catch(error => {
+          console.error('검색 오류:', error);
+          document.getElementById('searchResult').innerHTML = '<div class="error">검색 중 오류가 발생했습니다.</div>';
+        });
+    }
+
+    function resetSearch() {
+      document.getElementById('agencySelect').value = 'all';
+      document.getElementById('workTypeSelect').value = 'all';
+      document.getElementById('regionSelect').value = 'all';
+      document.getElementById('searchResult').innerHTML = '';
+    }
+
+    function loadAllAnnouncements() {
+      fetch('/api/announcements')
+        .then(response => response.json())
+        .then(data => {
+          const resultDiv = document.getElementById('allResult');
+          
+          if (!data.success || data.count === 0) {
+            resultDiv.innerHTML = '<div class="info">공고가 없습니다.</div>';
+            return;
+          }
+          
+          let html = '<p>총 ' + data.count + '개의 공고</p>';
+          data.data.forEach(ann => {
+            html += '<div class="announcement-item">';
+            html += '<h4>' + ann.title + '</h4>';
+            html += '<p>기관: ' + (ann.agencyName || '미분류') + ' | 공종: ' + (ann.workType || '용역') + ' | 지역: ' + (ann.region || '전국') + '</p>';
+            html += '<p>💰 기초금액: ' + ((ann.basicAmount || ann.budget || 0).toLocaleString('ko-KR')) + '원</p>';
+            html += '</div>';
+          });
+          
+          resultDiv.innerHTML = html;
+        })
+        .catch(error => {
+          console.error('공고 로드 오류:', error);
+          document.getElementById('allResult').innerHTML = '<div class="error">공고 로드 중 오류가 발생했습니다.</div>';
+        });
+    }
+
+    window.addEventListener('load', loadFilterOptions);
+  </script>
+</body>
+</html>

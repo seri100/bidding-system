@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>입찰 적격성 평가 시스템</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f5f5f5; }
+    .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
+    .header h1 { margin-bottom: 10px; }
+    .top-right { position: absolute; top: 10px; right: 10px; }
+    .tabs { display: flex; gap: 5px; padding: 10px; background: #ecf0f1; }
+    .tab-btn { padding: 10px 15px; background: #bdc3c7; border: none; cursor: pointer; border-radius: 4px; }
+    .tab-btn.active { background: #3498db; color: white; }
+    .tab-content { display: none; padding: 20px; background: white; margin: 10px; border-radius: 4px; }
+    .tab-content.active { display: block; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+    button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #2980b9; }
+    .list { margin-top: 20px; }
+    .list-item { padding: 10px; background: #ecf0f1; margin-bottom: 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>입찰 적격성 평가 시스템</h1>
+    <p>공공 정보 기반 자동 입찰가 신청 및 평가</p>
+    <div class="top-right">
+      <span id="userEmail" style="margin-right: 16px;"></span>
+      <button class="btn btn-primary" id="loginBtn" onclick="loginGoogle()" style="display:none;">Google 로그인</button>
+      <button class="btn btn-secondary" id="logoutBtn" onclick="logout()" style="display:none;">로그아웃</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('agencies')">⚙️ 기관 관리</button>
+      <button class="tab-btn" onclick="switchTab('companies')">🏢 업체 관리</button>
+      <button class="tab-btn" onclick="switchTab('announcements')">📋 공고 관리</button>
+      <button class="tab-btn" onclick="switchTab('analysis')">📊 입찰 분석</button>
+    </div>
+
+    <!-- 기관 관리 탭 -->
+    <div id="agencies" class="tab-content active">
+      <h2>⚙️ 기관 관리</h2>
+      <div id="agencyList" class="list"></div>
+      <div id="agencyDetail" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px; display: none;">
+        <h3 id="agencyName"></h3>
+        <p><strong>평가 방식:</strong> <span id="agencyMethod"></span></p>
+        <div id="scoringCriteria"></div>
+        <div style="margin-top: 15px;">
+          <h4>A값(사회보험료) 계산</h4>
+          <div class="form-group">
+            <label>기초금액 (원):</label>
+            <input type="number" id="basicAmount" placeholder="예: 1000000000">
+          </div>
+          <button onclick="calculateAValue()">📊 계산하기</button>
+          <div id="aValueResult" style="margin-top: 15px; padding: 10px; background: white; border-radius: 4px; display: none;">
+            <h5>계산 결과</h5>
+            <div id="aValueTable"></div>
+            <p style="margin-top: 10px;"><strong>순공사원가:</strong> <span id="netConstructionCost"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 업체 관리 탭 -->
+    <div id="companies" class="tab-content">
+      <h2>🏢 업체 관리</h2>
+      <div class="search-bar">
+        <input type="text" id="companySearch" placeholder="업체명 검색...">
+        <button class="btn btn-primary" onclick="searchCompanies()">검색</button>
+      </div>
+      <div id="companyList"></div>
+    </div>
+
+    <!-- 공고 관리 탭 -->
+    <div id="announcements" class="tab-content">
+      <h2>📋 공고 관리</h2>
+      <button class="btn btn-success" onclick="openAnnouncementModal()" style="margin-bottom: 16px;">새 공고 등록</button>
+      <div id="announcementList"></div>
+    </div>
+
+    <!-- 입찰 분석 탭 -->
+    <div id="analysis" class="tab-content">
+      <h2>📊 입찰 분석</h2>
+      <div class="form-group">
+        <label>공고 선택:</label>
+        <select id="announcementSelect">
+          <option value="">-- 공고를 선택하세요 --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>업체 선택:</label>
+        <select id="companySelect">
+          <option value="">-- 업체를 선택하세요 --</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="analyzeBid()">분석 실행</button>
+      <div id="analysisResult" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 4px; display: none;">
+        <h3>분석 결과</h3>
+        <div id="analysisContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentAgencyCode = null;
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      if (tabName === 'agencies') loadAgencies();
+    }
+
+    function loadAgencies() {
+      fetch('/api/agencies')
+        .then(r => r.json())
+        .then(data => {
+          const html = data.agencies.map(a => 
+            `<div class="list-item" onclick="selectAgency('${a.code}', '${a.name}')" style="cursor:pointer;">
+              <strong>${a.name}</strong> (${a.code})<br>
+              <small>평가 방식: ${a.evaluationMethod}</small>
+            </div>`
+          ).join('');
+          document.getElementById('agencyList').innerHTML = html;
+        })
+        .catch(e => console.error('❌ 오류:', e));
+    }
+
+    function selectAgency(code, name) {
+      currentAgencyCode = code;
+      fetch(`/api/agencies/${code}`)
+        .then(r => r.json())
+        .then(data => {
+          const a = data.agency;
+          document.getElementById('agencyName').textContent = a.name;
+          document.getElementById('agencyMethod').textContent = a.evaluationMethod;
+          
+          let criteria = '<table border="1" style="width:100%; margin-top:10px;"><tr><th>항목</th><th>비율</th></tr>';
+          Object.entries(a.scoringCriteria).forEach(([key, val]) => {
+            criteria += `<tr><td>${key}</td><td>${val}%</td></tr>`;
+          });
+          criteria += '</table>';
+          document.getElementById('scoringCriteria').innerHTML = criteria;
+          
+          document.getElementById('agencyDetail').style.display = 'block';
+        })
+        .catch(e => console.error('❌ 오류:', e));
+    }
+
+    function calculateAValue() {
+      const basicAmount = parseInt(document.getElementById('basicAmount').value);
+      if (!basicAmount) { alert('기초금액을 입력하세요'); return; }
+      
+      fetch(`/api/agencies/${currentAgencyCode}/calculate-avalue`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ basicAmount })
+      })
+        .then(r => r.json())
+        .then(data => {
+          const av = data.aValue;
+          let table = '<table border="1" style="width:100%;"><tr><th>항목</th><th>금액</th></tr>';
+          Object.entries(av).forEach(([key, val]) => {
+            if (key !== 'total' && !key.startsWith('_')) {
+              table += `<tr><td>${key}</td><td>${val.toLocaleString()}원</td></tr>`;
+            }
+          });
+          table += `<tr style="background:#e8f4f8;"><td><strong>합계</strong></td><td><strong>${av.total.toLocaleString()}원</strong></td></tr></table>`;
+          document.getElementById('aValueTable').innerHTML = table;
+          document.getElementById('netConstructionCost').textContent = (basicAmount - av.total).toLocaleString() + '원';
+          document.getElementById('aValueResult').style.display = 'block';
+        })
+        .catch(e => console.error('❌ 오류:', e));
+    }
+
+    function loginGoogle() {
+      window.location.href = '/auth/google';
+    }
+
+    function logout() {
+      window.location.href = '/auth/logout';
+    }
+
+    // 초기 로드
+    window.onload = () => {
+      fetch('/auth/user')
+        .then(r => r.json())
+        .then(data => {
+          if (data.user) {
+            document.getElementById('userEmail').textContent = data.user.email;
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+          } else {
+            document.getElementById('loginBtn').style.display = 'inline-block';
+          }
+        });
+      loadAgencies();
+    };
+  </script>
+</body>
+</html>
