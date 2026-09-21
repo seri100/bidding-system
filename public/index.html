@@ -1,197 +1,698 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>입찰 적격성 평가 시스템</title>
+  <title>입찰 공고 관리 시스템</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; background: #f5f5f5; }
-    .header { background: #2c3e50; color: white; padding: 20px; text-align: center; }
-    .header h1 { font-size: 24px; margin-bottom: 5px; }
-    .container { max-width: 1200px; margin: 20px auto; padding: 20px; }
-    .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-    .tab-btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; background: #bdc3c7; color: #2c3e50; }
-    .tab-btn.active { background: #3498db; color: white; }
-    .tab-content { display: none; background: white; padding: 20px; border-radius: 4px; }
-    .tab-content.active { display: block; }
-    .filter-group { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
-    .filter-group div { display: flex; flex-direction: column; }
-    select { padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 14px; }
-    button { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    button:hover { background: #229954; }
-    button.secondary { background: #95a5a6; }
-    .announcement-item { background: #f9f9f9; padding: 15px; margin-bottom: 10px; border-left: 4px solid #3498db; border-radius: 4px; }
-    .announcement-item h4 { color: #2c3e50; margin-bottom: 8px; }
-    .announcement-item p { color: #7f8c8d; font-size: 13px; margin: 5px 0; }
-    .success { color: #27ae60; padding: 10px; background: #d5f4e6; border-radius: 4px; margin-bottom: 10px; }
-    .info { color: #3498db; padding: 10px; background: #d6eaf8; border-radius: 4px; margin-bottom: 10px; }
-    .error { color: #e74c3c; padding: 10px; background: #fadbd8; border-radius: 4px; margin-bottom: 10px; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .header p {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: #6c757d;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: #667eea;
+      background: #f1f3f5;
+    }
+
+    .tab-btn.active {
+      color: #667eea;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #667eea;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 30px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .search-section h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+      font-size: 20px;
+    }
+
+    .filter-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .filter-item label {
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    select, input {
+      padding: 10px 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button.primary {
+      flex: 1;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    button.secondary {
+      padding: 12px 20px;
+      background: #f8f9fa;
+      color: #667eea;
+      border: 2px solid #667eea;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+
+    button.secondary:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .stat-card h3 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .stat-card p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .results-section {
+      margin-top: 30px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .results-header h3 {
+      color: #2c3e50;
+      font-size: 18px;
+    }
+
+    .result-count {
+      background: #f8f9fa;
+      padding: 8px 12px;
+      border-radius: 20px;
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .announcement-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .announcement-item {
+      background: #f8f9fa;
+      padding: 18px;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      transition: all 0.3s;
+    }
+
+    .announcement-item:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateX(4px);
+    }
+
+    .announcement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .announcement-header h4 {
+      color: #2c3e50;
+      font-size: 15px;
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .announcement-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge.agency {
+      background: #dfe8f7;
+      color: #667eea;
+    }
+
+    .badge.worktype {
+      background: #e8f5e9;
+      color: #27ae60;
+    }
+
+    .badge.region {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .announcement-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 12px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .meta-label {
+      color: #7f8c8d;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .meta-value {
+      color: #2c3e50;
+      font-size: 14px;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .message.success {
+      background: #d5f4e6;
+      color: #27ae60;
+      border-left: 4px solid #27ae60;
+    }
+
+    .message.info {
+      background: #d6eaf8;
+      color: #3498db;
+      border-left: 4px solid #3498db;
+    }
+
+    .message.error {
+      background: #fadbd8;
+      color: #e74c3c;
+      border-left: 4px solid #e74c3c;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #7f8c8d;
+    }
+
+    .loading::after {
+      content: '⏳';
+      display: block;
+      font-size: 32px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #7f8c8d;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: white;
+      opacity: 0.8;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .header h1 { font-size: 24px; }
+      .filter-group { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .announcement-meta { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>📋 입찰 적격성 평가 시스템</h1>
-    <p>공고 관리 및 입찰 정보 검색</p>
+    <h1>🎯 입찰 공고 관리 시스템</h1>
+    <p>공공 입찰 공고 검색 및 필터링</p>
   </div>
 
   <div class="container">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="showTab('search')">🔍 공고 검색</button>
-      <button class="tab-btn" onclick="showTab('all')">📊 전체 공고</button>
-    </div>
-
-    <div id="search" class="tab-content active">
-      <h2>공고 검색</h2>
-      <div class="filter-group">
-        <div>
-          <label>기관</label>
-          <select id="agencySelect">
-            <option value="all">모든 기관</option>
-          </select>
-        </div>
-        <div>
-          <label>공종</label>
-          <select id="workTypeSelect">
-            <option value="all">모든 공종</option>
-          </select>
-        </div>
-        <div>
-          <label>지역</label>
-          <select id="regionSelect">
-            <option value="all">모든 지역</option>
-          </select>
-        </div>
-        <button onclick="searchAnnouncements()">🔍 공고 검색</button>
-        <button class="secondary" onclick="resetSearch()">초기화</button>
+    <div class="main-content">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('search')">🔍 공고 검색</button>
+        <button class="tab-btn" onclick="switchTab('browse')">📊 전체 공고</button>
+        <button class="tab-btn" onclick="switchTab('stats')">📈 통계</button>
       </div>
-      <div id="searchResult"></div>
-    </div>
 
-    <div id="all" class="tab-content">
-      <h2>전체 공고</h2>
-      <button onclick="loadAllAnnouncements()">📥 전체 공고 로드</button>
-      <div id="allResult"></div>
+      <!-- 검색 탭 -->
+      <div id="search" class="tab-content active">
+        <div class="search-section">
+          <h2>공고 검색</h2>
+          
+          <div class="filter-group">
+            <div class="filter-item">
+              <label>기관</label>
+              <select id="agencyFilter">
+                <option value="">모든 기관</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label>업무구분</label>
+              <select id="workTypeFilter">
+                <option value="">모든 업무</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label>지역</label>
+              <select id="regionFilter">
+                <option value="">모든 지역</option>
+              </select>
+            </div>
+
+            <div class="filter-item">
+              <label>최소 예산</label>
+              <input type="number" id="minBudget" placeholder="0" min="0">
+            </div>
+
+            <div class="filter-item">
+              <label>최대 예산</label>
+              <input type="number" id="maxBudget" placeholder="무제한" min="0">
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="primary" onclick="performSearch()">🔍 검색</button>
+            <button class="secondary" onclick="resetFilters()">초기화</button>
+          </div>
+
+          <div id="searchResults" class="results-section"></div>
+        </div>
+      </div>
+
+      <!-- 전체 공고 탭 -->
+      <div id="browse" class="tab-content">
+        <div class="search-section">
+          <h2>전체 공고</h2>
+          <button class="primary" onclick="loadAllAnnouncements()" style="margin-bottom: 20px;">📋 공고 로드</button>
+          <div id="browseResults" class="results-section"></div>
+        </div>
+      </div>
+
+      <!-- 통계 탭 -->
+      <div id="stats" class="tab-content">
+        <div class="search-section">
+          <h2>통계</h2>
+          <button class="primary" onclick="loadStatistics()" style="margin-bottom: 20px;">📊 통계 로드</button>
+          <div id="statsResults"></div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <div class="footer">
+    <p>✨ 입찰 공고 관리 시스템 v1.0.2 | 2026년</p>
+  </div>
+
   <script>
-    function showTab(tabName) {
+    const API_BASE = 'http://localhost:5001/api';
+
+    // 탭 전환
+    function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
       event.target.classList.add('active');
       
-      if (tabName === 'all') {
-        loadAllAnnouncements();
+      if (tabName === 'browse') loadAllAnnouncements();
+      if (tabName === 'stats') loadStatistics();
+    }
+
+    // 필터 옵션 로드
+    async function loadFilterOptions() {
+      try {
+        const response = await fetch(`${API_BASE}/filter-options`);
+        const data = await response.json();
+
+        const agencySelect = document.getElementById('agencyFilter');
+        const workTypeSelect = document.getElementById('workTypeFilter');
+        const regionSelect = document.getElementById('regionFilter');
+
+        data.agencies.forEach(agency => {
+          const option = document.createElement('option');
+          option.value = agency;
+          option.textContent = agency;
+          agencySelect.appendChild(option);
+        });
+
+        data.workTypes.forEach(type => {
+          const option = document.createElement('option');
+          option.value = type;
+          option.textContent = type;
+          workTypeSelect.appendChild(option);
+        });
+
+        data.regions.forEach(region => {
+          const option = document.createElement('option');
+          option.value = region;
+          option.textContent = region;
+          regionSelect.appendChild(option);
+        });
+      } catch (error) {
+        console.error('필터 옵션 로드 실패:', error);
       }
     }
 
-    function loadFilterOptions() {
-      fetch('/api/filter-options')
-        .then(response => response.json())
-        .then(data => {
-          const agencySelect = document.getElementById('agencySelect');
-          const workTypeSelect = document.getElementById('workTypeSelect');
-          const regionSelect = document.getElementById('regionSelect');
-          
-          data.agencies.forEach(agency => {
-            const option = document.createElement('option');
-            option.value = agency;
-            option.textContent = agency;
-            agencySelect.appendChild(option);
-          });
-          
-          data.workTypes.forEach(workType => {
-            const option = document.createElement('option');
-            option.value = workType;
-            option.textContent = workType;
-            workTypeSelect.appendChild(option);
-          });
-          
-          data.regions.forEach(region => {
-            const option = document.createElement('option');
-            option.value = region;
-            option.textContent = region;
-            regionSelect.appendChild(option);
-          });
-        })
-        .catch(error => console.error('필터 로드 오류:', error));
+    // 검색 수행
+    async function performSearch() {
+      const agency = document.getElementById('agencyFilter').value;
+      const workType = document.getElementById('workTypeFilter').value;
+      const region = document.getElementById('regionFilter').value;
+      const minBudget = document.getElementById('minBudget').value;
+      const maxBudget = document.getElementById('maxBudget').value;
+
+      let url = `${API_BASE}/announcements/search?limit=50`;
+      if (agency) url += `&agencyName=${encodeURIComponent(agency)}`;
+      if (workType) url += `&workType=${encodeURIComponent(workType)}`;
+      if (region) url += `&region=${encodeURIComponent(region)}`;
+      if (minBudget) url += `&minBudget=${minBudget}`;
+      if (maxBudget) url += `&maxBudget=${maxBudget}`;
+
+      try {
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = '<div class="loading"></div>';
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.count === 0) {
+          resultsDiv.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">🔍</div>
+              <h3>검색 결과 없음</h3>
+              <p>조건을 변경하여 다시 시도해주세요.</p>
+            </div>
+          `;
+          return;
+        }
+
+        displayAnnouncements(data.data, resultsDiv);
+      } catch (error) {
+        document.getElementById('searchResults').innerHTML = 
+          `<div class="message error">❌ 검색 실패: ${error.message}</div>`;
+      }
     }
 
-    function searchAnnouncements() {
-      const agencyName = document.getElementById('agencySelect').value;
-      const workType = document.getElementById('workTypeSelect').value;
-      const region = document.getElementById('regionSelect').value;
-      
-      const params = new URLSearchParams();
-      if (agencyName !== 'all') params.append('agencyName', agencyName);
-      if (workType !== 'all') params.append('workType', workType);
-      if (region !== 'all') params.append('region', region);
-      
-      fetch('/api/announcements/search?' + params.toString())
-        .then(response => response.json())
-        .then(data => {
-          const resultDiv = document.getElementById('searchResult');
-          
-          if (!data.success || data.count === 0) {
-            resultDiv.innerHTML = '<div class="info">검색 결과가 없습니다.</div>';
-            return;
-          }
-          
-          let html = '<div class="success">✅ ' + data.count + '개의 공고를 찾았습니다.</div>';
-          data.data.forEach(ann => {
-            html += '<div class="announcement-item">';
-            html += '<h4>' + ann.title + '</h4>';
-            html += '<p>기관: <strong>' + ann.agencyName + '</strong> | 공종: <strong>' + ann.workType + '</strong> | 지역: <strong>' + ann.region + '</strong></p>';
-            html += '<p>💰 기초금액: <strong>' + (ann.basicAmount || 0).toLocaleString('ko-KR') + '원</strong></p>';
-            html += '</div>';
-          });
-          
-          resultDiv.innerHTML = html;
-        })
-        .catch(error => {
-          console.error('검색 오류:', error);
-          document.getElementById('searchResult').innerHTML = '<div class="error">검색 중 오류가 발생했습니다.</div>';
+    // 전체 공고 로드
+    async function loadAllAnnouncements() {
+      try {
+        const resultsDiv = document.getElementById('browseResults');
+        resultsDiv.innerHTML = '<div class="loading"></div>';
+
+        const response = await fetch(`${API_BASE}/announcements?limit=100`);
+        const data = await response.json();
+
+        displayAnnouncements(data.data, resultsDiv);
+      } catch (error) {
+        document.getElementById('browseResults').innerHTML = 
+          `<div class="message error">❌ 로드 실패: ${error.message}</div>`;
+      }
+    }
+
+    // 통계 로드
+    async function loadStatistics() {
+      try {
+        const resultsDiv = document.getElementById('statsResults');
+        resultsDiv.innerHTML = '<div class="loading"></div>';
+
+        const response = await fetch(`${API_BASE}/statistics`);
+        const data = await response.json();
+
+        let html = `
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h3>${data.total}</h3>
+              <p>총 공고</p>
+            </div>
+        `;
+
+        data.byAgency.slice(0, 5).forEach(item => {
+          html += `
+            <div class="stat-card">
+              <h3>${item.count}</h3>
+              <p>${item._id || '미정'}</p>
+            </div>
+          `;
         });
-    }
 
-    function resetSearch() {
-      document.getElementById('agencySelect').value = 'all';
-      document.getElementById('workTypeSelect').value = 'all';
-      document.getElementById('regionSelect').value = 'all';
-      document.getElementById('searchResult').innerHTML = '';
-    }
+        html += '</div>';
 
-    function loadAllAnnouncements() {
-      fetch('/api/announcements')
-        .then(response => response.json())
-        .then(data => {
-          const resultDiv = document.getElementById('allResult');
-          
-          if (!data.success || data.count === 0) {
-            resultDiv.innerHTML = '<div class="info">공고가 없습니다.</div>';
-            return;
-          }
-          
-          let html = '<p>총 ' + data.count + '개의 공고</p>';
-          data.data.forEach(ann => {
-            html += '<div class="announcement-item">';
-            html += '<h4>' + ann.title + '</h4>';
-            html += '<p>기관: ' + (ann.agencyName || '미분류') + ' | 공종: ' + (ann.workType || '용역') + ' | 지역: ' + (ann.region || '전국') + '</p>';
-            html += '<p>💰 기초금액: ' + ((ann.basicAmount || ann.budget || 0).toLocaleString('ko-KR')) + '원</p>';
-            html += '</div>';
-          });
-          
-          resultDiv.innerHTML = html;
-        })
-        .catch(error => {
-          console.error('공고 로드 오류:', error);
-          document.getElementById('allResult').innerHTML = '<div class="error">공고 로드 중 오류가 발생했습니다.</div>';
+        // 업무 구분 통계
+        html += '<h3 style="margin-top: 30px; margin-bottom: 15px; color: #2c3e50;">업무구분별 분포</h3>';
+        html += '<div class="announcement-list">';
+        data.byWorkType.forEach(item => {
+          const percentage = ((item.count / data.total) * 100).toFixed(1);
+          html += `
+            <div class="announcement-item">
+              <strong>${item._id}</strong>
+              <div style="margin-top: 8px;">
+                <div style="background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden;">
+                  <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); height: 100%; width: ${percentage}%;"></div>
+                </div>
+                <div style="margin-top: 8px; color: #7f8c8d; font-size: 13px;">
+                  ${item.count}개 (${percentage}%)
+                </div>
+              </div>
+            </div>
+          `;
         });
+        html += '</div>';
+
+        resultsDiv.innerHTML = html;
+      } catch (error) {
+        document.getElementById('statsResults').innerHTML = 
+          `<div class="message error">❌ 통계 로드 실패: ${error.message}</div>`;
+      }
     }
 
-    window.addEventListener('load', loadFilterOptions);
+    // 공고 표시
+    function displayAnnouncements(announcements, container) {
+      let html = `
+        <div class="results-header">
+          <h3>검색 결과</h3>
+          <span class="result-count">${announcements.length}개</span>
+        </div>
+        <div class="announcement-list">
+      `;
+
+      announcements.forEach(item => {
+        const budget = item.budget ? `${(item.budget / 1000000).toFixed(1)}백만원` : '미정';
+        const deadline = item.deadline ? new Date(item.deadline).toLocaleDateString('ko-KR') : '미정';
+
+        html += `
+          <div class="announcement-item">
+            <div class="announcement-header">
+              <h4>${item.title || item.announcementNumber}</h4>
+              <div class="announcement-badges">
+                ${item.agencyName ? `<span class="badge agency">${item.agencyName}</span>` : ''}
+                ${item.workType ? `<span class="badge worktype">${item.workType}</span>` : ''}
+                ${item.region && item.region !== 'null' ? `<span class="badge region">${item.region}</span>` : ''}
+              </div>
+            </div>
+            <div class="announcement-meta">
+              <div class="meta-item">
+                <span class="meta-label">💰 예산:</span>
+                <span class="meta-value">${budget}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">📅 마감:</span>
+                <span class="meta-value">${deadline}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">📌 공고번호:</span>
+                <span class="meta-value">${item.announcementNumber}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      container.innerHTML = html;
+    }
+
+    // 필터 초기화
+    function resetFilters() {
+      document.getElementById('agencyFilter').value = '';
+      document.getElementById('workTypeFilter').value = '';
+      document.getElementById('regionFilter').value = '';
+      document.getElementById('minBudget').value = '';
+      document.getElementById('maxBudget').value = '';
+      document.getElementById('searchResults').innerHTML = '';
+    }
+
+    // 초기 로드
+    window.addEventListener('DOMContentLoaded', loadFilterOptions);
   </script>
 </body>
 </html>
