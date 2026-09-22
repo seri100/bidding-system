@@ -35,14 +35,14 @@ const announcementSchema = new mongoose.Schema({
 
 const Announcement = mongoose.model('Announcement', announcementSchema);
 
-// 1. 공고 검색 (부분 일치 개선)
+// 1. 공고 검색
 app.get('/api/announcements/search', async (req, res) => {
   try {
     const { agencyName, workType, region, minBudget, maxBudget, limit } = req.query;
     let filter = {};
 
     if (agencyName && agencyName !== 'all' && agencyName !== '') {
-      filter.agencyName = { $regex: agencyName, $options: 'i' };
+      filter.agencyName = agencyName;
     }
     if (workType && workType !== 'all' && workType !== '') {
       filter.workType = workType;
