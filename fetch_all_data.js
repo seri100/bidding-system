@@ -1,182 +1,158 @@
-﻿const mongoose = require('mongoose');
-const axios = require('axios');
+﻿const axios = require('axios');
+const mongoose = require('mongoose');
 require('dotenv').config({ path: 'C:\\bidding-system\\.env.raspberry' });
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bidding_system';
 const API_KEY = process.env.PUBLIC_DATA_API_KEY;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/bidding_system';
 
-const announcementSchema = new mongoose.Schema({
-  announcementNumber: String,
-  title: String,
-  description: String,
-  agencyName: String,
-  workType: String,
-  region: String,
-  basicAmount: Number,
-  budget: Number,
-  deadline: Date,
-  source: { type: String, default: 'public_data_portal' },
-  externalId: String,
-  createdAt: { type: Date, default: Date.now }
-}, { strict: false });
-
-const Announcement = mongoose.model('Announcement', announcementSchema);
-
-function getFormattedDate(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  const h = String(date.getHours()).padStart(2, '0');
-  const mm = String(date.getMinutes()).padStart(2, '0');
-  return `${y}${m}${d}${h}${mm}`;
-}
-
-function extractRegion(regionName) {
-  if (!regionName) return null;
-  const regions = ['서울', '부산', '대구', '인천', '광주', '대전', '울산', '세종',
-    '경기도', '강원도', '충청북도', '충청남도', '전라북도', '전라남도', '경상북도', '경상남도', '제주도'];
-  
-  for (let r of regions) {
-    if (regionName.includes(r)) return r;
-  }
-  return regionName.length <= 10 ? regionName : null;
-}
-
-async function fetchBidData(operationName, workType) {
-  const baseUrl = `http://apis.data.go.kr/1230000/ad/BidPublicInfoService/${operationName}`;
-  let totalInserted = 0;
-  let totalDuplicate = 0;
-
-  const endDate = new Date();
-  const startDate = new Date(endDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-
-  const inqryBgnDt = getFormattedDate(startDate);
-  const inqryEndDt = getFormattedDate(endDate);
-
-  console.log(`\n🔍 ${workType} 공고 조회 시작 (${operationName})`);
-  console.log(`📅 기간: ${inqryBgnDt} ~ ${inqryEndDt}`);
-
-  for (let page = 1; page <= 5; page++) {
-    const params = {
-      ServiceKey: API_KEY,
-      numOfRows: 100,
-      pageNo: page,
-      type: 'json',
-      inqryDiv: 1,
-      inqryBgnDt: inqryBgnDt,
-      inqryEndDt: inqryEndDt
-    };
-
-    try {
-      const response = await axios.get(baseUrl, { params, timeout: 10000 });
-      
-      let announcements = [];
-      if (response.data.response && response.data.response.body) {
-        if (Array.isArray(response.data.response.body.items)) {
-          announcements = response.data.response.body.items;
-        } else if (response.data.response.body.items) {
-          announcements = [response.data.response.body.items];
-        }
-      }
-      
-      if (!Array.isArray(announcements) || announcements.length === 0) {
-        console.log(`✓ ${workType} 페이지 ${page}: 더 이상 데이터 없음`);
-        break;
-      }
-
-      for (const item of announcements) {
-        const externalId = item.bidNtceNo;
-        if (!externalId) continue;
-        
-        const existing = await Announcement.findOne({ externalId });
-        
-        if (existing) {
-          totalDuplicate++;
-        } else {
-          const announcement = new Announcement({
-            announcementNumber: externalId,
-            title: item.bidNtceNm || '제목 없음',
-            description: item.bidNtceNm || '',
-            agencyName: item.ntceInsttNm || '조달청',
-            workType: workType,
-            region: extractRegion(item.prtcptLmtRgnNm),
-            basicAmount: parseInt(item.presmptPrce || 0),
-            budget: parseInt(item.presmptPrce || 0),
-            deadline: new Date(item.bidClseDt || Date.now()),
-            externalId: externalId,
-            source: 'public_data_portal',
-            rawData: item
-          });
-
-          await announcement.save();
-          totalInserted++;
-        }
-      }
-
-      console.log(`✓ ${workType} 페이지 ${page}: ${announcements.length}개 처리 (신규: ${totalInserted}, 중복: ${totalDuplicate})`);
-      await new Promise(resolve => setTimeout(resolve, 300));
-
-    } catch (error) {
-      console.error(`❌ ${workType} 페이지 ${page} 오류:`, error.message);
+// MongoDB 연결
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(async () => {
+    console.log('✅ MongoDB 연결 성공\n');
+    
+    const Announcement = mongoose.model('Announcement', new mongoose.Schema({}, { strict: false }));
+    
+    // 기존 데이터 삭제
+    console.log('🗑️  기존 데이터 삭제 중...');
+    const deleteResult = await Announcement.deleteMany({});
+    console.log(`✅ ${deleteResult.deletedCount}개 삭제됨\n`);
+    
+    // 수집 기간 설정 (지난 30일)
+    const now = new Date();
+    const pastDate = new Date(now - 30 * 24 * 60 * 60 * 1000);
+    
+    function formatDateForAPI(d) {
+      return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}0000`;
     }
-  }
-
-  return { totalInserted, totalDuplicate };
-}
-
-async function main() {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('✓ MongoDB 연결 성공\n');
-
-    let grandTotalInserted = 0;
-    let grandTotalDuplicate = 0;
-
-    // 1. 공사 조회
-    let result = await fetchBidData('getBidPblancListInfoCnstwkPPSSrch', '공사');
-    grandTotalInserted += result.totalInserted;
-    grandTotalDuplicate += result.totalDuplicate;
-
-    // 2. 용역 조회
-    result = await fetchBidData('getBidPblancListInfoServcPPSSrch', '용역');
-    grandTotalInserted += result.totalInserted;
-    grandTotalDuplicate += result.totalDuplicate;
-
-    // 3. 물품 조회
-    result = await fetchBidData('getBidPblancListInfoThngPPSSrch', '물품');
-    grandTotalInserted += result.totalInserted;
-    grandTotalDuplicate += result.totalDuplicate;
-
+    
+    const inqryBgnDt = formatDateForAPI(pastDate);
+    const inqryEndDt = formatDateForAPI(now).replace('0000', '2359');
+    
+    console.log(`📅 수집 기간: ${inqryBgnDt} ~ ${inqryEndDt}`);
+    console.log('🔄 업무구분: 공사(공사), 용역(용역), 물품(물품)\n');
+    
+    // 업무 구분별 엔드포인트
+    const workTypes = [
+      { name: '공사', endpoint: 'getBidPblancListInfoCnstwk' },
+      { name: '용역', endpoint: 'getBidPblancListInfoSvc' },
+      { name: '물품', endpoint: 'getBidPblancListInfoGoods' }
+    ];
+    
+    let totalInserted = 0;
+    let totalDuplicates = 0;
+    let totalProcessed = 0;
+    
+    // 각 업무 구분별로 데이터 수집
+    for (const workType of workTypes) {
+      console.log(`\n📦 업무구분: ${workType.name}`);
+      console.log(`   엔드포인트: ${workType.endpoint}`);
+      
+      const url = `http://apis.data.go.kr/1230000/ad/BidPublicInfoService/${workType.endpoint}`;
+      
+      let pageNo = 1;
+      let hasMorePages = true;
+      let pageInserted = 0;
+      let pageDuplicates = 0;
+      
+      while (hasMorePages && pageNo <= 10) {
+        try {
+          const params = {
+            ServiceKey: API_KEY,
+            numOfRows: 100,
+            pageNo: pageNo,
+            type: 'json',
+            inqryDiv: 1,
+            inqryBgnDt: inqryBgnDt,
+            inqryEndDt: inqryEndDt
+          };
+          
+          console.log(`   📄 페이지 ${pageNo} 요청 중...`);
+          const response = await axios.get(url, { params, timeout: 10000 });
+          
+          const items = response.data.response.body.items || [];
+          const totalCount = response.data.response.body.totalCount || 0;
+          
+          if (items.length === 0) {
+            hasMorePages = false;
+            console.log(`   ✅ 페이지 ${pageNo}: ${items.length}개 (종료)`);
+            break;
+          }
+          
+          console.log(`   ✅ 페이지 ${pageNo}: ${items.length}개 항목 수신`);
+          
+          // 각 항목 처리
+          for (const item of items) {
+            try {
+              const externalId = item.bidNtceNo || `${Date.now()}-${Math.random()}`;
+              
+              // 중복 확인
+              const existing = await Announcement.findOne({ announcementNumber: externalId });
+              if (existing) {
+                pageDuplicates++;
+                totalDuplicates++;
+                continue;
+              }
+              
+              // 새 문서 생성
+              const doc = new Announcement({
+                announcementNumber: externalId,
+                title: item.bidNtceNm || '제목없음',
+                description: item.ntceKindNm || '',
+                agencyName: item.ntceInsttNm || '미정',
+                workType: workType.name,
+                region: item.dminsttNm || '전국',
+                basicAmount: parseInt(item.presmptPrce) || 0,
+                budget: parseInt(item.bdgtAmt) || 0,
+                deadline: item.bidClseDt ? new Date(item.bidClseDt) : null,
+                bidMethod: item.bidMethdNm || '',
+                contractMethod: item.cntrctCnclsMthdNm || '',
+                noticeDate: item.bidNtceDt ? new Date(item.bidNtceDt) : null,
+                createdAt: new Date()
+              });
+              
+              await doc.save();
+              pageInserted++;
+              totalInserted++;
+            } catch (err) {
+              console.error(`      ❌ 항목 저장 오류: ${err.message}`);
+            }
+          }
+          
+          // 다음 페이지 여부 확인
+          if (pageInserted + pageDuplicates >= totalCount) {
+            hasMorePages = false;
+          }
+          
+          pageNo++;
+          totalProcessed += items.length;
+          
+          // 레이트 제한 대응
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+        } catch (err) {
+          console.error(`   ❌ 페이지 ${pageNo} 오류: ${err.message}`);
+          hasMorePages = false;
+        }
+      }
+      
+      console.log(`   📊 ${workType.name}: ${pageInserted}개 추가, ${pageDuplicates}개 중복`);
+    }
+    
     // 최종 통계
-    const stats = await Announcement.aggregate([
-      { $group: { _id: '$workType', count: { $sum: 1 } } },
-      { $sort: { count: -1 } }
-    ]);
-
-    const agencyStats = await Announcement.aggregate([
-      { $group: { _id: '$agencyName', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 }
-    ]);
-
-    const totalCount = await Announcement.countDocuments();
-
-    console.log('\n═════════════════════════════════════════');
-    console.log('✅ 전체 데이터 수집 완료');
-    console.log(`📊 이번 수집 신규: ${grandTotalInserted}개`);
-    console.log(`⚠️  중복 제외: ${grandTotalDuplicate}개`);
-    console.log(`📈 총 공고 수: ${totalCount}개`);
-    console.log('\n업무유형별 분포:');
-    stats.forEach(s => console.log(`  ${s._id}: ${s.count}개`));
-    console.log('\n기관별 상위 10개:');
-    agencyStats.forEach(s => console.log(`  ${s._id}: ${s.count}개`));
-    console.log('═════════════════════════════════════════\n');
-
-  } catch (error) {
-    console.error('❌ 오류:', error.message);
-  } finally {
-    await mongoose.disconnect();
-  }
-}
-
-main();
+    const totalInDB = await Announcement.countDocuments();
+    
+    console.log('\n' + '='.repeat(60));
+    console.log('✅ 데이터 수집 완료');
+    console.log('='.repeat(60));
+    console.log(`📈 처리된 항목: ${totalProcessed}`);
+    console.log(`✨ 새로 추가된 공고: ${totalInserted}`);
+    console.log(`⚠️  중복 건수: ${totalDuplicates}`);
+    console.log(`📊 DB 총 공고 건수: ${totalInDB}`);
+    console.log('='.repeat(60) + '\n');
+    
+    process.exit(0);
+  })
+  .catch(err => {
+    console.error('❌ MongoDB 연결 오류:', err.message);
+    process.exit(1);
+  });
