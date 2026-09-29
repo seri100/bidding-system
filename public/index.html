@@ -521,6 +521,7 @@
     <button class="tab-button" onclick="switchTab('evaluation')">⭐ 적격성 평가</button>
     <button class="tab-button" onclick="switchTab('ranking')">🏆 평가 순위</button>
     <button class="tab-button" onclick="switchTab('history')">📜 평가 히스토리</button>
+    <button class="tab-button" onclick="switchTab('pricecalc')">💰 입찰가격 계산</button>
   </div>
   
   <div class="container">
@@ -687,6 +688,107 @@
     </div>
     
     <!-- 평가 히스토리 탭 -->
+    <!-- 입찰가격 계산 탭 -->
+    <div class="tab-content" id="pricecalc">
+      <h2>💰 나라장터 입찰가격 계산기</h2>
+      <p style="color:#666;margin-bottom:16px;font-size:14px;">복수예비가격 방식 · 적격심사 낙찰하한율 자동 산정</p>
+
+      <!-- ① 공고 정보 -->
+      <div class="filter-section" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:12px;color:#333;">① 공고 정보 입력</h3>
+        <div class="filter-group" style="min-width:260px;flex:2;">
+          <label>공고 불러오기</label>
+          <select id="pc-sel-bid" onchange="pcLoadBid()" style="width:100%;">
+            <option value="">— 공고 선택 (자동 입력) —</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label>공고명</label>
+          <input type="text" id="pc-title" placeholder="공고명" style="width:100%;">
+        </div>
+        <div class="filter-group">
+          <label>기초금액 / 추정가격 (원)</label>
+          <input type="text" id="pc-base" placeholder="예: 272,231,819" oninput="pcFmtNum(this)" style="width:100%;">
+        </div>
+        <div class="filter-group">
+          <label>예산금액 (원)</label>
+          <input type="text" id="pc-budget" placeholder="예: 317,313,000" oninput="pcFmtNum(this)" style="width:100%;">
+        </div>
+        <div class="filter-group">
+          <label>낙찰하한율 (%)</label>
+          <input type="number" id="pc-lower-rate" step="0.001" placeholder="자동계산" style="width:120px;" oninput="pcUpdateFinal()">
+        </div>
+        <div class="filter-group">
+          <label>목표 낙찰율 (%)</label>
+          <input type="number" id="pc-target-rate" step="0.001" value="87.745" style="width:120px;" oninput="pcUpdateFinal()">
+        </div>
+      </div>
+
+      <!-- ② 복수예비가격 15개 -->
+      <div class="filter-section" style="margin-bottom:16px;display:block;">
+        <h3 style="margin-bottom:8px;color:#333;">② 복수예비가격 15개 <span style="font-size:12px;color:#999;font-weight:normal;">(입찰 당일 공개 후 입력 · 15개 중 4개 추첨 → 예정가격)</span></h3>
+        <div id="pc-pp-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px;"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-secondary" onclick="pcAutoFill()">🎲 기초금액 기준 자동생성 (±2%)</button>
+          <button class="btn btn-secondary" onclick="pcClearPP()">초기화</button>
+        </div>
+      </div>
+
+      <!-- ③ 계산 버튼 -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="btn btn-primary" onclick="pcCalcAll()">📊 전체 조합 계산 (C₁₅₄ = 1,365가지)</button>
+        <button class="btn btn-primary" style="background:#f59e0b;" onclick="pcSimDraw()">🎲 랜덤 추첨 1회 시뮬레이션</button>
+        <button class="btn btn-secondary" onclick="window.print()">🖨️ 인쇄</button>
+      </div>
+
+      <!-- 추첨 단일 결과 -->
+      <div id="pc-sim-box" style="display:none;margin-bottom:16px;"></div>
+
+      <!-- 전체 조합 결과 -->
+      <div id="pc-all-box" style="display:none;margin-bottom:16px;"></div>
+
+      <!-- ④ 최종 입찰가 -->
+      <div class="filter-section" style="margin-bottom:16px;">
+        <h3 style="margin-bottom:12px;color:#333;">③ 최종 입찰가 결정</h3>
+        <div class="filter-group">
+          <label>확정 예정가격 (원)</label>
+          <input type="text" id="pc-expected" placeholder="추첨 후 입력" oninput="pcFmtNum(this);pcUpdateFinal()" style="width:100%;">
+        </div>
+        <div class="filter-group">
+          <label>낙찰하한가 (원)</label>
+          <input type="text" id="pc-lower-price" readonly style="background:#f9fafb;width:100%;">
+        </div>
+        <div class="filter-group">
+          <label>✅ 최종 입찰가 (원)</label>
+          <input type="text" id="pc-final-price" readonly style="background:#ecfdf5;font-weight:bold;color:#065f46;width:100%;">
+        </div>
+      </div>
+      <div id="pc-final-box" style="display:none;margin-bottom:24px;"></div>
+
+      <!-- ⑤ 낙찰하한율 참고표 -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:8px;padding:16px;">
+        <h3 style="margin-bottom:10px;color:#333;">📋 낙찰하한율 참고표 (적격심사 기준)</h3>
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <thead style="background:#f3f4f6;">
+            <tr>
+              <th style="border:1px solid #d1d5db;padding:8px;text-align:left;">추정가격 구간</th>
+              <th style="border:1px solid #d1d5db;padding:8px;text-align:center;">낙찰하한율</th>
+              <th style="border:1px solid #d1d5db;padding:8px;text-align:left;">비고</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="border:1px solid #d1d5db;padding:7px;">10억 이상</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;font-weight:bold;">87.745%</td><td style="border:1px solid #d1d5db;padding:7px;color:#2563eb;">★ 가장 많이 해당 (기계/소방/전기 공사)</td></tr>
+            <tr><td style="border:1px solid #d1d5db;padding:7px;">3억 이상 ~ 10억 미만</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;font-weight:bold;">87.745%</td><td style="border:1px solid #d1d5db;padding:7px;">적격심사</td></tr>
+            <tr><td style="border:1px solid #d1d5db;padding:7px;">2억 이상 ~ 3억 미만</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;">86.745%</td><td style="border:1px solid #d1d5db;padding:7px;"></td></tr>
+            <tr><td style="border:1px solid #d1d5db;padding:7px;">1억 이상 ~ 2억 미만</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;">85.745%</td><td style="border:1px solid #d1d5db;padding:7px;"></td></tr>
+            <tr><td style="border:1px solid #d1d5db;padding:7px;">5천만 이상 ~ 1억 미만</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;">83.745%</td><td style="border:1px solid #d1d5db;padding:7px;"></td></tr>
+            <tr style="background:#fef9c3;"><td style="border:1px solid #d1d5db;padding:7px;">5천만 미만</td><td style="border:1px solid #d1d5db;padding:7px;text-align:center;">-</td><td style="border:1px solid #d1d5db;padding:7px;">수의계약 또는 최저가낙찰</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:11px;color:#9ca3af;margin-top:8px;">※ 기획재정부 회계예규 기준. 발주기관별 별도 기준 적용 가능.</p>
+      </div>
+    </div>
+
     <div class="tab-content" id="history">
       <h2>평가 히스토리</h2>
       <div class="card">
@@ -1410,6 +1512,261 @@
         logoutBtn.style.display = 'none';
       }
     }
+  </script>
+
+  <!-- ===== 입찰가격 계산기 스크립트 ===== -->
+  <script>
+  // ── 유틸 ──────────────────────────────────────────────
+  function pcComma(n) { return Math.round(n).toLocaleString('ko-KR') }
+  function pcWon(n)   { return pcComma(n) + '원' }
+  function pcParse(el) { return parseInt(String(el.value).replace(/[^0-9]/g,''),10)||0 }
+  function pcFmtNum(el) { const v=parseInt(String(el.value).replace(/[^0-9]/g,''),10); if(v) el.value=v.toLocaleString('ko-KR') }
+
+  // ── 낙찰하한율 자동 결정 ─────────────────────────────
+  function pcGetRate(est) {
+    if (est >= 100000000)  return 87.745;  // 1억 이상 모두
+    if (est >= 30000000)   return 87.745;
+    if (est >= 20000000)   return 86.745;
+    if (est >= 10000000)   return 85.745;
+    if (est >= 5000000)    return 83.745;
+    return 0;
+  }
+
+  // ── 복수예비가격 입력 그리드 생성 ────────────────────
+  function pcBuildGrid() {
+    const g = document.getElementById('pc-pp-grid');
+    if (!g) return;
+    g.innerHTML = '';
+    for (let i = 1; i <= 15; i++) {
+      g.innerHTML += `<div>
+        <label style="font-size:11px;color:#6b7280;display:block;margin-bottom:2px;">예비가 ${i}</label>
+        <input id="pc-pp-${i}" type="text" placeholder="금액" oninput="pcFmtNum(this)"
+          style="width:100%;padding:5px 7px;border:1px solid #d1d5db;border-radius:4px;font-size:12px;">
+      </div>`;
+    }
+  }
+
+  function pcAutoFill() {
+    const base = pcParse(document.getElementById('pc-base'));
+    if (!base) { alert('기초금액을 먼저 입력하세요.'); return; }
+    for (let i = 1; i <= 15; i++) {
+      const ratio = 0.98 + Math.random() * 0.04;
+      const val = Math.round(base * ratio / 1000) * 1000;
+      const el = document.getElementById(`pc-pp-${i}`);
+      el.value = val.toLocaleString('ko-KR');
+    }
+  }
+
+  function pcClearPP() {
+    for (let i = 1; i <= 15; i++) document.getElementById(`pc-pp-${i}`).value = '';
+  }
+
+  function pcGetPPs() {
+    const arr = [];
+    for (let i = 1; i <= 15; i++) {
+      const v = pcParse(document.getElementById(`pc-pp-${i}`));
+      if (v > 0) arr.push({ idx: i, val: v });
+    }
+    return arr;
+  }
+
+  // ── 공고 목록 불러오기 ────────────────────────────────
+  async function pcInitBidList() {
+    try {
+      const r = await fetch('/api/announcements');
+      const d = await r.json();
+      const items = d.announcements || d.data || d || [];
+      const sel = document.getElementById('pc-sel-bid');
+      items.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = JSON.stringify({ base: b.basicAmount, budget: b.budget, title: b.title });
+        opt.textContent = `${b.title} — ${(b.basicAmount||0).toLocaleString()}원`;
+        sel.appendChild(opt);
+      });
+    } catch(e) { console.warn('공고 목록 로드 실패:', e); }
+  }
+
+  function pcLoadBid() {
+    const sel = document.getElementById('pc-sel-bid');
+    if (!sel.value) return;
+    try {
+      const d = JSON.parse(sel.value);
+      document.getElementById('pc-title').value = d.title || '';
+      document.getElementById('pc-base').value = d.base ? Number(d.base).toLocaleString('ko-KR') : '';
+      document.getElementById('pc-budget').value = d.budget ? Number(d.budget).toLocaleString('ko-KR') : '';
+      const rate = pcGetRate(d.base || 0);
+      document.getElementById('pc-lower-rate').value = rate.toFixed(3);
+      document.getElementById('pc-target-rate').value = (rate + 0.3).toFixed(3);
+      pcUpdateFinal();
+    } catch(e) {}
+  }
+
+  // ── 조합 계산 ─────────────────────────────────────────
+  function pcCombinations(arr, k) {
+    const res = [];
+    function h(s, chosen) {
+      if (chosen.length === k) { res.push([...chosen]); return; }
+      for (let i = s; i < arr.length; i++) { chosen.push(arr[i]); h(i+1,chosen); chosen.pop(); }
+    }
+    h(0, []);
+    return res;
+  }
+
+  function pcCalcAll() {
+    const pps = pcGetPPs();
+    if (pps.length < 4) { alert('복수예비가격을 4개 이상 입력하세요.'); return; }
+    const base  = pcParse(document.getElementById('pc-base'));
+    const lRate = parseFloat(document.getElementById('pc-lower-rate').value) || pcGetRate(base);
+    const tRate = parseFloat(document.getElementById('pc-target-rate').value) || (lRate + 0.3);
+
+    const combos = pcCombinations(pps, 4);
+    const results = combos.map(ch => {
+      const avg = ch.reduce((s,p)=>s+p.val,0)/4;
+      return { idxs: ch.map(p=>p.idx), avg, lower: avg*lRate/100, target: avg*tRate/100 };
+    }).sort((a,b)=>b.avg-a.avg);
+
+    const avgs = results.map(r=>r.avg);
+    const maxA=Math.max(...avgs), minA=Math.min(...avgs);
+    const meanA=avgs.reduce((s,v)=>s+v,0)/avgs.length;
+    const midA=avgs[Math.floor(avgs.length/2)];
+
+    const box = document.getElementById('pc-all-box');
+    box.style.display='block';
+    box.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+        ${[
+          {l:'최고 예정가', v:pcWon(maxA), c:'#dbeafe', tc:'#1d4ed8'},
+          {l:'최저 예정가', v:pcWon(minA), c:'#fee2e2', tc:'#b91c1c'},
+          {l:'평균 예정가', v:pcWon(meanA), c:'#f3f4f6', tc:'#374151'},
+          {l:'중앙값 예정가', v:pcWon(midA), c:'#dcfce7', tc:'#15803d'},
+        ].map(c=>`<div style="background:${c.c};border-radius:8px;padding:12px;">
+          <div style="font-size:11px;color:#6b7280;margin-bottom:4px;">${c.l}</div>
+          <div style="font-size:13px;font-weight:bold;color:${c.tc};">${c.v}</div>
+          <div style="font-size:11px;color:#9ca3af;">하한 ${pcWon(parseFloat(c.v.replace(/[^0-9]/g,''))*lRate/100)}</div>
+        </div>`).join('')}
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <thead style="background:#f9fafb;">
+            <tr>
+              <th style="border:1px solid #e5e7eb;padding:7px;text-align:left;">추첨번호 조합</th>
+              <th style="border:1px solid #e5e7eb;padding:7px;text-align:right;">예정가격</th>
+              <th style="border:1px solid #e5e7eb;padding:7px;text-align:right;">낙찰하한가</th>
+              <th style="border:1px solid #e5e7eb;padding:7px;text-align:right;">적정 입찰가</th>
+              <th style="border:1px solid #e5e7eb;padding:7px;text-align:center;">낙찰율</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${results.slice(0,30).map((r,i)=>`
+              <tr style="${i===0?'background:#eff6ff;font-weight:bold;':''}">
+                <td style="border:1px solid #e5e7eb;padding:6px;color:#6b7280;">${r.idxs.join(', ')}번</td>
+                <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;">${pcWon(r.avg)}</td>
+                <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;color:#dc2626;">${pcWon(r.lower)}</td>
+                <td style="border:1px solid #e5e7eb;padding:6px;text-align:right;color:#2563eb;">${pcWon(r.target)}</td>
+                <td style="border:1px solid #e5e7eb;padding:6px;text-align:center;">${tRate.toFixed(3)}%</td>
+              </tr>`).join('')}
+          </tbody>
+        </table>
+        <p style="font-size:11px;color:#9ca3af;margin-top:6px;">※ 상위 30개 조합 표시 (예정가격 높은 순) / 전체 ${results.length}가지 조합 계산 완료</p>
+      </div>`;
+
+    // 중앙값 기준 자동 세팅
+    document.getElementById('pc-expected').value = pcComma(midA);
+    document.getElementById('pc-lower-rate').value = lRate.toFixed(3);
+    document.getElementById('pc-target-rate').value = tRate.toFixed(3);
+    pcUpdateFinal();
+  }
+
+  // ── 랜덤 추첨 시뮬레이션 ─────────────────────────────
+  function pcSimDraw() {
+    const pps = pcGetPPs();
+    if (pps.length < 4) { alert('복수예비가격을 4개 이상 입력하세요.'); return; }
+    const drawn = [...pps].sort(()=>Math.random()-0.5).slice(0,4);
+    const avg = drawn.reduce((s,p)=>s+p.val,0)/4;
+    const base  = pcParse(document.getElementById('pc-base'));
+    const lRate = parseFloat(document.getElementById('pc-lower-rate').value) || pcGetRate(base);
+    const tRate = parseFloat(document.getElementById('pc-target-rate').value) || (lRate+0.3);
+    const lower = avg*lRate/100, target = avg*tRate/100;
+
+    const box = document.getElementById('pc-sim-box');
+    box.style.display='block';
+    box.innerHTML=`
+      <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:14px;">
+        <div style="font-weight:bold;color:#c2410c;margin-bottom:8px;">🎲 이번 추첨 결과</div>
+        <div style="font-size:12px;color:#92400e;margin-bottom:10px;">추첨된 예비가: ${drawn.map(p=>`${p.idx}번(${pcWon(p.val)})`).join(' / ')}</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          ${[
+            {l:'예정가격', v:pcWon(avg), c:'#dbeafe', tc:'#1d4ed8'},
+            {l:`낙찰하한가 (${lRate}%)`, v:pcWon(lower), c:'#fee2e2', tc:'#b91c1c'},
+            {l:`✅ 적정입찰가 (${tRate.toFixed(3)}%)`, v:pcWon(target), c:'#dcfce7', tc:'#15803d'},
+            {l:'하한 대비 여유', v:pcWon(target-lower), c:'#f3f4f6', tc:'#374151'},
+          ].map(c=>`<div style="background:${c.c};border-radius:6px;padding:10px;">
+            <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">${c.l}</div>
+            <div style="font-size:12px;font-weight:bold;color:${c.tc};">${c.v}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+
+    document.getElementById('pc-expected').value = pcComma(avg);
+    document.getElementById('pc-lower-rate').value = lRate.toFixed(3);
+    pcUpdateFinal();
+  }
+
+  // ── 최종 입찰가 계산 ─────────────────────────────────
+  function pcUpdateFinal() {
+    const expEl  = document.getElementById('pc-expected');
+    const lRateEl= document.getElementById('pc-lower-rate');
+    const tRateEl= document.getElementById('pc-target-rate');
+    const lPrEl  = document.getElementById('pc-lower-price');
+    const fPrEl  = document.getElementById('pc-final-price');
+    const box    = document.getElementById('pc-final-box');
+
+    const exp    = pcParse(expEl);
+    const lRate  = parseFloat(lRateEl.value);
+    const tRate  = parseFloat(tRateEl.value);
+    if (!exp || !lRate || !tRate) return;
+
+    const lower  = exp * lRate  / 100;
+    const target = exp * tRate  / 100;
+    const budget = pcParse(document.getElementById('pc-budget'));
+
+    lPrEl.value  = pcComma(lower);
+    fPrEl.value  = pcComma(target);
+
+    box.style.display='block';
+    box.innerHTML=`
+      <div style="background:#f0fdf4;border:2px solid #16a34a;border-radius:8px;padding:14px;">
+        <div style="font-weight:bold;color:#15803d;margin-bottom:10px;">✅ 최종 입찰가 산출 결과</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+          ${[
+            {l:'예정가격', v:pcWon(exp), c:'#f3f4f6', tc:'#374151'},
+            {l:`낙찰하한가 (${lRate.toFixed(3)}%)`, v:pcWon(lower), c:'#fee2e2', tc:'#b91c1c'},
+            {l:`✅ 최종 입찰가 (${tRate.toFixed(3)}%)`, v:pcWon(target), c:'#dcfce7', tc:'#15803d'},
+            {l:'예산 대비 비율', v: budget ? (target/budget*100).toFixed(2)+'%' : '-', c:'#dbeafe', tc:'#1d4ed8'},
+          ].map(c=>`<div style="background:${c.c};border-radius:6px;padding:10px;">
+            <div style="font-size:11px;color:#6b7280;margin-bottom:3px;">${c.l}</div>
+            <div style="font-size:13px;font-weight:bold;color:${c.tc};">${c.v}</div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  // ── 탭 전환 시 초기화 훅 ────────────────────────────
+  const _origSwitch = typeof switchTab === 'function' ? switchTab : null;
+  function switchTab(tabId) {
+    if (_origSwitch) _origSwitch(tabId);
+    else {
+      document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+      document.querySelectorAll('.tab-button').forEach(el=>el.classList.remove('active'));
+      const tc=document.getElementById(tabId); if(tc) tc.classList.add('active');
+      const btns=document.querySelectorAll('.tab-button');
+      btns.forEach(b=>{ if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${tabId}'`)) b.classList.add('active'); });
+    }
+    if (tabId === 'pricecalc') {
+      pcBuildGrid();
+      pcInitBidList();
+    }
+  }
   </script>
 </body>
 </html>
