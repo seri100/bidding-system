@@ -6,6 +6,8 @@
 
 ## 먼저 읽을 자료
 
+- [문제가 생겼을 때 GitHub 확인·점검·복구 절차](docs/troubleshooting.md)
+
 - [장애 원인·시도·적용·복구 기록](docs/incidents/2026-10-23-joint-region.md)
 - [다음 작업 시 지켜야 할 기준](AGENTS.md)
 - [예약 실행 점검·진단 기능 추가 기록](docs/ops/2026-10-23-followup.md)
