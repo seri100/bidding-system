@@ -14,7 +14,7 @@ import sys
 import time
 
 EXPECTED = {"R26BK01789188": "경상남도", "R26BK01788813": "서울특별시"}
-NAMES = ("g2b_joint_region.py", "kakao_send_tb0485.py", "main_send.py")
+NAMES = ("g2b_joint_region.py", "joint_region_status.py", "kakao_send_tb0485.py", "main_send.py")
 
 
 def validate_result(bid, result):

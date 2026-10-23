@@ -8,6 +8,7 @@
 
 - [장애 원인·시도·적용·복구 기록](docs/incidents/2026-10-23-joint-region.md)
 - [다음 작업 시 지켜야 할 기준](AGENTS.md)
+- [예약 실행 점검·진단 기능 추가 기록](docs/ops/2026-10-23-followup.md)
 - [운영 원본 및 적용본 SHA256](manifest.json)
 - [당시 실제 상세 조회 결과](live_verified.json): 과거 검증 자료이며 현재 공고 재조회 결과를 뜻하지 않는다.
 
@@ -48,8 +49,21 @@ python3 raspberrypi/n_data/prepare_sources.py \
 python3 -m unittest discover -s raspberrypi/n_data/tests -v
 ```
 
-브라우저·API 키·알림톡·캘린더 연결 없이 공고/차수 검증, 지역값 충돌 거부, 캐시, 실패 보류·재시도, 취소 경로를 확인한다. PR의 자동 검사도 같은 오프라인 검사만 수행하며 운영 배포는 하지 않는다.
+브라우저·API 키·알림톡·캘린더 연결 없이 공고/차수 검증, 지역값 충돌 거부, 캐시, 실패 보류·재시도, 취소 경로와 진단/상태 읽기 전용 동작을 확인한다. PR의 자동 검사도 같은 오프라인 검사만 수행하며 운영 배포는 하지 않는다.
 
 ## 다음 개선
 
 미완료 작업은 [Issue #1](https://github.com/seri100/bidding-system/issues/1)에 모은다. 다음에 “공동도급지역 개선을 이어가자”라고 할 때 이 링크를 함께 주면 원인과 검증 결과를 다시 수집하지 않고 이어갈 수 있다. 시간 예약 알림은 설정하지 않았다.
+
+## 운영 상태 읽기 전용 점검
+
+```bash
+python3 /home/pi/n_data/joint_region_status.py
+python3 /home/pi/n_data/joint_region_status.py --json
+```
+
+대기 공고번호, 시도 횟수, 대기 시간, 마지막 오류 종류와 실패 단계를 표시한다. 기본 주의 기준은 **3회 이상 실패 또는 60분 이상 대기**다. `--warn-attempts`, `--warn-age-minutes`로 바꿀 수 있다. 입찰 마감이 지난 대기도 주의 대상으로 표시한다.
+
+종료 코드: 0 정상, 1 주의 대상 있음, 2 상태 미생성·손상·읽기 실패. 빈 대기열과 상태 파일을 읽지 못한 상황을 구분한다. 이 도구는 상태를 수정하거나 브라우저·API·발송을 실행하지 않는다. 자동 발송되는 경고나 추가 스케줄은 만들지 않는다.
+
+보완 실패는 대기 항목의 `last_error`, `last_stage`와 `[JOINT_WEB][RETRY] ... stage=...`에 남는다. 예: `search_results` 검색 결과 대기, `detail_open` 상세 열기, `detail_read` 상세 읽기, `detail_validate` 공고·지역·비율 검증. 기존 상태 파일의 과거 실패는 단계가 미기록일 수 있으며 다음 실패부터 기록된다. 오류 전문·전화번호·원문 행은 점검 출력에 포함하지 않는다.

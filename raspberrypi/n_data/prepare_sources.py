@@ -32,7 +32,7 @@ def main():
     output.mkdir(parents=True)
     for name, content in prepared.items():
         (output / name).write_bytes(content)
-    for name in ('g2b_joint_region.py', 'apply_update.py', 'manifest.json'):
+    for name in ('g2b_joint_region.py', 'joint_region_status.py', 'apply_update.py', 'manifest.json'):
         shutil.copyfile(source / name, output / name)
     print('Review sources prepared (no deployment/send): ' + str(output))
 

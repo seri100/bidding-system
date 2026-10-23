@@ -68,6 +68,23 @@ def parse_detail(expected_no, expected_ord, shown_no, duty, region, ratio):
             "source": "나라장터 상세화면 공동도급지역", "checked_at": time.time()}
 
 
+
+STAGES = frozenset(('browser_start', 'home', 'search_tab', 'search_mode', 'search_input',
+                    'search_submit', 'search_results', 'detail_open', 'detail_read',
+                    'detail_validate', 'worker_start', 'unknown'))
+
+
+def lookup_phase(driver, name):
+    if driver is not None:
+        driver._g2b_phase = name
+    print('[G2B][PHASE] ' + name, file=sys.stderr, flush=True)
+
+
+def last_worker_stage(diagnostics):
+    phases = re.findall(r'\[G2B\]\[PHASE\] ([a-z_]+)', diagnostics or '')
+    return next((name for name in reversed(phases) if name in STAGES), 'worker_start')
+
+
 def fetch_detail(driver, bid_no, bid_ord):
     from selenium.webdriver.common.by import By
     from selenium.webdriver.common.keys import Keys
@@ -77,19 +94,20 @@ def fetch_detail(driver, bid_no, bid_ord):
         return next((e for e in elements if driver.execute_script(
             "var r=arguments[0].getBoundingClientRect(); return r.width>0 && r.height>0 && !arguments[0].disabled;", e)), False)
 
-    print("[G2B] open", file=sys.stderr, flush=True)
+    lookup_phase(driver, "home")
     driver.get("https://www.g2b.go.kr/")
     wait = WebDriverWait(driver, 60)
+    lookup_phase(driver, "search_tab")
     tab = wait.until(lambda d: visible(d.find_elements(
         By.CSS_SELECTOR, "[aria-label='Go to slide 2']")))
     print("[G2B] search tab", file=sys.stderr, flush=True)
     driver.execute_script("Array.from(document.querySelectorAll(\"input[id$='_popupCnts_btnClose']\")).reverse().forEach(e=>{if(e.getBoundingClientRect().width) e.click();});")
     tab.send_keys(Keys.ENTER)
-    print("[G2B] tab Enter complete", file=sys.stderr, flush=True)
+    lookup_phase(driver, "search_mode")
     mode = wait.until(lambda d: d.find_elements(
         By.CSS_SELECTOR, "input[type='radio'][title='통합상세']"))[0]
     driver.execute_script("arguments[0].click();", mode)
-    print("[G2B] integrated mode selected", file=sys.stderr, flush=True)
+    lookup_phase(driver, "search_input")
     field = wait.until(lambda d: visible(d.find_elements(
         By.CSS_SELECTOR, "input[id$='_totBizNo']")))
     print("[G2B] field ready", file=sys.stderr, flush=True)
@@ -97,13 +115,14 @@ def fetch_detail(driver, bid_no, bid_ord):
     field.send_keys(bid_no)
     search = wait.until(lambda d: visible(d.find_elements(
         By.CSS_SELECTOR, "a[id$='_btnUntyDtlSrch']")))
-    print("[G2B] submit", file=sys.stderr, flush=True)
+    lookup_phase(driver, "search_submit")
     search.send_keys(Keys.ENTER)
+    lookup_phase(driver, "search_results")
     cell = wait.until(lambda d: visible(d.find_elements(
         By.XPATH, "//td[normalize-space(.)='%s']" % bid_no)))
     title = cell.find_element(By.XPATH, "..").find_element(
         By.CSS_SELECTOR, "td[id$='_untyTitleTd'] label[id$='_bizNm']")
-    print("[G2B] detail", file=sys.stderr, flush=True)
+    lookup_phase(driver, "detail_open")
     # Notice popups can finish loading after the initial search-tab transition.
     driver.execute_script("Array.from(document.querySelectorAll(\"input[id$='_popupCnts_btnClose']\")).reverse().forEach(e=>e.click());")
     driver.execute_script("arguments[0].click();", title)
@@ -125,13 +144,16 @@ def fetch_detail(driver, bid_no, bid_ord):
             return False
         return data
 
+    lookup_phase(driver, "detail_read")
     data = wait.until(read_detail)
+    lookup_phase(driver, "detail_validate")
     return parse_detail(bid_no, bid_ord, data['입찰공고번호'],
                         data['지역의무공동도급'], data['공동도급지역'], data['공동도급비율'])
 
 
 
 def worker(jobs, emit=False):
+    lookup_phase(None, "browser_start")
     from selenium import webdriver
     from selenium.webdriver.chrome.service import Service
     executable = os.environ.get("G2B_CHROMIUM") or shutil.which("chromium-browser") or shutil.which("chromium")
@@ -147,8 +169,15 @@ def worker(jobs, emit=False):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
     result = {}
-    print("[G2B] browser start", file=sys.stderr, flush=True)
-    driver = webdriver.Chrome(service=Service(chromedriver), options=options)
+    try:
+        driver = webdriver.Chrome(service=Service(chromedriver), options=options)
+    except Exception as exc:
+        for bid_no, bid_ord in jobs:
+            key = bid_no + '-' + bid_ord
+            result[key] = {'ok': False, 'error': type(exc).__name__, 'stage': 'browser_start'}
+            if emit:
+                print(json.dumps({key: result[key]}, ensure_ascii=False), flush=True)
+        return result
     print("[G2B] browser ready", file=sys.stderr, flush=True)
     driver.command_executor.set_timeout(65)
     driver.set_page_load_timeout(60)
@@ -158,8 +187,9 @@ def worker(jobs, emit=False):
             try:
                 result[key] = {"ok": True, "data": fetch_detail(driver, bid_no, bid_ord)}
             except Exception as exc:
-                print("[G2B] " + type(exc).__name__ + ": " + str(exc)[:500], file=sys.stderr, flush=True)
-                result[key] = {"ok": False, "error": type(exc).__name__}
+                stage = getattr(driver, '_g2b_phase', 'unknown')
+                print('[G2B][ERROR] stage=%s error=%s' % (stage, type(exc).__name__), file=sys.stderr, flush=True)
+                result[key] = {"ok": False, "error": type(exc).__name__, "stage": stage}
             if emit:
                 print(json.dumps({key: result[key]}, ensure_ascii=False), flush=True)
     finally:
@@ -240,12 +270,16 @@ def enrich_rows(rows, state_dir, normalize, log, cancelled=lambda row: False):
             previous = pending.get(key, {})
             pending[key] = {"row": row, "created": previous.get("created", now),
                             "attempts": previous.get("attempts", 0),
-                            "last_try": previous.get("last_try", 0)}
+                            "last_try": previous.get("last_try", 0),
+                            "last_error": previous.get("last_error", ""),
+                            "last_stage": previous.get("last_stage", "")}
     # Oldest attempts first; at most one per cycle, and 240 seconds total.
     jobs = sorted((key for key in pending if key in current and key not in candidates),
                   key=lambda k: pending[k].get("last_try", 0))[:1]
     if jobs:
         log("[JOINT_WEB][LOOKUP] rows=%d" % len(jobs))
+        diagnostics = ''
+        worker_error = 'worker_unavailable'
         try:
             interpreter = sys.executable
             process = subprocess.Popen([interpreter, str(Path(__file__).resolve()), "--worker"],
@@ -253,19 +287,25 @@ def enrich_rows(rows, state_dir, normalize, log, cancelled=lambda row: False):
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                      universal_newlines=True, start_new_session=True)
             try:
-                output, _ = process.communicate(json.dumps([identity(current[k]) for k in jobs]), timeout=240)
+                output, diagnostics = process.communicate(json.dumps([identity(current[k]) for k in jobs]), timeout=240)
             except subprocess.TimeoutExpired:
                 # Kill the isolated browser process group as well as its Python parent.
-                os.killpg(process.pid, signal.SIGKILL)
-                output, _ = process.communicate()
-                log("[JOINT_WEB][TIMEOUT] worker budget=240s")
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+                output, diagnostics = process.communicate()
+                worker_error = 'TimeoutExpired'
+                log('[JOINT_WEB][TIMEOUT] worker budget=240s stage=' + last_worker_stage(diagnostics))
             results = {}
             for line in output.splitlines():
                 results.update(json.loads(line))
             if process.returncode and not results:
                 raise RuntimeError("browser worker failed; run standalone probe")
         except Exception as exc:
-            log("[JOINT_WEB][WORKER_ERR] " + type(exc).__name__)
+            if worker_error != 'TimeoutExpired':
+                worker_error = type(exc).__name__
+            log('[JOINT_WEB][WORKER_ERR] error=%s stage=%s' % (worker_error, last_worker_stage(diagnostics)))
             results = {}
         for key in jobs:
             pending[key]["attempts"] += 1
@@ -279,8 +319,14 @@ def enrich_rows(rows, state_dir, normalize, log, cancelled=lambda row: False):
                 candidates[key] = data
                 cache[key] = {"data": data, "at": now, "fingerprint": fingerprint(current[key])}
             else:
-                log("[JOINT_WEB][RETRY] %s attempt=%s error=%s" %
-                    (key, pending[key]["attempts"], result.get("error", "worker_unavailable")))
+                error = clean(result.get('error') or worker_error)
+                error = error if re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]{0,79}', error) else 'UnknownError'
+                stage = result.get('stage') or last_worker_stage(diagnostics)
+                stage = stage if stage in STAGES else 'unknown'
+                pending[key]['last_error'] = error
+                pending[key]['last_stage'] = stage
+                log('[JOINT_WEB][RETRY] %s attempt=%s error=%s stage=%s' %
+                    (key, pending[key]['attempts'], error, stage))
     for key, data in candidates.items():
         row = current[key]
         raw = dict(row.get("원문") or {})
