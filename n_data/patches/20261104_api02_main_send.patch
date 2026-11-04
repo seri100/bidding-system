@@ -1,0 +1,24 @@
+--- a/main_send.py
++++ b/main_send.py
+@@ -387,7 +387,10 @@
+ 
+             r.raise_for_status()
+ 
+-            return _items_from_json(r.json())
++            payload = r.json()
++            header = payload.get("response", {}).get("header", {})
++            if str(header.get("resultCode", "")) not in ("00", "0", "000"): raise RuntimeError("G2B API resultCode=" + str(header.get("resultCode", "missing")))
++            return _items_from_json(payload)
+ 
+         except (requests.exceptions.Timeout,
+ 
+@@ -8002,6 +8005,9 @@
+     fields['시공경험배점한도'] = row.get('시공경험배점한도') is True
+     return fields
+ 
++from g2b_api02 import install as _install_api02
++request_items = _install_api02(request_items, log)
++
+ if __name__ == "__main__":
+ 
+     try:
