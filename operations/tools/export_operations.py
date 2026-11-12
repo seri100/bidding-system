@@ -82,7 +82,13 @@ for root in sorted(roots):
             p = pathlib.Path(d) / n
             if p.is_symlink() or SKIP.search(n):
                 continue
-            if p.suffix.lower() in EXT or n.startswith('.env'):
+            # Extensionless checkpoints are part of recovery state too.
+            # SQLite backup() captures committed state without stale sidecars.
+            if n.endswith(('-wal', '-shm', '-journal')):
+                continue
+            state_file = any(part in {'state', 'send_history'}
+                             for part in p.relative_to(root).parts[:-1])
+            if p.suffix.lower() in EXT or n.startswith('.env') or state_file:
                 if p.stat().st_size < 20 * 1024 * 1024:
                     files.add(str(p))
 for p in extra:

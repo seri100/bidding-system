@@ -106,3 +106,7 @@ SD카드만 복사하면 `/home`과 `/var`가 빠진다. 반대로 시험용 SD�
 ## 운영 일시 중지와 복귀 도구
 
 `operations/tools/pi_maintenance.py`는 활성 timer와 cron 상태를 기록하고 새 작업 시작만 막는다. 진행 중 작업 종료를 기다리며 강제로 발송을 종료하지 않는다. 30분 자동 원복 timer를 먼저 만들어 종료 이전 연결 장애에 대비한다. 수집 누락 방지 시작 시각을 기존 대기 구간과 비교해 더 이른 값으로 보존한다. 최종 상태 백업 후 안전 종료하며 원래 SD/USB로 복귀한 뒤 기록에 있는 timer·cron만 복구한다. 일시 중지·종료는 아직 실행하지 않았다.
+
+최종 애플리케이션 백업은 확장자 없는 `state`/`send_history` 파일도 포함한다. SQLite는 backup API로 복제하므로 임시 WAL/SHM/journal을 별도 원본처럼 덮어쓰지 않는다. `apply_trial_snapshot.py`는 시험 표식과 SD 로컬 마운트, 격리 서비스, 서비스 마스크를 확인한 뒤 인증된 백업의 `/home/pi`와 로컬 `/mnt/vol1` 자료만 적용한다. 부팅 설정·systemd·cron은 덮어쓰지 않아 시험 격리를 유지한다. 이 적용도 실제 수행 후 결과를 기록한다.
+
+GitHub 준비 코드: `64d850a78a8e01009a185bfe4393680232098de4`. 해당 커밋의 Operations recovery checks는 통과했다. 이는 카드의 실제 부팅 성공을 의미하지 않는다.
