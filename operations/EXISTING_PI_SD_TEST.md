@@ -72,7 +72,7 @@ SD카드만 복사하면 `/home`과 `/var`가 빠진다. 반대로 시험용 SD�
 
 ## 사용자가 다음에 할 일
 
-**기록·검증이 끝날 때까지 PC 카드리더기를 그대로 둔다.** Pi를 종료하거나 기존 SD/USB를 빼지 않는다. 준비 완료 후 안전 종료와 카드 교체를 안내한다.
+**카드 기록·검증과 Pi 안전 종료를 완료했다.** 전원을 분리한 뒤 원본 SD/USB를 보관하고 시험 카드로 교체한다. 교체·전원 연결 완료 후 시험 부팅을 확인한다.
 
 
 ## 준비 백업 결과
@@ -139,10 +139,10 @@ Windows 관리자 PowerShell에서는 `Get-Disk`와 `Get-Partition`으로 대상
 
 ## 최종 백업과 안전 종료
 
-2026-11-12 16:10:13(한국시간)에 새 작업 시작을 중지했다. 최종 백업 aspberrypi_20261112_161027.tar.gz.enc를 생성했고, 별도 E 키를 사용한 WSL 복원에서 파일 1,256개와 SQLite 5개를 검증했다. 수집 재개 기준 202611121610도 백업에 포함됐음을 확인했다.
+2026-11-12 16:10:13(한국시간)에 새 작업 시작을 중지했다. 최종 백업 `raspberrypi_20261112_161027.tar.gz.enc`를 생성했고, 별도 E 키를 사용한 WSL 복원에서 파일 1,256개와 SQLite 5개를 검증했다. 수집 재개 기준 `202611121610`도 백업에 포함됐음을 확인했다.
 
-- PC: C:\Users\main\n_data-recovery-private\pre-sd-test-20261112\final-quiesced-20261112_161027
-- NAS: /mnt/vol1/system_recovery/20261112/final-quiesced-20261112_161027
-- 운영 상태 기록: /home/pi/.config/n_data-recovery/maintenance-20261112.json (PC 비공개 폴더에도 사본)
+- PC: `C:\Users\main\n_data-recovery-private\pre-sd-test-20261112\final-quiesced-20261112_161027`
+- NAS: `/mnt/vol1/system_recovery/20261112/final-quiesced-20261112_161027`
+- 운영 상태 기록: `/home/pi/.config/n_data-recovery/maintenance-20261112.json` (PC 비공개 폴더에도 사본)
 
-안전 종료 도구의 종료코드 0을 확인했다. 시험 부팅 전 원본 SD를 보관하고 원본 USB 저장장치를 분리한다. 시험이 끝나면 원본 SD와 USB를 되돌리고 maintenance 도구의 resume으로 기록된 상태를 복구한다. 물리 부팅과 운영 복귀 결과는 아직 확인하지 않았다.
+안전 종료 도구의 종료코드 0과 이후 SSH 오프라인 상태를 확인했다. 시험 부팅 전 전원을 분리하고 원본 SD를 보관하며 원본 USB 저장장치를 분리한다. 시험이 끝나면 원본 SD와 USB를 되돌리고 maintenance 도구의 resume으로 기록된 상태를 복구한다. 물리 부팅과 운영 복귀 결과는 아직 확인하지 않았다.
