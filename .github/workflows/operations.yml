@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: python -m compileall -q operations/raspberrypi/source operations/tools operations/windows/source/bid_monitor
-      - run: python -m unittest discover -s operations/tools -p test_verify_restore.py
+      - run: python -m unittest discover -s operations/tools -p 'test_*.py'
   dashboard:
     runs-on: ubuntu-latest
     defaults:
