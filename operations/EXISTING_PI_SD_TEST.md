@@ -1,6 +1,6 @@
 # 기존 Pi의 시험용 SD 부팅·원복 절차
 
-기록일: 2026-11-12, 한국시간. 사용자가 기존 Pi에서 안전조치 후 복구 시험을 하도록 요청했다. **현재 상태: 시험 이미지 작성과 오프라인 검증 완료, D: 기록 작업 시작. 운영 중단·종료·실물 부팅·원복 시험은 아직 실행하지 않았다.**
+기록일: 2026-11-12, 한국시간. 사용자가 기존 Pi에서 안전조치 후 복구 시험을 하도록 요청했다. **현재 상태: 시험 이미지와 D: 기록·전체 읽기 검증 완료. 27개 활성 timer와 cron의 새 작업을 일시 중지하고 최종 상태 백업·복원 검증 후 안전 종료 명령을 완료했다. 시험 카드 교체를 기다린다. 실물 부팅·원복 시험은 아직 실행하지 않았다.**
 
 ## 현재 장치 구성
 
@@ -110,3 +110,39 @@ SD카드만 복사하면 `/home`과 `/var`가 빠진다. 반대로 시험용 SD�
 최종 애플리케이션 백업은 확장자 없는 `state`/`send_history` 파일도 포함한다. SQLite는 backup API로 복제하므로 임시 WAL/SHM/journal을 별도 원본처럼 덮어쓰지 않는다. `apply_trial_snapshot.py`는 시험 표식과 SD 로컬 마운트, 격리 서비스, 서비스 마스크를 확인한 뒤 인증된 백업의 `/home/pi`와 로컬 `/mnt/vol1` 자료만 적용한다. 부팅 설정·systemd·cron은 덮어쓰지 않아 시험 격리를 유지한다. 이 적용도 실제 수행 후 결과를 기록한다.
 
 GitHub 준비 코드: `64d850a78a8e01009a185bfe4393680232098de4`. 해당 커밋의 Operations recovery checks는 통과했다. 이는 카드의 실제 부팅 성공을 의미하지 않는다.
+
+## 시험 이미지 재작성 명령
+
+다음은 이번 비공개 파일을 기준으로 한 WSL 예시다. 먼저 `openssl`, GNU `tar`(ACL/xattr 지원), `rsync`, `mke2fs`, `e2fsck`, `debugfs`, Python 3를 확인한다. 아래 작업은 일반 디렉터리와 이미지 파일만 다룬다. 물리 SD 기록은 마지막 Windows 도구에서만 수행한다. 기존 작업 폴더를 재사용하지 않는다.
+
+```bash
+cd /mnt/c/Users/main/n_data_commit_20261112/operations/tools
+BACKUP_DIR=/mnt/c/Users/main/n_data-recovery-private/pre-sd-test-20261112/pi-filesystems
+RECOVERY_KEY=/mnt/e/n_data-recovery-key/backup.key
+TRIAL_WORK=/home/main/n_data-trial-rebuild-20261112
+sudo python3 restore_fs_archive.py --archive "$BACKUP_DIR/root-boot-precopy-20261112_142158.tar.gz.enc" --key "$RECOVERY_KEY" --workspace "$TRIAL_WORK" --name root
+sudo python3 restore_fs_archive.py --archive "$BACKUP_DIR/home-var-precopy-20261112_135526.tar.gz.enc" --key "$RECOVERY_KEY" --workspace "$TRIAL_WORK" --name home-var
+sudo python3 build_trial_image.py --workspace "$TRIAL_WORK" --boot-prefix "$BACKUP_DIR/boot-prefix-20261112_145258.bin.gz.enc" --key "$RECOVERY_KEY"
+```
+
+각 `.enc`의 `.hmac`도 같은 폴더에 있어야 하며, boot-prefix의 `.layout.json`도 필요하다. 결과 `trial.img`와 `trial.img.ready.json`을 접근 제한된 Windows 비공개 폴더로 함께 복사한다. 이미지에는 인증정보가 포함되므로 GitHub에 올리지 않는다.
+
+Windows 관리자 PowerShell에서는 `Get-Disk`와 `Get-Partition`으로 대상을 다시 확인한 뒤 `write_trial_sd.ps1`의 필수 인수를 지정한다. 이번 대상 값은 디스크 2, 드라이브 D, USB 모델 `FNK TECH USB CARD READER`, 용량 31,268,536,320바이트였다. 다음 시험에서 이 번호가 같다고 가정하지 않는다. 원래 카드 파일의 인증된 백업과 manifest, 키를 함께 지정해야 도구가 기록을 시작한다. `.card-verified.json`의 `verified=true`와 원본 이미지 SHA256 일치가 완료 기준이다. 기록 중 Windows 포맷 안내가 나타나도 포맷하지 않는다.
+
+
+## 카드 기록 결과
+
+32GB 시험 카드에 15,931,539,456바이트 기록을 마쳤다. 전체를 다시 읽은 SHA256이 이미지 SHA256과 일치했고 기록 도구 종료코드 0을 확인했다. 기록·읽기 검증은 총 약 34분 걸렸으며 그동안 Pi 운영은 유지했다. PC 증빙은 비공개 폴더의 `trial.img.card-verified.json`이다. 카드의 원래 파일 해시와 암호화 백업 인증을 통과한 뒤에만 기록을 시작했다.
+
+그 후 기존 Pi의 활성 timer 27개와 cron의 새 작업을 일시 중지했다. 진행 중 작업이 없음을 확인했고, 30분 자동 원복 timer를 설치한 상태에서 최종 백업을 진행한다. 아직 물리 부팅 성공으로 기록하지 않는다.
+
+
+## 최종 백업과 안전 종료
+
+2026-11-12 16:10:13(한국시간)에 새 작업 시작을 중지했다. 최종 백업 aspberrypi_20261112_161027.tar.gz.enc를 생성했고, 별도 E 키를 사용한 WSL 복원에서 파일 1,256개와 SQLite 5개를 검증했다. 수집 재개 기준 202611121610도 백업에 포함됐음을 확인했다.
+
+- PC: C:\Users\main\n_data-recovery-private\pre-sd-test-20261112\final-quiesced-20261112_161027
+- NAS: /mnt/vol1/system_recovery/20261112/final-quiesced-20261112_161027
+- 운영 상태 기록: /home/pi/.config/n_data-recovery/maintenance-20261112.json (PC 비공개 폴더에도 사본)
+
+안전 종료 도구의 종료코드 0을 확인했다. 시험 부팅 전 원본 SD를 보관하고 원본 USB 저장장치를 분리한다. 시험이 끝나면 원본 SD와 USB를 되돌리고 maintenance 도구의 resume으로 기록된 상태를 복구한다. 물리 부팅과 운영 복귀 결과는 아직 확인하지 않았다.

@@ -53,7 +53,11 @@ def verify():
                     'google.oauth2.credentials']
     run(['runuser', '-u', 'pi', '--', 'python3', '-c',
          'import importlib; [importlib.import_module(n) for n in ' + repr(dependencies) + ']'])
-    databases = sorted(set(base.rglob('*.sqlite')) | set(base.rglob('*.sqlite3')) | set(base.rglob('*.db')))
+    databases = set()
+    for directory in (base, Path('/mnt/vol1/bid/n_data')):
+        for pattern in ('*.sqlite', '*.sqlite3', '*.db'):
+            databases.update(directory.rglob(pattern))
+    databases = sorted(databases)
     checked = 0
     for path in databases:
         # Immutable read-only mode cannot create WAL/journal files.
@@ -66,11 +70,16 @@ def verify():
             connection.close()
     if not checked:
         raise RuntimeError('No restored SQLite database was found')
+    for directory in ('/home/pi/n_data/state', '/mnt/vol1/bid/n_data/state'):
+        probe = ('import os,tempfile; f=tempfile.TemporaryFile(dir=' + repr(directory)
+                 + '); f.write(b\"trial\"); f.flush(); os.fsync(f.fileno()); f.close()')
+        run(['runuser', '-u', 'pi', '--', 'python3', '-c', probe])
     return {'physical_pi_boot': 'passed', 'architecture': platform.machine(),
             'python': platform.python_version(), 'storage_isolation': 'passed',
             'firewall': 'passed', 'masked_units': len(marker['masked_units']),
             'automatic_timers': 0, 'python_files_compiled': len(required),
             'dependencies_imported': dependencies, 'sqlite_checked': checked,
+            'pi_state_write_probes': 2,
             'production_sends_executed': False, 'nas_connected': False,
             'original_boot_restoration_pending': True}
 

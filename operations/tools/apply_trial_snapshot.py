@@ -25,6 +25,11 @@ def guard():
         if source != '/dev/mmcblk0p2':
             raise RuntimeError('Protected path is outside the trial SD')
     subprocess.check_call(['systemctl', 'is-active', '--quiet', 'n-data-trial-isolation.service'])
+    policy = subprocess.check_output(['iptables', '-S', 'OUTPUT'], universal_newlines=True)
+    if not policy.startswith('-P OUTPUT DROP\n'):
+        raise RuntimeError('Outbound isolation policy is not DROP')
+    if Path('/proc/sys/net/ipv6/conf/all/disable_ipv6').read_text().strip() != '1':
+        raise RuntimeError('IPv6 isolation is not active')
     for name in marker['masked_units']:
         if os.readlink('/etc/systemd/system/' + name) != '/dev/null':
             raise RuntimeError('Trial scheduling mask missing')
@@ -53,7 +58,14 @@ def apply(archive, key, staging):
         source = snapshot / relative
         if not source.is_file() or source.is_symlink():
             raise RuntimeError('Application snapshot has an invalid source')
-        destination.parent.mkdir(parents=True, exist_ok=True)
+        missing = []
+        parent = destination.parent
+        while not parent.exists():
+            missing.append(parent)
+            parent = parent.parent
+        for parent in reversed(missing):
+            parent.mkdir(mode=0o755)
+            os.chown(str(parent), user.pw_uid, user.pw_gid)
         # A trial has no database writers; remove stale sidecars before replacing
         # the consistent SQLite backup produced with the sqlite backup API.
         with source.open('rb') as stream:
@@ -68,7 +80,7 @@ def apply(archive, key, staging):
         temporary = Path(str(destination) + '.trial-restore-tmp')
         if temporary.exists() or temporary.is_symlink():
             raise RuntimeError('Restore temporary path already exists')
-        shutil.copyfile(str(source), str(temporary))
+        shutil.copy2(str(source), str(temporary))
         os.chmod(str(temporary), item['mode'])
         os.chown(str(temporary), user.pw_uid, user.pw_gid)
         with temporary.open('rb') as stream:
