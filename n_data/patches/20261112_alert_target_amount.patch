@@ -1,0 +1,26 @@
+--- a/n_data/main_send.py
++++ b/n_data/main_send.py
+@@ -3994,9 +3994,15 @@
+         rows, NAS_BASE / "state", normalize_row, log, cancelled=is_cancel_notice
+     )
+ 
++# AMOUNT_ALERT_TARGET_ONLY_20261112
++    rows = apply_receivers(rows)
++
+     # 캘린더/리포트에 사용할 공사 기초금액 상세정보를 공고별 1회 조회한다.
+     # 취소공고는 원공고 정보가 보존되므로 별도 API 호출을 하지 않는다.
+     for row in rows:
++        if not is_cancel_notice(row) and not row.get("수신번호"):
++            log("[BASIS_AMOUNT][SKIP_NO_RECEIVER] %s" % notice_event_key(row))
++            continue
+         if not is_cancel_notice(row):
+             enrich_cnstwk_basis_amount(row, api_key)
+             # 화면/API 미공개 값은 공고문에서 명시된 금액만 보완한다.
+@@ -4023,7 +4029,6 @@
+                     log, only_bid=_only_cancel_bid)
+         except Exception as exc:
+             log("[GCAL_CANCEL][ERROR] %s" % type(exc).__name__)
+-    rows = apply_receivers(rows)
+ 
+     only_bid = os.environ.get("ONLY_BID", "").strip().upper()
+     only_cancel = os.environ.get("ONLY_CANCEL", "").strip().lower() in (
