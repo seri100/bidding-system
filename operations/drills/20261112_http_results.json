@@ -1,0 +1,23 @@
+[
+  {
+    "path": "/gcal",
+    "status": 200
+  },
+  {
+    "path": "/static/gcal-app.js",
+    "status": 200
+  },
+  {
+    "path": "/api/gcal-bids?limit=1",
+    "status": 200,
+    "success": true,
+    "total": 485,
+    "returned": 1
+  },
+  {
+    "path": "/api/bids?limit=1",
+    "status": 200,
+    "success": true,
+    "returned": 0
+  }
+]

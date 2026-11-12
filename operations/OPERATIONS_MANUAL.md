@@ -26,7 +26,7 @@
 4. NAS 원자료·첨부·과거 로그: 이번 코드/상태 백업의 대상이 아니다. NAS 자체의 스냅샷 또는 별도 디스크 백업이 필요하다.
 5. Google Calendar·Cloudflare·GitHub 계정: 접근권한과 2단계 인증 복구 수단을 별도 보관한다. Cloudflare Secret은 API로 원래 값을 다시 읽을 수 없으므로 원본 키 또는 재발급 권한이 필요하다.
 
-PC 비공개 보관 폴더는 `C:\Users\main\n_data-recovery-private`이다. 이 폴더는 현재 Windows 사용자만 접근하도록 ACL을 제한했다. Pi 키는 `/home/pi/.config/n_data-recovery/backup.key`다. 같은 PC 안의 사본만으로는 PC 디스크 고장을 견딜 수 없다. 백업 파일과 키의 오프라인 사본을 별도 장치에 보관해야 한다.
+PC 비공개 보관 폴더는 `C:\Users\main\n_data-recovery-private`이다. 이 폴더는 현재 Windows 사용자만 접근하도록 ACL을 제한했다. Pi 키는 `/home/pi/.config/n_data-recovery/backup.key`다. 별도 물리 디스크의 `E:\n_data-recovery-key\backup.key` 사본도 만들고 이 키로 복원 시험했다. 같은 PC 안의 사본만으로는 PC 디스크 고장을 견딜 수 없다. 백업 파일과 키의 오프라인 사본을 별도 장치에 보관해야 한다.
 
 SQLite는 실행 중 파일을 단순 복사하지 않고 SQLite backup API로 복제하고 `integrity_check`를 확인한다. 개별 파일 백업이므로 여러 프로그램 전체를 같은 순간에 정지한 원자적 스냅샷은 아니다. 엄격한 시점 일치가 필요하면 점검 시간에 해당 작업을 정지한 후 다시 백업한다.
 
@@ -197,3 +197,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\operations\tools\backup_wi
 Git에 포함된 OpenSSL 또는 PATH의 OpenSSL을 사용하며, 없으면 오류로 중단한다. 인증정보가 있는 원본 파일을 복사하므로 출력 위치는 접근이 제한된 비공개 폴더다. 도구 실행만으로 staging 원본은 삭제하지 않는다. 복원 검사 성공을 확인한 후 임시 원본을 정리한다.
 
 D1도 함께 백업하려면 Cloudflare 로그인 권한이 있는 상태에서 -ExportD1을 추가한다. SQL 내보내기는 일시적으로 DB 조회를 대기시킬 수 있으므로 사용이 적은 시간에 시행한다. NAS 원자료 전체와 외부 MongoDB는 이 명령에 포함되지 않는다. 이번에는 반복 백업 예약작업을 새로 등록하지 않았다.
+
+
+## 10. 백업 위치와 추가 복원 시험
+
+정확한 파일명·PC/NAS 경로·키 위치와 2026-11-12 추가 시험은 [복구 시험 기록](RECOVERY_DRILL_20261112.md)을 따른다. Windows에서 직접 읽는 NAS 경로는 `X:\VOL1\bid\system_recovery\20261112`이며, Pi에서는 `/mnt/vol1/system_recovery/20261112`이다. 이전 `/mnt/vol1/bid/system_recovery/20261112` 보관본도 유지했다.
+
+NAS 백업과 E 디스크 키를 사용한 Ubuntu WSL 복원, 백업 DB를 적용한 로컬 대시보드 조회·저장 시험은 통과했다. 새 Pi/SD카드가 연결돼 있지 않아 실물 부팅·ARM 의존성·NAS 재마운트·실제 발송까지의 전체 재해복구는 아직 완료되지 않았다.

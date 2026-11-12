@@ -1,0 +1,59 @@
+{
+  "time_kst": "2026-11-12T12:50:40.958508+09:00",
+  "environment": {
+    "os": "Linux",
+    "architecture": "x86_64",
+    "python": "3.14.4"
+  },
+  "scope": "Offline archive restore, Python compilation and SQLite/SQL checks",
+  "archives": [
+    {
+      "name": "raspberrypi_20261112_115442.tar.gz.enc",
+      "verified_files": 1245,
+      "sha256": "8e0b6593dbcad9969d3279982f3e6036c52a6e5ed6bd05f75d5b70a032ff806f",
+      "authentication": "passed"
+    },
+    {
+      "name": "pc-originals-20261112.tar.gz.enc",
+      "verified_files": 115,
+      "sha256": "00f042e11e171ee3b604c69d02f7c80661e709cb3eb103ffe43675ee689d2290",
+      "authentication": "passed"
+    }
+  ],
+  "not_tested": [
+    "new hardware boot",
+    "Pi ARM runtime/dependency installation",
+    "NAS remount on a replacement device",
+    "production scheduling",
+    "SMS/Kakao sends",
+    "Google Calendar writes",
+    "Cloudflare redeploy"
+  ],
+  "n_data_compile_passed": [
+    "main_send.py",
+    "error_alert_monitor.py",
+    "g2b_api02.py",
+    "g2b_amount_refresh.py",
+    "g2b_joint_region.py",
+    "g2b_cancel_sync.py",
+    "modules/calendar_sync.py",
+    "kakao_send_tb0485.py"
+  ],
+  "original_missing_paths": [
+    "/home/pi/road",
+    "/home/pi/seri_Alarm_Server10"
+  ],
+  "private_restore_components": {
+    "nas_credential_file": true,
+    "pi_crontab": true,
+    "root_crontab": true,
+    "systemd_directory": true,
+    "recipient_configuration": true,
+    "nas_sent_keys": true
+  },
+  "d1_sql": {
+    "integrity": "ok",
+    "table_count": 5,
+    "gcal_bid_count": 485
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "local_only": true,
+  "update_status": 200,
+  "persisted": true,
+  "legacy_memo_preserved": true,
+  "stale_write_status": 409
+}
