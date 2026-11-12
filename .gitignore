@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 .env
 .env.raspberry
 .env.test
@@ -31,3 +31,4 @@ build/
 **/credentials*.json
 **/*token*.pickle
 **/n_data-recovery-private/
+!operations/windows/source/**/package-lock.json
