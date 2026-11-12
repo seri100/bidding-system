@@ -1,0 +1,16 @@
+# /etc/systemd/system/land_crawl.service
+[Unit]
+Description=Land crawler runner
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server6/run_land_crawl.py
+WorkingDirectory=/home/pi/seri_Alarm_Server6
+[Install]
+WantedBy=multi-user.target
+# /etc/systemd/system/land_crawl.service.d/override.conf
+[Service]
+ExecStart=
+ExecStart=/usr/bin/flock -n /tmp/land_crawl.lock /usr/bin/python3 /home/pi/seri_Alarm_Server6/run_land_crawl.py

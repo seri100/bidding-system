@@ -1,0 +1,10 @@
+# /etc/systemd/system/fire_assoc_new.timer
+[Unit]
+Description=Run Fire Association New Registration Crawler at 08:01 and 16:01
+[Timer]
+OnCalendar=*-*-* 08:01:00
+OnCalendar=*-*-* 16:01:00
+Persistent=true
+Unit=fire_assoc_new.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,8 @@
+# /etc/systemd/system/server21-merge-result.timer
+[Unit]
+Description=Daily run of server21-merge-result
+[Timer]
+OnCalendar=*-*-* 17:25:00
+Persistent=true
+[Install]
+WantedBy=timers.target

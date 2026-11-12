@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-gon-auto.timer
+[Unit]
+Description=Run bid gon_auto script at 07:07, 13:13, 17:17 daily
+[Timer]
+OnCalendar=*-*-* 07:07:00
+OnCalendar=*-*-* 13:13:00
+OnCalendar=*-*-* 17:17:00
+Persistent=true
+[Install]
+WantedBy=timers.target

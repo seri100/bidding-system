@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh-main.timer
+[Unit]
+Description=Run LH script every 20 minutes between 07:10 and 21:05
+[Timer]
+OnCalendar=*-*-* 07..20:10/20
+OnCalendar=*-*-* 21:05:00
+Persistent=true
+Unit=lh-main.service
+[Install]
+WantedBy=timers.target

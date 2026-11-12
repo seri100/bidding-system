@@ -1,0 +1,10 @@
+# /etc/systemd/system/seri-alarm-main-send.service
+[Unit]
+Description=Seri Alarm - main_send.py 자동 실행
+After=network.target
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server/250623main_send.py
+WorkingDirectory=/home/pi/seri_Alarm_Server
+User=pi
+[Install]
+WantedBy=multi-user.target

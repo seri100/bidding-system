@@ -1,0 +1,11 @@
+# /etc/systemd/system/gd2512.timer
+[Unit]
+Description=Schedule gd_2512.py for weekdays and weekends
+[Timer]
+OnCalendar=Mon..Fri 07:07
+OnCalendar=Mon..Fri 13:13
+OnCalendar=Mon..Fri 17:17
+OnCalendar=Sat,Sun 17:17
+Persistent=true
+[Install]
+WantedBy=timers.target

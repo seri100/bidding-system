@@ -1,0 +1,7 @@
+# /etc/systemd/system/seri_alarm_server6.timer
+[Unit]
+Description=Run seri_Alarm_Server6 every 10 minutes
+[Timer]
+Unit=seri_alarm_server6.service
+[Install]
+WantedBy=timers.target

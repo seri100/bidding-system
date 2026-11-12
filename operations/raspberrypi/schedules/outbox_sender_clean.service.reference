@@ -1,0 +1,8 @@
+# /etc/systemd/system/outbox_sender_clean.service
+[Unit]
+Description=Outbox Sender Clean (consume kakao.send_outbox and send TB_0485)
+After=network-online.target mysql.service
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/g2b_db
+ExecStart=/usr/bin/flock -n /tmp/outbox_sender_clean.lock /usr/bin/python3 -W ignore -u /home/pi/g2b_db/outbox_sender_clean.py

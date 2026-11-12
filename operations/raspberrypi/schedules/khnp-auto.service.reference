@@ -1,0 +1,11 @@
+# /etc/systemd/system/khnp-auto.service
+[Unit]
+Description=KHNP bid collector and Alimtalk notifier
+After=network-online.target mnt-vol1.mount
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/khnp_auto
+ExecStart=/usr/bin/flock -n -E 99 /tmp/khnp-auto.lock /home/pi/khnp_auto/venv/bin/python3 -u /home/pi/khnp_auto/khnp_auto.py
+[Install]
+WantedBy=multi-user.target

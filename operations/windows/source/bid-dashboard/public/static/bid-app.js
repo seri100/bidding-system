@@ -1,0 +1,284 @@
+// 입찰 관리 대시보드 프론트엔드 스크립트
+const BID_API_BASE = '/api/bids'
+
+const listBodyEl = document.getElementById('bid-list-body')
+const listMobileEl = document.getElementById('bid-list-mobile')
+const resultCountEl = document.getElementById('result-count')
+
+const filterStatusEl = document.getElementById('filter-status')
+const filterRegionEl = document.getElementById('filter-region')
+const filterIndustryEl = document.getElementById('filter-industry')
+const filterQEl = document.getElementById('filter-q')
+const filterDateFromEl = document.getElementById('filter-date-from')
+const filterDateToEl = document.getElementById('filter-date-to')
+const filterApplyBtn = document.getElementById('filter-apply-btn')
+const filterResetBtn = document.getElementById('filter-reset-btn')
+
+const modalEl = document.getElementById('edit-modal')
+const editBidNoEl = document.getElementById('edit-bid-no')
+const editBidOrdEl = document.getElementById('edit-bid-ord')
+const editBidTitleEl = document.getElementById('edit-bid-title')
+const editStatusEl = document.getElementById('edit-status')
+const editAssigneeEl = document.getElementById('edit-assignee')
+const editMemoEl = document.getElementById('edit-memo')
+const editSaveBtn = document.getElementById('edit-save-btn')
+const editCancelBtn = document.getElementById('edit-cancel-btn')
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return ''
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+function formatDeadline(v) {
+  if (!v) return '-'
+  // 원본 포맷을 그대로 보여주되, 너무 길면 자르지 않고 그대로 표시
+  return v
+}
+
+// 날짜/시각 문자열의 4자리 연도(20xx)를 2자리(xx)로 축약해 표시 폭을 줄인다.
+// 예: "2026-08-18 00:00:00" -> "26-08-18 00:00:00"
+function shortenYear(v) {
+  if (!v) return v
+  return String(v).replace(/\b20(\d{2})([-/])/g, '$1$2')
+}
+
+function formatDate(v) {
+  if (!v) return '-'
+  return shortenYear(v)
+}
+
+// "YYYY-MM-DD[ HH:MM[:SS]]" 형태의 문자열에서 연/월/일/시/분을 추출한다.
+// 구분자 앞뒤 공백, 전각공백(\u00a0), 초 단위 누락 등 다양한 원본 표기를 허용한다.
+function parseDT(str) {
+  if (!str) return null
+  const s = String(str).replace(/\u00a0/g, ' ')
+  const m = s.match(/(\d{4})-(\d{1,2})-(\d{1,2})(?:[^\d]+(\d{1,2})\s*:\s*(\d{1,2}))?/)
+  if (!m) return null
+  return {
+    y: m[1],
+    mo: m[2].padStart(2, '0'),
+    d: m[3].padStart(2, '0'),
+    hh: m[4] ? m[4].padStart(2, '0') : null,
+    mi: m[5] ? m[5].padStart(2, '0') : null
+  }
+}
+
+// 파싱된 날짜 객체를 "YY-MM-DD HH:MM"(연도 포함) 또는 "MM-DD HH:MM"(연도 생략) 형태로 표시한다.
+function fmtDT(o, includeYear) {
+  if (!o) return ''
+  const datePart = includeYear ? `${o.y.slice(-2)}-${o.mo}-${o.d}` : `${o.mo}-${o.d}`
+  return o.hh !== null ? `${datePart} ${o.hh}:${o.mi}` : datePart
+}
+
+// 입찰개시일(bid_open_recv_date)과 입찰마감(bid_deadline)을
+// "26-09-01 00:00 ~ 09-03 10:00" 형태의 단일 "입찰일" 문자열로 병합한다.
+// bid_deadline 원본에 이미 "시작 ~ 종료"가 통째로 들어있는 경우도 처리한다.
+function formatBidPeriod(openRaw, deadlineRaw) {
+  const normalizedDeadline = deadlineRaw ? String(deadlineRaw).replace(/\u00a0/g, ' ') : null
+
+  let startRaw = null
+  let endRaw = null
+  if (normalizedDeadline && normalizedDeadline.includes('~')) {
+    const parts = normalizedDeadline.split('~')
+    startRaw = openRaw || parts[0].trim()
+    endRaw = parts[1] ? parts[1].trim() : null
+  } else {
+    startRaw = openRaw || null
+    endRaw = normalizedDeadline
+  }
+
+  const sObj = parseDT(startRaw)
+  const eObj = parseDT(endRaw)
+
+  if (!sObj && !eObj) return '-'
+  if (!eObj) return fmtDT(sObj, true)
+  if (!sObj) return fmtDT(eObj, true)
+  return `${fmtDT(sObj, true)} ~ ${fmtDT(eObj, false)}`
+}
+
+// 금액 문자열에서 숫자만 추출해 천원 단위로 환산 표시한다.
+// 예: "422,928,000원 (사억이천이백구십이만팔천원)" -> "422,928천원"
+function formatAmountThousand(v) {
+  if (!v) return '-'
+  const m = String(v).match(/[\d,]+/)
+  if (!m) return v
+  const num = parseInt(m[0].replace(/,/g, ''), 10)
+  if (Number.isNaN(num)) return v
+  const thousand = Math.round(num / 1000)
+  return thousand.toLocaleString('ko-KR') + '천원'
+}
+
+function shortIndustry(v) {
+  if (!v) return '-'
+  const s = String(v)
+  if (s.includes('소방')) return '소방'
+  if (s.includes('기계')) return '기계'
+  if (s.includes('전기')) return '전기'
+  return s.length > 6 ? s.slice(0, 6) + '…' : s
+}
+
+function statusBadge(status) {
+  if (status === '제출완료') {
+    return '<span class="px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">제출완료</span>'
+  }
+  return '<span class="px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-700">검토중</span>'
+}
+
+function renderRow(bid) {
+  const tr = document.createElement('tr')
+  tr.className = 'hover:bg-gray-50'
+
+  tr.innerHTML = `
+    <td class="py-2 px-2 md:px-3">
+      <button class="status-edit-btn" data-bid-no="${escapeHtml(bid.bid_no)}" data-bid-ord="${escapeHtml(bid.bid_ord)}">
+        ${statusBadge(bid.status)}
+      </button>
+    </td>
+    <td class="py-2 px-2 md:px-3">
+      <span class="line-clamp-2" title="${escapeHtml(bid.title)}">${escapeHtml(bid.title)}</span>
+    </td>
+    <td class="hidden md:table-cell py-2 px-3 truncate" title="${escapeHtml(bid.agency)}">${escapeHtml(bid.agency)}</td>
+    <td class="hidden md:table-cell py-2 px-3">
+      <span class="line-clamp-2" title="${escapeHtml(bid.region)}">${escapeHtml(bid.region)}</span>
+    </td>
+    <td class="py-2 px-2 md:px-3 whitespace-nowrap" title="${escapeHtml(bid.main_industry)}">${shortIndustry(bid.main_industry)}</td>
+    <td class="py-2 px-2 md:px-3 whitespace-nowrap" title="${escapeHtml(bid.estimated_price)}">${formatAmountThousand(bid.estimated_price)}</td>
+    <td class="py-2 px-2 md:px-3 whitespace-nowrap text-[11px] md:text-xs" title="${escapeHtml(bid.bid_open_recv_date)} ~ ${escapeHtml(bid.bid_deadline)}">${formatBidPeriod(bid.bid_open_recv_date, bid.bid_deadline)}</td>
+    <td class="hidden md:table-cell py-2 px-3 whitespace-nowrap">${escapeHtml(bid.assignee)}</td>
+    <td class="hidden md:table-cell py-2 px-3">
+      <span class="line-clamp-2 text-gray-500" title="${escapeHtml(bid.memo)}">${escapeHtml(bid.memo)}</span>
+    </td>
+    <td class="py-2 px-2 md:px-3 text-center">
+      ${bid.detail_url ? `<a href="${escapeHtml(bid.detail_url)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline"><i class="fas fa-external-link-alt"></i></a>` : '-'}
+    </td>
+  `
+
+  const editBtn = tr.querySelector('.status-edit-btn')
+  editBtn.addEventListener('click', () => openEditModal(bid))
+
+  return tr
+}
+
+// 모바일 화면용 카드: 상태/공고명/공종/추정가격/입찰일/링크만 표시
+function renderMobileCard(bid) {
+  const card = document.createElement('div')
+  card.className = 'p-3'
+
+  card.innerHTML = `
+    <div class="flex items-start justify-between gap-2 mb-1">
+      <button class="status-edit-btn-m flex-shrink-0">${statusBadge(bid.status)}</button>
+      ${bid.detail_url ? `<a href="${escapeHtml(bid.detail_url)}" target="_blank" rel="noopener" class="text-blue-600 hover:underline flex-shrink-0 text-sm"><i class="fas fa-external-link-alt"></i></a>` : '<span class="text-gray-300 text-sm">-</span>'}
+    </div>
+    <p class="text-sm font-medium text-gray-800 mb-1">${escapeHtml(bid.title)}</p>
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-500">
+      <span><i class="fas fa-tools mr-1"></i>${shortIndustry(bid.main_industry)}</span>
+      <span><i class="fas fa-won-sign mr-1"></i>${formatAmountThousand(bid.estimated_price)}</span>
+      <span><i class="fas fa-calendar mr-1"></i>${formatBidPeriod(bid.bid_open_recv_date, bid.bid_deadline)}</span>
+    </div>
+  `
+
+  const editBtn = card.querySelector('.status-edit-btn-m')
+  editBtn.addEventListener('click', () => openEditModal(bid))
+
+  return card
+}
+
+function buildQuery() {
+  const params = new URLSearchParams()
+  if (filterStatusEl.value) params.set('status', filterStatusEl.value)
+  if (filterRegionEl.value.trim()) params.set('region', filterRegionEl.value.trim())
+  if (filterIndustryEl.value.trim()) params.set('industry', filterIndustryEl.value.trim())
+  if (filterDateFromEl.value) params.set('date_from', filterDateFromEl.value)
+  if (filterDateToEl.value) params.set('date_to', filterDateToEl.value)
+  if (filterQEl.value.trim()) params.set('q', filterQEl.value.trim())
+  return params.toString()
+}
+
+async function loadBids() {
+  listBodyEl.innerHTML = '<tr><td colspan="10" class="py-8 text-center text-gray-400">불러오는 중...</td></tr>'
+  if (listMobileEl) listMobileEl.innerHTML = '<p class="py-8 text-center text-gray-400 text-sm">불러오는 중...</p>'
+  try {
+    const qs = buildQuery()
+    const res = await axios.get(`${BID_API_BASE}${qs ? '?' + qs : ''}`)
+    const items = res.data.data || []
+
+    listBodyEl.innerHTML = ''
+    if (listMobileEl) listMobileEl.innerHTML = ''
+    if (items.length === 0) {
+      listBodyEl.innerHTML = '<tr><td colspan="10" class="py-8 text-center text-gray-400">조건에 맞는 공고가 없습니다.</td></tr>'
+      if (listMobileEl) listMobileEl.innerHTML = '<p class="py-8 text-center text-gray-400 text-sm">조건에 맞는 공고가 없습니다.</p>'
+    } else {
+      items.forEach((bid) => listBodyEl.appendChild(renderRow(bid)))
+      if (listMobileEl) items.forEach((bid) => listMobileEl.appendChild(renderMobileCard(bid)))
+    }
+    resultCountEl.textContent = `총 ${items.length}건`
+  } catch (err) {
+    console.error('입찰 목록 조회 실패:', err)
+    listBodyEl.innerHTML = '<tr><td colspan="10" class="py-8 text-center text-red-400">불러오기에 실패했습니다.</td></tr>'
+    if (listMobileEl) listMobileEl.innerHTML = '<p class="py-8 text-center text-red-400 text-sm">불러오기에 실패했습니다.</p>'
+  }
+}
+
+function openEditModal(bid) {
+  editBidNoEl.value = bid.bid_no
+  editBidOrdEl.value = bid.bid_ord
+  editBidTitleEl.textContent = bid.title || ''
+  editStatusEl.value = bid.status || '검토중'
+  editAssigneeEl.value = bid.assignee || ''
+  editMemoEl.value = bid.memo || ''
+
+  modalEl.classList.remove('hidden')
+  modalEl.classList.add('flex')
+}
+
+function closeEditModal() {
+  modalEl.classList.add('hidden')
+  modalEl.classList.remove('flex')
+}
+
+async function saveStatus() {
+  const bidNo = editBidNoEl.value
+  const bidOrd = editBidOrdEl.value
+
+  try {
+    await axios.put(`${BID_API_BASE}/${encodeURIComponent(bidNo)}/${encodeURIComponent(bidOrd)}/status`, {
+      status: editStatusEl.value,
+      assignee: editAssigneeEl.value,
+      memo: editMemoEl.value
+    })
+    closeEditModal()
+    await loadBids()
+  } catch (err) {
+    console.error('상태 저장 실패:', err)
+    alert('저장에 실패했습니다. 콘솔 로그를 확인해주세요.')
+  }
+}
+
+filterApplyBtn?.addEventListener('click', loadBids)
+filterResetBtn?.addEventListener('click', () => {
+  filterStatusEl.value = ''
+  filterRegionEl.value = ''
+  filterIndustryEl.value = ''
+  filterDateFromEl.value = ''
+  filterDateToEl.value = ''
+  filterQEl.value = ''
+  loadBids()
+})
+;[filterRegionEl, filterIndustryEl, filterQEl].forEach((el) => {
+  el?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') loadBids()
+  })
+})
+
+editSaveBtn?.addEventListener('click', saveStatus)
+editCancelBtn?.addEventListener('click', closeEditModal)
+modalEl?.addEventListener('click', (e) => {
+  if (e.target === modalEl) closeEditModal()
+})
+
+// 초기 로드
+loadBids()

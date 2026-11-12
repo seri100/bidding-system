@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh_crawling.service
+[Unit]
+Description=LH crawling (seri_Alarm_Server2)
+After=network-online.target
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/seri_Alarm_Server2
+ExecStart=/usr/bin/flock -n /tmp/lh_crawling.lock \
+[Install]
+WantedBy=multi-user.target

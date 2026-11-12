@@ -1,0 +1,10 @@
+# /etc/systemd/system/seri_alarm_server6.service
+[Unit]
+Description=Run seri_Alarm_Server6 crawler once
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server6
+EnvironmentFile=/home/pi/seri_Alarm_Server6/.env.prod
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server6/main_crawling.py

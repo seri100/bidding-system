@@ -1,0 +1,9 @@
+# /etc/systemd/system/exroad-cleanup.timer
+[Unit]
+Description=Run EXROAD cleanup daily
+[Timer]
+OnCalendar=*-*-* 03:20:00
+Persistent=true
+Unit=exroad-cleanup.service
+[Install]
+WantedBy=timers.target

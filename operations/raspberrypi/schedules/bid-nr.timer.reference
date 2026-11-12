@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-nr.timer
+[Unit]
+Description=Run bid-nr every 15 minutes on weekdays from 07:00 through 21:45
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..21:00/15:00
+Persistent=true
+AccuracySec=1min
+Unit=bid-nr.service
+[Install]
+WantedBy=timers.target

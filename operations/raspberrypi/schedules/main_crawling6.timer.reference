@@ -1,0 +1,9 @@
+# /etc/systemd/system/main_crawling6.timer
+[Unit]
+Description=Main Crawling6 timer (20min, weekday/daytime + weekend once)
+[Timer]
+OnCalendar=*-*-* *:03/20:00
+Persistent=true
+Unit=main_crawling6.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,12 @@
+# /etc/systemd/system/lh-send.service
+[Unit]
+Description=LH Send (Seri Alarm Server2)
+After=network-online.target
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/seri_Alarm_Server2
+ExecStart=/home/pi/seri_Alarm_Server2/.venv/bin/python /home/pi/seri_Alarm_Server2/run_lh_send.py
+User=pi
+Group=pi
+[Install]
+WantedBy=multi-user.target

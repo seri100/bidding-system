@@ -1,0 +1,8 @@
+# /etc/systemd/system/main_send2.timer
+[Unit]
+Description=Run main_send2 every 5 minutes
+[Timer]
+AccuracySec=10
+Unit=main_send2.service
+[Install]
+WantedBy=timers.target

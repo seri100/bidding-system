@@ -1,0 +1,9 @@
+# /etc/systemd/system/daum_mail_smc.timer
+[Unit]
+Description=Daum Mail SMC Timer 17:02
+[Timer]
+OnCalendar=*-*-* 16:33:00
+Persistent=true
+Unit=daum_mail_smc.service
+[Install]
+WantedBy=timers.target

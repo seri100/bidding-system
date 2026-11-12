@@ -1,0 +1,9 @@
+# /etc/systemd/system/daum_mail_daily.timer
+[Unit]
+Description=Daum Mail Daily Timer 07:34
+[Timer]
+OnCalendar=*-*-* 07:34:00
+Persistent=true
+Unit=daum_mail_daily.service
+[Install]
+WantedBy=timers.target

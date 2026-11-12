@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh6-notify.timer
+[Unit]
+Description=LH Notify Timer (weekday 20min / weekend once)
+[Timer]
+OnCalendar=Mon..Fri 07..20:07,27,47
+OnCalendar=Sat,Sun 19:19
+Persistent=true
+Unit=lh6-notify.service
+[Install]
+WantedBy=timers.target

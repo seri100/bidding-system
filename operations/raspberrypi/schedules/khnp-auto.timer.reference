@@ -1,0 +1,11 @@
+# /etc/systemd/system/khnp-auto.timer
+[Unit]
+Description=Run KHNP bid collector every 15 minutes on weekdays
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..21:00/15:00
+OnCalendar=Sat,Sun *-*-* 17:00:00
+Persistent=false
+AccuracySec=1min
+Unit=khnp-auto.service
+[Install]
+WantedBy=timers.target

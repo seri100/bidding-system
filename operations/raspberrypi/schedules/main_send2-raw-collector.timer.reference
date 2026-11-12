@@ -1,0 +1,9 @@
+# /etc/systemd/system/main_send2-raw-collector.timer
+[Unit]
+Description=Run Main Send2 RAW Collector every 15 minutes
+[Timer]
+OnCalendar=*:0/15
+Persistent=true
+Unit=main_send2-raw-collector.service
+[Install]
+WantedBy=timers.target

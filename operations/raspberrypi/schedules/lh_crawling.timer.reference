@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh_crawling.timer
+[Unit]
+Description=LH crawling timer (weekday 20min / weekend once)
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..20:13/20:00
+OnCalendar=Sat,Sun *-*-* 20:13:00
+Persistent=true
+Unit=lh_crawling.service
+[Install]
+WantedBy=timers.target

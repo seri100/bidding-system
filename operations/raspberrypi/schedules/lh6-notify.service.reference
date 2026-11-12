@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh6-notify.service
+[Unit]
+Description=LH Notify Only (from existing Excel)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server6/lh
+ExecStart=/usr/bin/python3 -u /home/pi/seri_Alarm_Server6/lh/lh_notify_only.py

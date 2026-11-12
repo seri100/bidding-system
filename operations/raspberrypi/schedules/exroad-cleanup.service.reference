@@ -1,0 +1,8 @@
+# /etc/systemd/system/exroad-cleanup.service
+[Unit]
+Description=EXROAD old file backup and cleanup
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/exroad
+ExecStart=/home/pi/exroad/exroad_cleanup.sh

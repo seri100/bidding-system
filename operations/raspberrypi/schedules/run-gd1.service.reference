@@ -1,0 +1,9 @@
+# /etc/systemd/system/run-gd1.service
+[Unit]
+Description=Run gd-1 pipeline (with local fallback)
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/bin/bash -lc "/home/pi/seri_Alarm_Server3/run_gd1.sh"

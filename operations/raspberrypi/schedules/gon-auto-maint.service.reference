@@ -1,0 +1,11 @@
+# /etc/systemd/system/gon-auto-maint.service
+[Unit]
+Description=gon_auto backup & rotate (maint)
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server3/gon_auto_maint.py
+[Install]
+WantedBy=multi-user.target

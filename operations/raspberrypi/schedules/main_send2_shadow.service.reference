@@ -1,0 +1,10 @@
+# /etc/systemd/system/main_send2_shadow.service
+[Unit]
+Description=Main Send2 SHADOW (decisions + last_run + health) -> n_data_next
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/main_send2
+ExecStart=/usr/bin/python3 -u /home/pi/main_send2/shadow_runner.py

@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-schedule-sync.service
+[Unit]
+Description=Create bid folders and Excel files from Google Calendar
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid-schedule-sync
+ExecStart=/usr/bin/flock -n -E 99 /tmp/bid-schedule-sync.lock /usr/bin/python3 -u /home/pi/bid-schedule-sync/calendar_bid_folder_sync.py

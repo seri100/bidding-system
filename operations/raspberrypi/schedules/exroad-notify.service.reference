@@ -1,0 +1,9 @@
+# /etc/systemd/system/exroad-notify.service
+[Unit]
+Description=EXROAD Bid Notice Collect and Prepare Send Ready
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/exroad
+ExecStart=/usr/bin/python3 -u /home/pi/exroad/exroad_notify.py --hours 24

@@ -1,0 +1,12 @@
+# /etc/systemd/system/main_send.service
+[Unit]
+Description=Main Send Service (입찰 알림 자동 처리)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/n_data
+ExecStart=/bin/bash -lc '/usr/bin/flock -n -E 99 /tmp/main_send.lock /bin/bash /home/pi/n_data/run_main_send.sh'
+[Install]
+WantedBy=multi-user.target

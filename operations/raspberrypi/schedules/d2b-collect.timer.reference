@@ -1,0 +1,11 @@
+# /etc/systemd/system/d2b-collect.timer
+[Unit]
+Description=Collect D2B weekdays 08:30 to 18:30 KST
+[Timer]
+OnCalendar=Mon..Fri *-*-* 08:30:00 Asia/Seoul
+OnCalendar=Mon..Fri *-*-* 09..18:00,30:00 Asia/Seoul
+AccuracySec=1s
+Persistent=false
+Unit=d2b-collect.service
+[Install]
+WantedBy=timers.target

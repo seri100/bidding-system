@@ -1,0 +1,9 @@
+# /etc/systemd/system/g2b-outbox-daily-report.timer
+[Unit]
+Description=Run G2B Outbox Daily Report (23:55)
+[Timer]
+OnCalendar=*-*-* 23:55:00
+Persistent=true
+Unit=g2b-outbox-daily-report.service
+[Install]
+WantedBy=timers.target

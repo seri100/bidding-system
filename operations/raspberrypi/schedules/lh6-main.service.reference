@@ -1,0 +1,17 @@
+# /etc/systemd/system/lh6-main.service
+[Unit]
+Description=LH Bid Fetch & Notify (Clean)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server6/lh
+ExecStart=/usr/bin/flock -n /tmp/lh-main.lock /usr/bin/python3 -u /home/pi/seri_Alarm_Server6/lh/lh_main.py
+# /etc/systemd/system/lh6-main.service.d/override.conf
+[Unit]
+[Service]
+# /etc/systemd/system/lh6-main.service.d/paths.conf
+[Service]
+# /etc/systemd/system/lh6-main.service.d/runtime-timeout.conf
+[Service]

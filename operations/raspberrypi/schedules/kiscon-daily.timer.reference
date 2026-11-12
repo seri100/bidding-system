@@ -1,0 +1,10 @@
+# /etc/systemd/system/kiscon-daily.timer
+[Unit]
+Description=매일 20:50 KISCON 신규등록 업체 수집
+[Timer]
+OnCalendar=*-*-* 20:50:00
+Persistent=true
+AccuracySec=1min
+Unit=kiscon-daily.service
+[Install]
+WantedBy=timers.target

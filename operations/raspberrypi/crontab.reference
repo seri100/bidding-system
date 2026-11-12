@@ -1,0 +1,69 @@
+10 8,14 * * * . /home/pi/gongo/.env_bid_sync && /usr/bin/python3 /home/pi/gongo/sync_bids_to_cloudflare.py >> /home/pi/n_data/logs/bid_sync.log 2>&1
+
+
+0 4 * * * /bin/bash /home/pi/run_bid_and_sync.sh >> /home/pi/logs/run_bid_and_sync.log 2>&1
+
+
+#58 23 * * * /bin/bash /home/pi/seri_Alarm_Server10/scripts/errorlog_backup.sh >> /mnt/seri_Alarm_Server3/errorlog_backup.log 2>&1
+
+#*/10 7-20 * * 1-5 /bin/bash /home/pi/seri_Alarm_Server2/NoVisionServer.sh >> /mnt/seri_Alarm_Server3/novision.log 2>&1
+
+
+
+#5 21 * * 1-5 /home/pi/seri_Alarm_Server/scripts/daily_report.sh >> /mnt/vol1/seri_reports/daily_report.log 2>&1
+
+#*/10 * * * * /home/pi/seri_Alarm_Server/scripts/split_logs.sh >> /mnt/vol1/seri_logs/splitter.log 2>&1
+
+
+
+40 8 * * * /usr/bin/python3 -u /home/pi/road/exco_exbid_download_xpath.py >> /home/pi/road/exbid_cron.log 2>&1
+
+40 9-17 * * * /usr/bin/python3 -u /home/pi/road/exco_exbid_download_xpath.py >> /home/pi/road/exbid_cron.log 2>&1
+
+
+
+@reboot sleep 60 && /usr/bin/bash /usr/local/sbin/mount_bid.sh >/dev/null 2>&1
+
+30 8 * * * /usr/bin/bash /usr/local/sbin/mount_bid.sh >/dev/null 2>&1
+
+10 19 * * * /usr/bin/bash /usr/local/sbin/cleanup_exbid_backups.sh
+
+
+
+*/15 7-19 * * * /usr/bin/flock -n /home/pi/g2b/.publicdata.lock -c true || echo "[SKIP] $(date "+\%F \%T") locked" >> /home/pi/g2b/logs/cron.log
+
+0 20 * * * /usr/bin/flock -n /home/pi/g2b/.publicdata.lock -c true || echo "[SKIP] $(date "+\%F \%T") locked" >> /home/pi/g2b/logs/cron.log
+
+*/15 7-19 * * * /usr/bin/flock -n /home/pi/g2b/.publicdata.lock -c "/home/pi/g2b/run_publicdata.sh" >> /home/pi/g2b/logs/cron.log 2>&1
+
+0 20 * * * /usr/bin/flock -n /home/pi/g2b/.publicdata.lock -c "/home/pi/g2b/run_publicdata.sh" >> /home/pi/g2b/logs/cron.log 2>&1
+
+
+
+##### BEGIN SERI3 AUTO RUN — "공공데이터의 공사공고 가져오기" (삭제 금지) #####
+
+#12 3 * * * /usr/bin/flock -n /home/pi/bidsync/.run_thng.lock /home/pi/bidsync/run_thng.sh
+
+#40 3 * * * /home/pi/bidsync/run_cnstwk.sh
+
+#20 5 * * * /home/pi/bidsync/run_cnstwk_retry.sh
+
+##### END SERI3 AUTO RUN #####
+
+
+
+#*/15 7-20 * * * cd /home/pi/n_data && PYTHONPATH=. /home/pi/seri_Alarm_Server/.venv/bin/python main_send.py >> /home/pi/n_data/main_send.log 2>&1
+
+7 7 * * * /usr/bin/python3 /home/pi/server-21/get_notice_daily.py >> /home/pi/server-21/get_notice_daily.log 2>&1
+10 3 * * * /home/pi/n_data/maintenance_daily.sh
+0 9 * * * N_DATA_ENV=PROD python3 /home/pi/n_data/gcal_sync.py --hours 18 >> /mnt/vol1/bid/n_data/logs/gcal_sync.log 2>&1
+
+0 15 * * * N_DATA_ENV=PROD python3 /home/pi/n_data/gcal_sync.py --hours 6 >> /mnt/vol1/bid/n_data/logs/gcal_sync.log 2>&1
+
+#10 1 * * * /home/pi/bidsync/run_cnstwk.sh >> /home/pi/bidsync/logs/cron_cnstwk.log 2>&1
+#20 1 * * * /home/pi/bidsync/run_thng.sh >> /home/pi/bidsync/logs/cron_thng.log 2>&1
+
+
+# ── 나라장터 입찰공고 수집 (매일 08:00 / 14:00) ──
+0  8 * * * /usr/bin/python3 /home/pi/gongo/bid_collector.py >> /home/pi/gongo/logs/cron.log 2>&1
+0 14 * * * /usr/bin/python3 /home/pi/gongo/bid_collector.py >> /home/pi/gongo/logs/cron.log 2>&1

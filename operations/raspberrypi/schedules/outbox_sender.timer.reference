@@ -1,0 +1,11 @@
+# /etc/systemd/system/outbox_sender.timer
+[Unit]
+Description=Run outbox_sender periodically
+[Timer]
+AccuracySec=1
+Unit=outbox_sender.service
+[Install]
+WantedBy=timers.target
+# /etc/systemd/system/outbox_sender.timer.d/override.conf
+[Timer]
+AccuracySec=5s

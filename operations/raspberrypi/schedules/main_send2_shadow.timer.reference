@@ -1,0 +1,8 @@
+# /etc/systemd/system/main_send2_shadow.timer
+[Unit]
+Description=Run main_send2 SHADOW every 5 minutes
+[Timer]
+AccuracySec=10
+Unit=main_send2_shadow.service
+[Install]
+WantedBy=timers.target

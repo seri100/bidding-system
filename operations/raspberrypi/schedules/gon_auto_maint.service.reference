@@ -1,0 +1,10 @@
+# /etc/systemd/system/gon_auto_maint.service
+[Unit]
+Description=GON_AUTO 유지보수 자동 실행 서비스
+After=network-online.target
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server3/gon_auto_maint.py
+User=pi
+[Install]
+WantedBy=multi-user.target

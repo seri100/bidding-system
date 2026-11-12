@@ -1,0 +1,24 @@
+# /etc/systemd/system/main_send2.service
+[Unit]
+Description=Main Send2 (SHADOW: decisions + last_run + health)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/main_send2
+ExecStart=/usr/bin/python3 -u /home/pi/main_send2/main_send2.py
+# /etc/systemd/system/main_send2.service.d/00-no-restart.conf
+[Service]
+# /etc/systemd/system/main_send2.service.d/05-mode-full.conf
+[Service]
+# /etc/systemd/system/main_send2.service.d/10-pythonpath.conf
+[Service]
+# /etc/systemd/system/main_send2.service.d/20-success-exit.conf
+[Service]
+# /etc/systemd/system/main_send2.service.d/31-last-run-normalize.conf
+[Service]
+# /etc/systemd/system/main_send2.service.d/40-exec-wrapper.conf
+[Service]
+ExecStart=
+ExecStart=/bin/bash -lc '/home/pi/main_send2/run_main_send2.sh'

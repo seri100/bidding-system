@@ -1,0 +1,10 @@
+# /etc/systemd/system/main_send_autocheck.timer
+[Unit]
+Description=Main Send AutoCheck Timer (Mon 07:01)
+[Timer]
+OnCalendar=Mon *-*-* 07:01:00
+AccuracySec=1min
+Persistent=true
+Unit=main_send_autocheck.service
+[Install]
+WantedBy=timers.target

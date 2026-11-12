@@ -1,0 +1,11 @@
+# /etc/systemd/system/n_data_test-main-send.service
+[Unit]
+Description=n_data_test main_send (SAFE TEST)
+After=network.target mnt-vol1.mount
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/n_data_test
+ExecStart=/usr/bin/python3 -u /home/pi/n_data_test/main_send.py --no-send
+# /etc/systemd/system/n_data_test-main-send.service.d/override.conf
+[Service]

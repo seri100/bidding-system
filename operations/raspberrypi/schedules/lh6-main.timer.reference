@@ -1,0 +1,16 @@
+# /etc/systemd/system/lh6-main.timer
+[Unit]
+Description=LH Bid Fetch Timer (Clean)
+[Timer]
+OnCalendar=*:0/20
+Persistent=true
+Unit=lh6-main.service
+[Install]
+WantedBy=timers.target
+# /etc/systemd/system/lh6-main.timer.d/override.conf
+[Timer]
+OnCalendar=
+OnCalendar=Mon..Fri *-*-* 07..19:02,22,42
+OnCalendar=Mon..Fri *-*-* 20:02
+OnCalendar=Sat,Sun *-*-* 20:02
+Persistent=true

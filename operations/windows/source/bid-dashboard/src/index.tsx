@@ -1,0 +1,708 @@
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { renderer } from './renderer'
+import { syncGcalBids } from './gcal'
+import { validateWorkflow } from '../public/static/bid-workflow.js'
+
+type Bindings = {
+  DB: D1Database
+  IMPORT_API_KEY: string // 라즈베리파이 업로드 스크립트 인증용 (wrangler secret / .dev.vars)
+  GCAL_SERVICE_ACCOUNT_JSON?: string // 구글 캘린더 서비스 계정 키(JSON 전체) - wrangler secret
+  GCAL_CALENDAR_ID?: string          // 구글 캘린더 ID (기본값: gcal.ts의 DEFAULT_CALENDAR_ID)
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
+
+// API 전용 CORS 허용 (프론트-백엔드 분리 아키텍처를 가정)
+app.use('/api/*', cors())
+
+// ==================================================================
+// REST API: 입찰 관리 (bids + bid_status)
+//   - bids: 라즈베리파이가 gongo/*.csv를 매일 업로드하는 원본 미러
+//   - bid_status: 웹 화면에서 3인이 직접 입력하는 상태(검토중/제출완료)
+// ==================================================================
+
+// 라즈베리파이 업로드 전용 인증 미들웨어 (X-API-Key 헤더)
+const requireImportKey = async (c: any, next: any) => {
+  const key = c.req.header('X-API-Key')
+  if (!c.env.IMPORT_API_KEY || key !== c.env.IMPORT_API_KEY) {
+    return c.json({ success: false, error: 'Unauthorized: invalid X-API-Key' }, 401)
+  }
+  await next()
+}
+
+// [POST] /api/bids/import - 라즈베리파이 gongo CSV 데이터 대량 upsert
+// body: { items: [{ bid_no, bid_ord, category, title, agency, demand_agency,
+//                    main_industry, region, bid_method, contract_method,
+//                    estimated_price, budget_amount, notice_date,
+//                    bid_deadline, open_date, bid_open_recv_date,
+//                    detail_url, collected_at }, ...] }
+app.post('/api/bids/import', requireImportKey, async (c) => {
+  const { env } = c
+  const body = await c.req.json().catch(() => null)
+
+  if (!body || !Array.isArray(body.items) || body.items.length === 0) {
+    return c.json({ success: false, error: 'items(array) is required' }, 400)
+  }
+
+  const items = body.items
+  const MAX_BATCH = 200
+  if (items.length > MAX_BATCH) {
+    return c.json({ success: false, error: `items exceeds max batch size (${MAX_BATCH})` }, 400)
+  }
+
+  const stmt = env.DB.prepare(`
+    INSERT INTO bids (
+      bid_no, bid_ord, category, title, agency, demand_agency, main_industry,
+      region, bid_method, contract_method, estimated_price, budget_amount,
+      notice_date, bid_deadline, open_date, bid_open_recv_date, detail_url, collected_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT(bid_no, bid_ord) DO UPDATE SET
+      category = excluded.category,
+      title = excluded.title,
+      agency = excluded.agency,
+      demand_agency = excluded.demand_agency,
+      main_industry = excluded.main_industry,
+      region = excluded.region,
+      bid_method = excluded.bid_method,
+      contract_method = excluded.contract_method,
+      estimated_price = excluded.estimated_price,
+      budget_amount = excluded.budget_amount,
+      notice_date = excluded.notice_date,
+      bid_deadline = excluded.bid_deadline,
+      open_date = excluded.open_date,
+      bid_open_recv_date = excluded.bid_open_recv_date,
+      detail_url = excluded.detail_url,
+      collected_at = excluded.collected_at,
+      updated_at = datetime('now')
+  `)
+
+  const batch = items.map((it: any) =>
+    stmt.bind(
+      String(it.bid_no ?? ''),
+      String(it.bid_ord ?? ''),
+      it.category ?? null,
+      it.title ?? null,
+      it.agency ?? null,
+      it.demand_agency ?? null,
+      it.main_industry ?? null,
+      it.region ?? null,
+      it.bid_method ?? null,
+      it.contract_method ?? null,
+      it.estimated_price ?? null,
+      it.budget_amount ?? null,
+      it.notice_date ?? null,
+      it.bid_deadline ?? null,
+      it.open_date ?? null,
+      it.bid_open_recv_date ?? null,
+      it.detail_url ?? null,
+      it.collected_at ?? null
+    )
+  )
+
+  // 필수 키(bid_no, bid_ord) 누락 항목 사전 검증
+  const invalid = items.findIndex((it: any) => !it.bid_no || !it.bid_ord)
+  if (invalid !== -1) {
+    return c.json({ success: false, error: `items[${invalid}] missing bid_no/bid_ord` }, 400)
+  }
+
+  await env.DB.batch(batch)
+
+  return c.json({ success: true, imported: items.length })
+})
+
+// [GET] /api/bids - 목록 조회 (bids + bid_status LEFT JOIN)
+// 쿼리 파라미터: status, region, industry, q(제목 검색), limit, offset
+app.get('/api/bids', async (c) => {
+  const { env } = c
+  const status = c.req.query('status')       // '검토중' | '제출완료'
+  const region = c.req.query('region')
+  const industry = c.req.query('industry')
+  const q = c.req.query('q')
+  const limit = Math.min(parseInt(c.req.query('limit') ?? '100', 10) || 100, 500)
+  const offset = parseInt(c.req.query('offset') ?? '0', 10) || 0
+
+  let query = `
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at
+    FROM bids b
+    LEFT JOIN bid_status s ON b.bid_no = s.bid_no AND b.bid_ord = s.bid_ord
+    WHERE 1=1
+  `
+  const params: any[] = []
+
+  if (status === '검토중' || status === '제출완료') {
+    query += ` AND COALESCE(s.status, '검토중') = ?`
+    params.push(status)
+  }
+  if (region) {
+    query += ` AND b.region LIKE ?`
+    params.push(`%${region}%`)
+  }
+  if (industry) {
+    query += ` AND b.main_industry LIKE ?`
+    params.push(`%${industry}%`)
+  }
+  if (q) {
+    query += ` AND b.title LIKE ?`
+    params.push(`%${q}%`)
+  }
+
+  query += ` ORDER BY b.bid_deadline ASC LIMIT ? OFFSET ?`
+  params.push(limit, offset)
+
+  const { results } = await env.DB.prepare(query).bind(...params).all()
+
+  return c.json({ success: true, data: results, count: results.length })
+})
+
+// [GET] /api/bids/:bid_no/:bid_ord - 단일 조회
+app.get('/api/bids/:bid_no/:bid_ord', async (c) => {
+  const { env } = c
+  const bidNo = c.req.param('bid_no')
+  const bidOrd = c.req.param('bid_ord')
+
+  const bid = await env.DB.prepare(`
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at
+    FROM bids b
+    LEFT JOIN bid_status s ON b.bid_no = s.bid_no AND b.bid_ord = s.bid_ord
+    WHERE b.bid_no = ? AND b.bid_ord = ?
+  `).bind(bidNo, bidOrd).first()
+
+  if (!bid) {
+    return c.json({ success: false, error: 'Bid not found' }, 404)
+  }
+
+  return c.json({ success: true, data: bid })
+})
+
+// [PUT] /api/bids/:bid_no/:bid_ord/status - 상태 변경 (검토중/제출완료, 담당자, 메모)
+app.put('/api/bids/:bid_no/:bid_ord/status', async (c) => {
+  const { env } = c
+  const bidNo = c.req.param('bid_no')
+  const bidOrd = c.req.param('bid_ord')
+  const body = await c.req.json().catch(() => null)
+
+  const bid = await env.DB.prepare('SELECT 1 FROM bids WHERE bid_no = ? AND bid_ord = ?')
+    .bind(bidNo, bidOrd)
+    .first()
+
+  if (!bid) {
+    return c.json({ success: false, error: 'Bid not found' }, 404)
+  }
+
+  if (body?.status !== undefined && body.status !== '검토중' && body.status !== '제출완료') {
+    return c.json({ success: false, error: "status must be '검토중' or '제출완료'" }, 400)
+  }
+
+  const existing = await env.DB.prepare('SELECT * FROM bid_status WHERE bid_no = ? AND bid_ord = ?')
+    .bind(bidNo, bidOrd)
+    .first()
+
+  const status = body?.status ?? existing?.status ?? '검토중'
+  const assignee = body?.assignee !== undefined ? body.assignee : (existing?.assignee ?? null)
+  const memo = body?.memo !== undefined ? body.memo : (existing?.memo ?? null)
+  const updatedBy = body?.updated_by !== undefined ? body.updated_by : (existing?.updated_by ?? null)
+
+  await env.DB.prepare(`
+    INSERT INTO bid_status (bid_no, bid_ord, status, assignee, memo, updated_by, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT(bid_no, bid_ord) DO UPDATE SET
+      status = excluded.status,
+      assignee = excluded.assignee,
+      memo = excluded.memo,
+      updated_by = excluded.updated_by,
+      updated_at = datetime('now')
+  `).bind(bidNo, bidOrd, status, assignee, memo, updatedBy).run()
+
+  const updated = await env.DB.prepare(`
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at
+    FROM bids b
+    LEFT JOIN bid_status s ON b.bid_no = s.bid_no AND b.bid_ord = s.bid_ord
+    WHERE b.bid_no = ? AND b.bid_ord = ?
+  `).bind(bidNo, bidOrd).first()
+
+  return c.json({ success: true, data: updated })
+})
+
+// ==================================================================
+// REST API: 구글 캘린더 기반 입찰 관리 (gcal_bids + gcal_bid_status)
+//   - 기존 bids/bid_status와 완전 별도. 라즈베리파이 CSV를 거치지 않고
+//     Cloudflare Worker가 Google Calendar API를 직접 호출해 이벤트를
+//     가져온 뒤 파싱하여 gcal_bids 테이블에 저장한다.
+// ==================================================================
+
+// [POST] /api/gcal-bids/sync - 구글 캘린더 이벤트를 조회해 gcal_bids에 upsert
+// 내부 팀 대시보드의 수동 새로고침 버튼에서 호출한다(기존 상태 변경 API와 동일하게 별도 로그인 없이 개방).
+app.post('/api/gcal-bids/sync', async (c) => {
+  const { env } = c
+
+  if (!env.GCAL_SERVICE_ACCOUNT_JSON) {
+    return c.json({ success: false, error: 'GCAL_SERVICE_ACCOUNT_JSON 시크릿이 설정되지 않았습니다.' }, 500)
+  }
+
+  try {
+    const result = await syncGcalBids(env)
+    return c.json({ success: true, ...result })
+  } catch (e: any) {
+    return c.json({ success: false, error: String(e?.message || e) }, 500)
+  }
+})
+
+// [GET] /api/gcal-bids - 목록 조회 (gcal_bids + gcal_bid_status LEFT JOIN)
+// 쿼리 파라미터: status, region, industry, q(제목 검색), limit, offset
+app.get('/api/gcal-bids', async (c) => {
+  const { env } = c
+  const status = c.req.query('status')
+  const region = c.req.query('region')
+  const industry = c.req.query('industry')
+  const q = c.req.query('q')
+  const limit = Math.max(1, Math.min(parseInt(c.req.query('limit') ?? '100', 10) || 100, 500))
+  const offset = Math.max(0, parseInt(c.req.query('offset') ?? '0', 10) || 0)
+
+  let query = `
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at,
+      w.workflow_json, w.updated_at AS workflow_updated_at
+    FROM gcal_bids b
+    LEFT JOIN gcal_bid_status s ON b.event_id = s.event_id
+    LEFT JOIN gcal_bid_workflow w ON b.event_id = w.event_id
+    WHERE 1=1
+  `
+  const params: any[] = []
+
+  if (status === '검토중' || status === '제출완료') {
+    query += ` AND COALESCE(s.status, '검토중') = ?`
+    params.push(status)
+  }
+  if (region) {
+    query += ` AND (b.participant_region LIKE ? OR b.joint_region LIKE ?)`
+    params.push(`%${region}%`, `%${region}%`)
+  }
+  if (industry) {
+    query += ` AND b.industry LIKE ?`
+    params.push(`%${industry}%`)
+  }
+  if (q) {
+    query += ` AND b.title LIKE ?`
+    params.push(`%${q}%`)
+  }
+
+  const countQuery = 'SELECT COUNT(*) AS total FROM (' + query + ')'
+  const total = await env.DB.prepare(countQuery).bind(...params).first<{ total: number }>()
+  query += ` ORDER BY b.bid_deadline ASC, b.event_id ASC LIMIT ? OFFSET ?`
+  params.push(limit, offset)
+
+  const { results } = await env.DB.prepare(query).bind(...params).all()
+
+  return c.json({ success: true, data: results, count: results.length, total: total?.total ?? 0 })
+})
+
+// Company-specific progress is kept separate from calendar-derived status.
+app.put('/api/gcal-bids/:event_id/workflow', async (c) => {
+  const id = c.req.param('event_id')
+  const body = await c.req.json().catch(() => null)
+  if (!validateWorkflow(body?.workflow)) return c.json({ success: false, error: '업무 입력값을 확인하세요.' }, 400)
+  const bid = await c.env.DB.prepare('SELECT 1 FROM gcal_bids WHERE event_id = ?').bind(id).first()
+  if (!bid) return c.json({ success: false, error: 'Bid not found' }, 404)
+  const previous = typeof body.expected === 'string' ? body.expected : null
+  const json = JSON.stringify(body.workflow)
+  // Compare-and-swap in a single statement prevents stale editors overwriting progress.
+  const result = previous === null
+    ? await c.env.DB.prepare(`INSERT INTO gcal_bid_workflow (event_id, workflow_json)
+        VALUES (?, ?) ON CONFLICT(event_id) DO NOTHING`).bind(id, json).run()
+    : await c.env.DB.prepare(`UPDATE gcal_bid_workflow SET workflow_json = ?, updated_at = datetime('now')
+        WHERE event_id = ? AND workflow_json = ?`).bind(json, id, previous).run()
+  if (!result.meta.changes) return c.json({ success: false, error: '다른 담당자가 수정했습니다. 목록을 새로 불러온 후 확인해 주세요.' }, 409)
+  return c.json({ success: true })
+})
+
+// [GET] /api/gcal-bids/:event_id - 단일 조회
+app.get('/api/gcal-bids/:event_id', async (c) => {
+  const { env } = c
+  const eventId = c.req.param('event_id')
+
+  const bid = await env.DB.prepare(`
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at,
+      w.workflow_json, w.updated_at AS workflow_updated_at
+    FROM gcal_bids b
+    LEFT JOIN gcal_bid_status s ON b.event_id = s.event_id
+    LEFT JOIN gcal_bid_workflow w ON b.event_id = w.event_id
+    WHERE b.event_id = ?
+  `).bind(eventId).first()
+
+  if (!bid) {
+    return c.json({ success: false, error: 'Bid not found' }, 404)
+  }
+
+  return c.json({ success: true, data: bid })
+})
+
+// [PUT] /api/gcal-bids/:event_id/status - 상태 변경 (검토중/제출완료, 담당자, 메모)
+app.put('/api/gcal-bids/:event_id/status', async (c) => {
+  const { env } = c
+  const eventId = c.req.param('event_id')
+  const body = await c.req.json().catch(() => null)
+
+  const bid = await env.DB.prepare('SELECT 1 FROM gcal_bids WHERE event_id = ?')
+    .bind(eventId)
+    .first()
+
+  if (!bid) {
+    return c.json({ success: false, error: 'Bid not found' }, 404)
+  }
+
+  if (body?.status !== undefined && body.status !== '검토중' && body.status !== '제출완료') {
+    return c.json({ success: false, error: "status must be '검토중' or '제출완료'" }, 400)
+  }
+
+  const existing = await env.DB.prepare('SELECT * FROM gcal_bid_status WHERE event_id = ?')
+    .bind(eventId)
+    .first()
+
+  const status = body?.status ?? existing?.status ?? '검토중'
+  const assignee = body?.assignee !== undefined ? body.assignee : (existing?.assignee ?? null)
+  const memo = body?.memo !== undefined ? body.memo : (existing?.memo ?? null)
+  const updatedBy = body?.updated_by !== undefined ? body.updated_by : (existing?.updated_by ?? null)
+
+  await env.DB.prepare(`
+    INSERT INTO gcal_bid_status (event_id, status, assignee, memo, updated_by, updated_at)
+    VALUES (?, ?, ?, ?, ?, datetime('now'))
+    ON CONFLICT(event_id) DO UPDATE SET
+      status = excluded.status,
+      assignee = excluded.assignee,
+      memo = excluded.memo,
+      updated_by = excluded.updated_by,
+      updated_at = datetime('now')
+  `).bind(eventId, status, assignee, memo, updatedBy).run()
+
+  const updated = await env.DB.prepare(`
+    SELECT
+      b.*,
+      COALESCE(s.status, '검토중') AS status,
+      s.assignee,
+      s.memo,
+      s.updated_by,
+      s.updated_at AS status_updated_at,
+      w.workflow_json, w.updated_at AS workflow_updated_at
+    FROM gcal_bids b
+    LEFT JOIN gcal_bid_status s ON b.event_id = s.event_id
+    LEFT JOIN gcal_bid_workflow w ON b.event_id = w.event_id
+    WHERE b.event_id = ?
+  `).bind(eventId).first()
+
+  return c.json({ success: true, data: updated })
+})
+
+// ------------------------------------------------------------------
+// 문서/데모 페이지 (프론트엔드)
+// ------------------------------------------------------------------
+app.use(renderer)
+
+// [메인] 입찰 관리 대시보드
+app.get('/', (c) => {
+  return c.render(
+    <div id="bid-app" class="max-w-6xl mx-auto py-8 px-4">
+      <header class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+            <i class="fas fa-gavel mr-2 text-blue-600"></i>
+            입찰 관리 대시보드
+          </h1>
+          <p class="text-gray-500 mt-1 text-sm">
+            나라장터 입찰공고 현황 + 우리 팀의 진행상태(검토중/제출완료)를 함께 관리합니다.
+          </p>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/gcal" class="text-sm text-purple-600 hover:underline">
+            <i class="fas fa-calendar-alt mr-1"></i>구글 캘린더 기준 대시보드 보기
+          </a>
+        </div>
+      </header>
+
+      <section id="filter-bar" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-3 items-end">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">상태</label>
+          <select id="filter-status" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="검토중">검토중</option>
+            <option value="제출완료">제출완료</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">지역</label>
+          <select id="filter-region" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="전국">전국</option>
+            <option value="충북">충북</option>
+            <option value="세종">세종</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">공종</label>
+          <select id="filter-industry" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="기계설비">기계설비</option>
+            <option value="소방설비">소방설비</option>
+          </select>
+        </div>
+        <div class="flex-1 min-w-[160px]">
+          <label class="block text-xs text-gray-500 mb-1">공고명 검색</label>
+          <input id="filter-q" type="text" placeholder="공고명 키워드" class="border rounded px-2 py-1.5 text-sm w-full" />
+        </div>
+        <button id="filter-apply-btn" class="bg-blue-600 text-white px-4 py-1.5 rounded text-sm hover:bg-blue-700">
+          <i class="fas fa-search mr-1"></i>조회
+        </button>
+        <button id="filter-reset-btn" class="bg-gray-200 text-gray-700 px-4 py-1.5 rounded text-sm hover:bg-gray-300">
+          초기화
+        </button>
+        <span id="result-count" class="text-sm text-gray-400 ml-auto"></span>
+      </section>
+
+      <section class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="w-full text-sm min-w-[900px]">
+          <thead class="bg-gray-50 text-gray-600">
+            <tr class="text-left border-b">
+              <th class="py-2 px-3">상태</th>
+              <th class="py-2 px-3">공고명</th>
+              <th class="py-2 px-3">발주기관</th>
+              <th class="py-2 px-3">지역</th>
+              <th class="py-2 px-3">공종</th>
+              <th class="py-2 px-3">추정가격</th>
+              <th class="py-2 px-3">입찰개시일</th>
+              <th class="py-2 px-3">입찰마감</th>
+              <th class="py-2 px-3">담당자</th>
+              <th class="py-2 px-3">메모</th>
+              <th class="py-2 px-3">링크</th>
+            </tr>
+          </thead>
+          <tbody id="bid-list-body" class="divide-y">
+            <tr><td colspan={11} class="py-8 text-center text-gray-400">불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      {/* 상태/담당자/메모 수정 모달 */}
+      <div id="edit-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
+          <h3 class="text-lg font-semibold mb-4">진행상태 수정</h3>
+          <input type="hidden" id="edit-bid-no" />
+          <input type="hidden" id="edit-bid-ord" />
+          <p id="edit-bid-title" class="text-sm text-gray-600 mb-4 line-clamp-2"></p>
+
+          <div class="mb-3">
+            <label class="block text-xs text-gray-500 mb-1">상태</label>
+            <select id="edit-status" class="border rounded px-3 py-2 w-full text-sm">
+              <option value="검토중">검토중</option>
+              <option value="제출완료">제출완료</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="block text-xs text-gray-500 mb-1">담당자</label>
+            <input id="edit-assignee" type="text" placeholder="담당자 이름" class="border rounded px-3 py-2 w-full text-sm" />
+          </div>
+          <div class="mb-4">
+            <label class="block text-xs text-gray-500 mb-1">메모</label>
+            <textarea id="edit-memo" rows={3} placeholder="특이사항 메모" class="border rounded px-3 py-2 w-full text-sm"></textarea>
+          </div>
+
+          <div class="flex justify-end gap-2">
+            <button id="edit-cancel-btn" class="px-4 py-2 rounded text-sm bg-gray-200 hover:bg-gray-300">취소</button>
+            <button id="edit-save-btn" class="px-4 py-2 rounded text-sm bg-blue-600 text-white hover:bg-blue-700">저장</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+// [구글 캘린더 기준] 별도 입찰 관리 대시보드
+app.get('/gcal', (c) => {
+  return c.render(
+    <div id="gcal-bid-app" class="max-w-6xl mx-auto py-8 px-4">
+      <header class="mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>
+            구글 캘린더 입찰 대시보드
+          </h1>
+          <p class="text-gray-500 mt-1 text-sm">
+            마감 일정과 회사별 협정·투찰, 업체별 가격제시 업무를 함께 확인합니다.
+          </p>
+        </div>
+        <a href="/" class="text-sm text-blue-600 hover:underline">
+          <i class="fas fa-database mr-1"></i>라즈베리파이 기준 대시보드로 돌아가기
+        </a>
+      </header>
+
+      <div id="gcal-work-summary" class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4" aria-label="업무 바로보기"></div>
+      <p id="gcal-sync-status" role="status" class="text-sm text-gray-500 mb-3"></p>
+      <section id="gcal-filter-bar" class="bg-white rounded-lg shadow p-4 mb-4 flex flex-wrap gap-3 items-end">
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">상태</label>
+          <select id="gcal-filter-status" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="검토중">검토중</option>
+            <option value="제출완료">제출완료</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">지역</label>
+          <select id="gcal-filter-region" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="전국">전국</option>
+            <option value="충북">충북</option>
+            <option value="세종">세종</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 mb-1">공종</label>
+          <select id="gcal-filter-industry" class="border rounded px-2 py-1.5 text-sm">
+            <option value="">전체</option>
+            <option value="기계설비">기계설비</option>
+            <option value="소방">소방</option><option value="전기">전기</option><option value="통신">통신</option>
+          </select>
+        </div>
+        <div><label for="gcal-company" class="block text-xs text-gray-500 mb-1">참가회사</label>
+          <select id="gcal-company" class="border rounded px-2 py-1.5 text-sm"><option value="">전체</option><option value="seri">세리공영</option><option value="jinyu">진유</option></select></div>
+        <div><label for="gcal-period" class="block text-xs text-gray-500 mb-1">조회 범위</label>
+          <select id="gcal-period" class="border rounded px-2 py-1.5 text-sm"><option value="active">진행 중·마감 미확인</option><option value="all">전체·지난 공고</option></select></div>
+        <div class="flex-1 min-w-[160px]">
+          <label class="block text-xs text-gray-500 mb-1">공고명 검색</label>
+          <input id="gcal-filter-q" type="text" placeholder="공고명 키워드" class="border rounded px-2 py-1.5 text-sm w-full" />
+        </div>
+        <button id="gcal-filter-apply-btn" class="bg-purple-600 text-white px-4 py-1.5 rounded text-sm hover:bg-purple-700">
+          <i class="fas fa-search mr-1"></i>조회
+        </button>
+        <button id="gcal-filter-reset-btn" class="bg-gray-200 text-gray-700 px-4 py-1.5 rounded text-sm hover:bg-gray-300">
+          초기화
+        </button>
+        <button id="gcal-sync-btn" class="bg-purple-100 text-purple-700 px-4 py-1.5 rounded text-sm hover:bg-purple-200">
+          <i class="fas fa-sync mr-1"></i>캘린더 동기화
+        </button>
+        <span id="gcal-result-count" class="text-sm text-gray-400 ml-auto"></span>
+      </section>
+
+      <section class="bg-white rounded-lg shadow overflow-x-auto">
+        <table class="w-full text-sm min-w-[900px]">
+          <thead class="bg-gray-50 text-gray-600">
+            <tr class="text-left border-b">
+              <th class="py-2 px-3">상태</th>
+              <th class="py-2 px-3">공고명</th>
+              <th class="py-2 px-3">발주기관</th>
+              <th class="py-2 px-3">참가지역</th>
+              <th class="py-2 px-3">업종</th>
+              <th class="py-2 px-3">기초금액</th>
+              <th class="py-2 px-3">협정마감</th>
+              <th class="py-2 px-3">입찰마감</th>
+              <th class="py-2 px-3">담당자</th>
+              <th class="py-2 px-3">남은 업무·메모</th>
+              <th class="py-2 px-3">링크</th>
+            </tr>
+          </thead>
+          <tbody id="gcal-bid-list-body" class="divide-y">
+            <tr><td colspan={11} class="py-8 text-center text-gray-400">불러오는 중...</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      {/* 상태/담당자/메모 수정 모달 */}
+      <div id="gcal-edit-modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-xl mx-4 max-h-[90vh] overflow-y-auto" role="dialog" aria-modal="true" aria-label="진행상태 수정">
+          <h3 class="text-lg font-semibold mb-4">진행상태 수정</h3>
+          <input type="hidden" id="gcal-edit-event-id" />
+          <p id="gcal-edit-bid-title" class="text-sm text-gray-600 mb-4 line-clamp-2"></p>
+
+          <div class="mb-3">
+            <label class="block text-xs text-gray-500 mb-1">상태</label>
+            <select id="gcal-edit-status" class="border rounded px-3 py-2 w-full text-sm">
+              <option value="검토중">검토중</option>
+              <option value="제출완료">제출완료</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="block text-xs text-gray-500 mb-1">담당자</label>
+            <input id="gcal-edit-assignee" type="text" placeholder="담당자 이름" class="border rounded px-3 py-2 w-full text-sm" />
+          </div>
+          <div class="mb-4">
+            <label class="block text-xs text-gray-500 mb-1">메모</label>
+            <textarea id="gcal-edit-memo" rows={3} placeholder="특이사항 메모" class="border rounded px-3 py-2 w-full text-sm"></textarea>
+          </div>
+
+          <div id="gcal-work-editor" class="border-t pt-4 mb-4"></div>
+          <div class="flex justify-end gap-2">
+            <button id="gcal-edit-cancel-btn" class="px-4 py-2 rounded text-sm bg-gray-200 hover:bg-gray-300">취소</button>
+            <button id="gcal-edit-save-btn" class="px-4 py-2 rounded text-sm bg-purple-600 text-white hover:bg-purple-700">저장</button>
+          </div>
+        </div>
+      </div>
+
+      {/* ===== 입찰가 계산기 모달 ===== */}
+      <div id="gcal-calc-modal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-auto flex flex-col max-h-[90vh]">
+          {/* 헤더 */}
+          <div class="flex items-center justify-between px-6 py-4 border-b bg-blue-600 rounded-t-xl">
+            <div>
+              <h3 class="text-white font-bold text-lg">🏛️ 입찰가 계산기</h3>
+              <p id="gcal-calc-title" class="text-blue-100 text-xs mt-0.5 line-clamp-1"></p>
+            </div>
+            <button id="gcal-calc-close-btn" class="text-white hover:text-blue-200 text-xl font-bold leading-none">✕</button>
+          </div>
+
+          {/* 스크롤 본문 */}
+          <div class="overflow-y-auto flex-1 px-6 py-4">
+            {/* 공고 정보 요약 */}
+            <div class="bg-blue-50 rounded-lg p-3 mb-4 text-sm flex flex-wrap gap-4">
+              <div>
+                <span class="text-gray-500 text-xs">낙찰방법</span>
+                <p id="gcal-calc-bid-method" class="font-medium text-gray-700"></p>
+              </div>
+            </div>
+
+            <div id="gcal-calc-fields"></div>
+          </div>
+
+          {/* 하단 버튼 */}
+          <div class="px-6 py-3 border-t flex justify-end">
+            <button id="gcal-calc-close-btn-bottom"
+              class="px-5 py-2 rounded-lg text-sm bg-gray-200 hover:bg-gray-300 font-medium"
+              onclick="document.getElementById('gcal-calc-modal').classList.add('hidden'); document.getElementById('gcal-calc-modal').classList.remove('flex')">
+              닫기
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+})
+
+export default app
+

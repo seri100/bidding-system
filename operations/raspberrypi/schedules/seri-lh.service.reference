@@ -1,0 +1,12 @@
+# /etc/systemd/system/seri-lh.service
+[Unit]
+Description=Seri LH Alarm Runner
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server2
+ExecStart=/usr/bin/flock -n /tmp/seri_lh.lock /bin/bash /home/pi/seri_Alarm_Server2/run.sh
+[Install]
+WantedBy=multi-user.target

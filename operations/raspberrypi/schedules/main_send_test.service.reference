@@ -1,0 +1,8 @@
+# /etc/systemd/system/main_send_test.service
+[Unit]
+Description=Main Send TEST (dry-run, isolated base, single receiver)
+After=network.target mariadb.service
+[Service]
+Type=oneshot
+User=root
+ExecStart=/bin/bash /home/pi/n_data/scripts/test_mode_on.sh

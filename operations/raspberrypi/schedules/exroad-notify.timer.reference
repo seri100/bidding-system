@@ -1,0 +1,9 @@
+# /etc/systemd/system/exroad-notify.timer
+[Unit]
+Description=Run EXROAD Bid Notice Every Hour 08:32-18:32
+[Timer]
+OnCalendar=Mon..Fri *-*-* 08..18:32:00
+Persistent=true
+Unit=exroad-notify.service
+[Install]
+WantedBy=timers.target

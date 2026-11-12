@@ -1,0 +1,10 @@
+# /etc/systemd/system/seri-gon-auto-we.timer
+[Unit]
+Description=Seri GON_AUTO (Weekend) timer
+[Timer]
+Unit=seri-gon-auto.service
+OnCalendar=Sat,Sun 17:17:00
+Persistent=true
+AccuracySec=1s
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+# /etc/systemd/system/server11-main-crawling.service
+[Unit]
+Description=Server-11 LH 소방공사 알림 (CSV 기반)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/server-11
+ExecStart=/bin/bash /home/pi/server-11/run_main_crawling11.sh
+[Install]
+WantedBy=multi-user.target

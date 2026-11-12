@@ -1,0 +1,13 @@
+# /etc/systemd/system/n_data-raw-collector.service
+[Unit]
+Description=N_DATA RAW Collector (independent; produce raw only)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/n_data_collector
+ExecStart=/bin/bash -lc /home/pi/n_data_collector/run_raw_collector.sh
+# /etc/systemd/system/n_data-raw-collector.service.d/10-flock.conf
+[Service]
+ExecStart=
+ExecStart=/bin/bash -lc "/usr/bin/flock -n -E 99 /tmp/n_data_raw_collector.service.lock /usr/bin/python3 -u /home/pi/n_data_collector/collector_raw.py"

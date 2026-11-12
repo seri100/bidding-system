@@ -1,0 +1,9 @@
+# /etc/systemd/system/gon-auto-cleanup.timer
+[Unit]
+Description=Run GON_AUTO cleanup daily
+[Timer]
+OnCalendar=*-*-* 03:35:00
+Persistent=true
+Unit=gon-auto-cleanup.service
+[Install]
+WantedBy=timers.target

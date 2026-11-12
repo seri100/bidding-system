@@ -1,0 +1,401 @@
+{
+  "captured_at": "2026-11-12T02:57:20.654Z",
+  "projects": [
+    "bid-dashboard: Cloudflare Pages/D1 active",
+    "bidding-system: legacy Node server, no current process observed",
+    "bid_monitor: scheduled task disabled"
+  ],
+  "files": [
+    {
+      "path": "source/bid-dashboard/archive-bids.mjs",
+      "redacted": false,
+      "sha256": "7038b51cfb2e270cb871abfa99a08f11c9728e6da32801eed84013abb3e919c4"
+    },
+    {
+      "path": "source/bid-dashboard/ecosystem.config.cjs",
+      "redacted": false,
+      "sha256": "a863d766ee9f6b27ba9e8d5bd73a60be2ea1599ee227c8354e3cfa26f9bdfb60"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0001_initial_schema.sql",
+      "redacted": false,
+      "sha256": "7e32c2da99ce0be185d851727b2bb755d3c91836ddc4a8798137d529ebe14de9"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0002_bid_management.sql",
+      "redacted": false,
+      "sha256": "277d6366d347e0e9d52192c5de612a6741c24645b3a7e95fb750050537e58dd3"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0003_add_bid_open_date.sql",
+      "redacted": false,
+      "sha256": "0c427cca0186b33d3ca69425a4192fccabb1f1a22bc939f516b186d88da83286"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0004_gcal_bids.sql",
+      "redacted": false,
+      "sha256": "917e4d8c9e05aa7e46930baff9e77f4060866fe32c13e6aa971a35ba163391cf"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0005_gcal_calendar_tags.sql",
+      "redacted": false,
+      "sha256": "43a8fc36b988e0e3318b51dcc828129831568dc1ca60b263e3004679034f20c8"
+    },
+    {
+      "path": "source/bid-dashboard/migrations/0006_gcal_bid_workflow.sql",
+      "redacted": false,
+      "sha256": "a8cb424b0a578b2247e2e9b65bd599f2548e0c7b43bdb382625ee5614e433de3"
+    },
+    {
+      "path": "source/bid-dashboard/package-lock.json",
+      "redacted": false,
+      "sha256": "93433ea4f03f65da629ba74aeddd13cc9a622814bc1270c0e9799715e4668559"
+    },
+    {
+      "path": "source/bid-dashboard/package.json",
+      "redacted": false,
+      "sha256": "c60277900c30e0694ea4b7a4d573b3a71ea57a7210f888034f8477062d427a6e"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/bid-app.js",
+      "redacted": false,
+      "sha256": "121dbe536caf6390fef7cce69525cadcdeb1254f54f9f3d9bec861d23d2f3dd2"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/bid-archive.js",
+      "redacted": false,
+      "sha256": "b61007aa698676d5c2b0fdf56b457a49375b8e0bfaf9d81fd0eaaeb0d89a4a57"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/bid-calculator.js",
+      "redacted": false,
+      "sha256": "f397dccf8eb5a98941d44d071cd1f538c0098bd58e42d0477ad09c8a3fdc26d6"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/bid-source.js",
+      "redacted": false,
+      "sha256": "0dec7f01dd5e192952fa1f6515c2c9b3a453be42fc4950a02fac2d0708e4c69e"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/bid-workflow.js",
+      "redacted": false,
+      "sha256": "b22303eeaba98baaf9a4172464163c2d45e35175b9756abecc9886f1060e2138"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/gcal-app.js",
+      "redacted": false,
+      "sha256": "06ee0c758e21f330fe854fa78eda224af9f5fb0dd2e8b8c99d4d86c8ec5a7da4"
+    },
+    {
+      "path": "source/bid-dashboard/public/static/style.css",
+      "redacted": false,
+      "sha256": "632482c6eef31499acbfa0341d58087e222aa8bf104b7d1fac2ae8df71d1c165"
+    },
+    {
+      "path": "source/bid-dashboard/run-archive.ps1",
+      "redacted": false,
+      "sha256": "78ad397faa195c9ef39f0a98c82610995491749f2c696d7019e24a9f550e9bc4"
+    },
+    {
+      "path": "source/bid-dashboard/scripts/sync_bids_to_cloudflare.py",
+      "redacted": false,
+      "sha256": "f40d123a6c251a0e5238a2ab9674271530b534086de2ad81ddc8399fec6f62b0"
+    },
+    {
+      "path": "source/bid-dashboard/src/gcal.ts",
+      "redacted": true,
+      "sha256": "f2aa8cefdf71c8a3ce7ebe887b29fc37de13635d4ac9047116dcc9a88216ed22"
+    },
+    {
+      "path": "source/bid-dashboard/src/index.tsx",
+      "redacted": false,
+      "sha256": "9e3fcaab0a20bae722e22657f3a52265e2bcb977d9337fb800793992d820a347"
+    },
+    {
+      "path": "source/bid-dashboard/src/renderer.tsx",
+      "redacted": false,
+      "sha256": "c0b9dbdf6970e22a33b80c57b7ccdec0ed681095a89fe516f5083883d2a1a6af"
+    },
+    {
+      "path": "source/bid-dashboard/tests/api.test.mjs",
+      "redacted": false,
+      "sha256": "bbbc110918daa97f2de58802a5ef3559bb2c5f13c20d15e7be6f838220c6cf79"
+    },
+    {
+      "path": "source/bid-dashboard/tests/bid-source.test.mjs",
+      "redacted": false,
+      "sha256": "9a416b6426e000fbcbf12a41b5587451dabebcdd9a1d82c6df8115fc51ad65d6"
+    },
+    {
+      "path": "source/bid-dashboard/tests/calculator.test.mjs",
+      "redacted": false,
+      "sha256": "f436fedf73b8731edd5793c00d430aece6720c899e26a51e64d57f1a63921e6e"
+    },
+    {
+      "path": "source/bid-dashboard/tests/workflow.test.mjs",
+      "redacted": false,
+      "sha256": "bcc4333b1d664050b2bf33ddf81402f1886627e3501a80cbaafe12c443b72a13"
+    },
+    {
+      "path": "source/bid-dashboard/tsconfig.json",
+      "redacted": false,
+      "sha256": "b33b584ae4dc3c9a63c1ed7f07f40f85348139251865e755165083125b87a2a8"
+    },
+    {
+      "path": "source/bid-dashboard/verify-archive.mjs",
+      "redacted": false,
+      "sha256": "3b6fee1d6c7172b5b673a92f0a0b7f88c9bc02736f9dcdecc38385d8a0debe3b"
+    },
+    {
+      "path": "source/bid-dashboard/vite.config.ts",
+      "redacted": false,
+      "sha256": "219bdf338831deee9c85577f331fac3630bd176465a548222285bfaa2f117ae0"
+    },
+    {
+      "path": "source/bid-dashboard/wrangler.jsonc",
+      "redacted": false,
+      "sha256": "4208e6afb6c6ce0add03c06c3b0f57c5ac26da9a9c02d783bcb2587151ca0af6"
+    },
+    {
+      "path": "source/bidding-system/add_missing_fields.js",
+      "redacted": true,
+      "sha256": "f02008790f20a0fe782347d0a74167f4b3bc5d1a72512ba17cc40691e2028279"
+    },
+    {
+      "path": "source/bidding-system/add_sample_data.js",
+      "redacted": true,
+      "sha256": "755924d492bc6e4e02409cb2de7854c04bc30b86582a48d7dd24edb615c18f4a"
+    },
+    {
+      "path": "source/bidding-system/analyze.js",
+      "redacted": true,
+      "sha256": "7ddc8891646bee00d451b1d541d792dcca84f0c54e9e5b14ab7fcb9478633bd1"
+    },
+    {
+      "path": "source/bidding-system/check-db.js",
+      "redacted": true,
+      "sha256": "2b98d8a87b00b099d5d86011587052d7b014d14b0973cccfe7d1dbdcc29b5b5f"
+    },
+    {
+      "path": "source/bidding-system/check_db.js",
+      "redacted": true,
+      "sha256": "d2c48831a88489a1fdc3d6fa51640e8158b7621526208531a5c167c53f80402d"
+    },
+    {
+      "path": "source/bidding-system/check_regions.js",
+      "redacted": true,
+      "sha256": "96bad83fc456f6daf816399dc246db70616e2f4d9e6ec1b2cdc742d6ecd229f6"
+    },
+    {
+      "path": "source/bidding-system/clear_db.js",
+      "redacted": true,
+      "sha256": "a60a39bcecbc53b49b723f6e517b995c3599ded8fec96ad56a7ac49b46f4a788"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/LH.js",
+      "redacted": true,
+      "sha256": "be405128fb24bcf55ecc904194d125836cac6fb39164498819ec5ca01775fa1c"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/고속도로공사.js",
+      "redacted": true,
+      "sha256": "b1c15e424f5aa79c6f4e36bda274be737836cd9f3dfaf235773644ef5a7a9954"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/국가철도공단.js",
+      "redacted": true,
+      "sha256": "378d902bb4289e8db43616a064654669f8b5ec416585b1141fee87f4a3bea272"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/나라장터.js",
+      "redacted": true,
+      "sha256": "05a0280b81ab32db9a29bcfba9402ce41bfde30c600ce10aad340e597fc067d7"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/한국수력원자력.js",
+      "redacted": true,
+      "sha256": "72f7d8abf0007386696ff6dda65dc9107d7d1604cc0cc87e6097efd139a65798"
+    },
+    {
+      "path": "source/bidding-system/config/agencies/한전.js",
+      "redacted": true,
+      "sha256": "e3caa79f68442d420153bae061fd8ea8a41173f91f9c2fb1ecdca6230a63bcb7"
+    },
+    {
+      "path": "source/bidding-system/convert.js",
+      "redacted": true,
+      "sha256": "51f84e2b69e820acc30e276cc3419675af1cd7472fdcebd975c4288dc78a2784"
+    },
+    {
+      "path": "source/bidding-system/crawl_g2b.js",
+      "redacted": true,
+      "sha256": "2915ab5a241c1a88934b20b3760857003e9d98b61a9c5725b1eea7e09ff1da23"
+    },
+    {
+      "path": "source/bidding-system/debug_announcements.js",
+      "redacted": true,
+      "sha256": "aa51e395d3aa57287cecc35bb30e6eeff9cfdd5756b462250a21e11ec02da3a8"
+    },
+    {
+      "path": "source/bidding-system/debug_chungbuk.js",
+      "redacted": true,
+      "sha256": "8323d0d940dbf54ef30cdb156d651ffad144eff9af76edaafe0bf71c21cdca34"
+    },
+    {
+      "path": "source/bidding-system/diagnose_api.js",
+      "redacted": false,
+      "sha256": "b3346ac7eb643f3001eac0273b08bf79e6a035dbd1a488879bb2adbf6b747489"
+    },
+    {
+      "path": "source/bidding-system/discover_endpoints.js",
+      "redacted": false,
+      "sha256": "79cae54cc5b9c9c4ec9c141c2f0b6002745750975449e9be95b321b8ceb6982e"
+    },
+    {
+      "path": "source/bidding-system/expand_sample_data.js",
+      "redacted": true,
+      "sha256": "0b7b1b1a4373040b514f94299de9afed2a43538475cc6fb80d4e6493e6172a95"
+    },
+    {
+      "path": "source/bidding-system/fetch_all_data.js",
+      "redacted": true,
+      "sha256": "55a435ffa2679bfbd336e01ff2d7762fb6d39953c4913a1d797aa18c7235ae7c"
+    },
+    {
+      "path": "source/bidding-system/fetch_public_data.js",
+      "redacted": true,
+      "sha256": "1e6d93ff1ec89bc42a1520f4221c6d1cbef28722679ce502caa40082eed468e4"
+    },
+    {
+      "path": "source/bidding-system/fix_regions.js",
+      "redacted": true,
+      "sha256": "eaf55a9d2c70dbdcf2b6fafeb985ced054d5b040be2f1873788507aa42b8f113"
+    },
+    {
+      "path": "source/bidding-system/import_g2b_data.js",
+      "redacted": true,
+      "sha256": "a5f5775dd52f00d48a6bdb9029188c38bca21c06d6d56ea631b0e55532d05ac9"
+    },
+    {
+      "path": "source/bidding-system/import_real_data.js",
+      "redacted": true,
+      "sha256": "d80185eea2f3b984da22ef693effc92c3ba1b05c9c64416f4bc951b5876f6cfa"
+    },
+    {
+      "path": "source/bidding-system/initializeDB.js",
+      "redacted": true,
+      "sha256": "82caa79dd0fe6c05fe27534c6d3a61f3e2cc7c1e2a3261414267b11a7e0b6402"
+    },
+    {
+      "path": "source/bidding-system/modules/agency-manager.js",
+      "redacted": false,
+      "sha256": "de78d1d20a9b2e80de1a431be9d51a6080570403db73420173723591441ab177"
+    },
+    {
+      "path": "source/bidding-system/modules/announcement-collector.js",
+      "redacted": false,
+      "sha256": "a965d252f67495ed54a0ec11d1b63368f94d66d84014faebd74e2706fd543c9a"
+    },
+    {
+      "path": "source/bidding-system/modules/bid-document-collector.js",
+      "redacted": false,
+      "sha256": "81fbbf7937e65f8b3cb5f2d731170dcb7b78ea3eb3bb0299c2b879e6f4165d43"
+    },
+    {
+      "path": "source/bidding-system/modules/bid-parser.js",
+      "redacted": false,
+      "sha256": "6512626ec5e62ef40331a0590f539cf7e6bb3771073efb2596d155c6704c26f2"
+    },
+    {
+      "path": "source/bidding-system/modules/bid-price-calculator.js",
+      "redacted": false,
+      "sha256": "b7a544fb5c1273c0b4dd750a671b70bc3aaa26b0db7a49dd30a659c92587ac42"
+    },
+    {
+      "path": "source/bidding-system/modules/bid-report-generator.js",
+      "redacted": false,
+      "sha256": "cde8c8e4b3c67214c98499cde0df811b215dc0618f5307f10b4344287949a11b"
+    },
+    {
+      "path": "source/bidding-system/modules/calendar_sync.js",
+      "redacted": false,
+      "sha256": "c5ec3d26aff1b1f0ef3a17752124cdad7747c0b6b6829a37bea5f796ed2084c6"
+    },
+    {
+      "path": "source/bidding-system/modules/company-evaluator.js",
+      "redacted": false,
+      "sha256": "4ab927a0cf3603ccf776d92412eef878211ffc220aba44c558db8ec1ef630e3a"
+    },
+    {
+      "path": "source/bidding-system/package-lock.json",
+      "redacted": true,
+      "sha256": "1a1b6991303861ec3392240a5b620f6681eeee4deb455784cc75aa8ab98b7e06"
+    },
+    {
+      "path": "source/bidding-system/package.json",
+      "redacted": false,
+      "sha256": "2bf86a02475fe0966d3fb47e828fe71a03302251c8e88212e6cb1ceca555c232"
+    },
+    {
+      "path": "source/bidding-system/public/index.html",
+      "redacted": false,
+      "sha256": "a4e8c0b51997f256a3e2610d343047a3fa8090672a128e98caf329ddb29328f2"
+    },
+    {
+      "path": "source/bidding-system/server.js",
+      "redacted": true,
+      "sha256": "03427e457701b077177558b360f7105f7571f67f9ef76a86094e2717a13ef926"
+    },
+    {
+      "path": "source/bidding-system/sync_raspberry_to_mongo.js",
+      "redacted": true,
+      "sha256": "d10d679b76bfdef8e2779d3e96fb12baacba62bf80e4bdede540bd9403b267d0"
+    },
+    {
+      "path": "source/bidding-system/test_api.js",
+      "redacted": false,
+      "sha256": "4292f1f11fca5158e44f5fba59dc812032bfe9cc5e33863245d27edd5991c4fe"
+    },
+    {
+      "path": "source/bidding-system/test_bid_api.js",
+      "redacted": false,
+      "sha256": "9296f3d5ead5b115b552042e144c3be08fb066db3c85cb6137f11256a8a2f374"
+    },
+    {
+      "path": "source/bidding-system/test_official_api.js",
+      "redacted": false,
+      "sha256": "5ad25f62b53e6141fdaaaa0014f1530544ea917b1c9b05d8d2fc2fd33416d453"
+    },
+    {
+      "path": "source/bidding-system/test_svc_goods.js",
+      "redacted": false,
+      "sha256": "ca164d3c84fea73159c072bbaebfe197f26e951d6280dd8066f2246bb16e0608"
+    },
+    {
+      "path": "source/bid_monitor/bid_monitor.py",
+      "redacted": true,
+      "sha256": "bcb99ac3c7b2d70c32beea473cc9e0f5edb05fbc08d49ad39e93e08652f09db8"
+    },
+    {
+      "path": "source/bid_monitor/find_url.py",
+      "redacted": false,
+      "sha256": "7633fb107897dfcb51761f178de9827be463858e222027a151f9ec215743b982"
+    },
+    {
+      "path": "source/bid_monitor/page_source.html",
+      "redacted": false,
+      "sha256": "e004ea2265fd0447eda9f56e96e6b69521db699821a14e4f70d4e5bda7627731"
+    },
+    {
+      "path": "source/bid_monitor/test_endpoints.py",
+      "redacted": true,
+      "sha256": "7fd2ce45aa77b6276651ca077c6f1d8bf19f0ecd63911b9c9919779740a262ff"
+    },
+    {
+      "path": "source/bid_monitor/test_endpoints2.py",
+      "redacted": true,
+      "sha256": "28942d24ec97b06706a33dd7c6809587a3e8321cd8018c47fd7dc912a85f6e51"
+    }
+  ],
+  "public_audit": "Known config values, credential assignments, token-like literals, private keys, phone numbers, emails and credential URL parameters removed. Review snapshot; not a deployable secret configuration."
+}

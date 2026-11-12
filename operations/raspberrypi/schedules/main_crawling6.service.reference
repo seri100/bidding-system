@@ -1,0 +1,13 @@
+# /etc/systemd/system/main_crawling6.service
+[Unit]
+Description=Main Crawling6 Service (입찰공고 자동수집)
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/seri_Alarm_Server6
+ExecStart=/bin/bash /home/pi/seri_Alarm_Server6/run_main_crawling6.sh
+# /etc/systemd/system/main_crawling6.service.d/override-sync.conf
+[Service]
+# /etc/systemd/system/main_crawling6.service.d/override.conf
+[Service]
+User=pi
+Group=pi

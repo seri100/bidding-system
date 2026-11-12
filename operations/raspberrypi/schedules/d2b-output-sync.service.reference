@@ -1,0 +1,8 @@
+# /etc/systemd/system/d2b-output-sync.service
+[Unit]
+Description=Copy D2B output to NAS
+After=remote-fs.target
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/usr/bin/python3 /usr/local/bin/d2b-output-sync

@@ -1,0 +1,9 @@
+# /etc/systemd/system/send_road_exbid.timer
+[Unit]
+Description=Run Send Road EXBID every 30 minutes
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..21:00,30:00
+Persistent=true
+Unit=send_road_exbid.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/lh-crawl.timer
+[Unit]
+Description=Schedule lh-crawl.service (Weekdays 07-20 every 10m)
+[Timer]
+OnCalendar=Mon..Fri 07..20:00/10
+Persistent=true
+Unit=lh-crawl.service
+[Install]
+WantedBy=timers.target

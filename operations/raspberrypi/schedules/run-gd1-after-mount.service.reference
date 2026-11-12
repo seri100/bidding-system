@@ -1,0 +1,13 @@
+# /etc/systemd/system/run-gd1-after-mount.service
+[Unit]
+Description=Run gd-1 script after /mnt/vol1 mount
+After=mnt-vol1.mount
+Requires=mnt-vol1.mount
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/bin/bash -lc '/home/pi/seri_Alarm_Server3/run_gd1.sh || true'
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/daum_mail_daily.service
+[Unit]
+Description=Daum Mail Daily Bid Calendar Sync
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/n_data
+ExecStart=/usr/bin/python3 -u /home/pi/n_data/daum_mail/daum_mail_sync.py --days 2 --max 100 --include-subject 공공구매,판로지원,SMC --apply
+# /etc/systemd/system/daum_mail_daily.service.d/override.conf
+[Service]

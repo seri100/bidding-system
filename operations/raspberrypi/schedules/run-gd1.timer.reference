@@ -1,0 +1,12 @@
+# /etc/systemd/system/run-gd1.timer
+[Unit]
+Description=Run gd-1 three times a day
+[Timer]
+OnCalendar=*-*-* 07:07:00
+OnCalendar=*-*-* 13:13:00
+OnCalendar=*-*-* 17:17:00
+Persistent=true
+AccuracySec=1s
+Unit=run-gd1.service
+[Install]
+WantedBy=timers.target

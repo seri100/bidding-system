@@ -1,0 +1,9 @@
+# /etc/systemd/system/seri-n-data-main-send.timer
+[Unit]
+Description=Seri N-Data main_send 자동 실행 (공공데이터의 공사공고 가져오기)
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..20:00/15:00
+OnCalendar=Sat,Sun *-*-* 18:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

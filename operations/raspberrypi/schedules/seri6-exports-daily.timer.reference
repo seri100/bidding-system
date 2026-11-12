@@ -1,0 +1,8 @@
+# /etc/systemd/system/seri6-exports-daily.timer
+[Unit]
+Description=Seri Alarm Server6 - Daily export merge timer
+[Timer]
+OnCalendar=*-*-* 22:00:00
+Persistent=true
+[Install]
+WantedBy=timers.target

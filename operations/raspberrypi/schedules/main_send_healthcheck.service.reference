@@ -1,0 +1,10 @@
+# /etc/systemd/system/main_send_healthcheck.service
+[Unit]
+Description=Main Send Healthcheck (verify last run logs and status)
+After=network.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/n_data
+EnvironmentFile=-/etc/default/main_send_healthcheck
+ExecStart=/bin/bash -lc

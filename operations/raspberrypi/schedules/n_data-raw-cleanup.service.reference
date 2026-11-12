@@ -1,0 +1,7 @@
+# /etc/systemd/system/n_data-raw-cleanup.service
+[Unit]
+Description=N_DATA RAW Cleanup
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/home/pi/n_data_collector/cleanup_raw_health.sh

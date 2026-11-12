@@ -1,0 +1,9 @@
+# /etc/systemd/system/gon-auto-maint.timer
+[Unit]
+Description=Daily gon_auto backup & rotate (maint)
+[Timer]
+OnCalendar=*-*-* 00:20:00
+Persistent=true
+Unit=gon-auto-maint.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/send_road_exbid.service
+[Unit]
+Description=Send Road EXBID Alimtalk
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/n_data
+ExecStart=/usr/bin/flock -n /tmp/send_road_exbid.lock /bin/bash /home/pi/n_data/run_send_road_exbid.sh
+User=pi
+Group=pi

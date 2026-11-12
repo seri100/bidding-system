@@ -14,3 +14,20 @@ backup/
 coverage/
 dist/
 build/
+
+# Private operational recovery material
+**/node_modules/
+**/dist/
+**/__pycache__/
+**/*.pyc
+**/.wrangler/
+**/.env
+**/.env.*
+**/.dev.vars
+**/backup.key
+**/*.enc
+**/*.enc.hmac
+**/*.enc.sha256
+**/credentials*.json
+**/*token*.pickle
+**/n_data-recovery-private/

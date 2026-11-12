@@ -1,0 +1,10 @@
+# /etc/systemd/system/outbox_sender_clean.timer
+[Unit]
+Description=Outbox Sender Clean schedule (weekday 07-21 q15m, weekend 17:30 once)
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..21:00/15:00
+OnCalendar=Sat,Sun *-*-* 17:30:00
+Persistent=true
+Unit=outbox_sender_clean.service
+[Install]
+WantedBy=timers.target

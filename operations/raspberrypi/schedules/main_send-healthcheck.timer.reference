@@ -1,0 +1,10 @@
+# /etc/systemd/system/main_send-healthcheck.timer
+[Unit]
+Description=Main Send Healthcheck Timer (Mon-Fri 07:01)
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07:01:00
+AccuracySec=30s
+Persistent=true
+Unit=main_send-healthcheck.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/main_send2-raw-collector.service
+[Unit]
+Description=Main Send2 RAW Collector (FULLY INDEPENDENT)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/main_send2
+ExecStart=/bin/bash -lc '/usr/bin/flock -n -E 99 /tmp/main_send2_raw_collector.lock /usr/bin/python3 -u /home/pi/main_send2/tools/collector_raw.py'

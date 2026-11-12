@@ -1,0 +1,12 @@
+# /etc/systemd/system/bid-nr-cleanup.service
+[Unit]
+Description=Backup and cleanup generated files in /home/pi/bid-nr
+After=network-online.target
+[Service]
+Type=oneshot
+WorkingDirectory=/home/pi/bid-nr
+ExecStart=/usr/bin/python3 /home/pi/bid-nr/bid_nr_cleanup.py
+User=pi
+Group=pi
+# /etc/systemd/system/bid-nr-cleanup.service.d/backup.conf
+[Service]

@@ -1,0 +1,23 @@
+# /etc/systemd/system/seri-lh.timer
+[Unit]
+Description=Seri LH Alarm Schedule
+[Timer]
+OnCalendar=Mon..Fri 07:17/20
+OnCalendar=Mon..Fri 08:17/20
+OnCalendar=Mon..Fri 09:17/20
+OnCalendar=Mon..Fri 10:17/20
+OnCalendar=Mon..Fri 11:17/20
+OnCalendar=Mon..Fri 12:17/20
+OnCalendar=Mon..Fri 13:17/20
+OnCalendar=Mon..Fri 14:17/20
+OnCalendar=Mon..Fri 15:17/20
+OnCalendar=Mon..Fri 16:17/20
+OnCalendar=Mon..Fri 17:17/20
+OnCalendar=Mon..Fri 18:17/20
+OnCalendar=Mon..Fri 19:17/20
+OnCalendar=Mon..Fri 20:17
+OnCalendar=Sat,Sun 20:17
+Persistent=true
+Unit=seri-lh.service
+[Install]
+WantedBy=timers.target

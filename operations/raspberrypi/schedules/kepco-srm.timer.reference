@@ -1,0 +1,11 @@
+# /etc/systemd/system/kepco-srm.timer
+[Unit]
+Description=KEPCO SRM Timer - Weekdays 11:11 and 16:16
+[Timer]
+OnCalendar=Mon..Fri *-*-* 11:11:00
+OnCalendar=Mon..Fri *-*-* 16:16:00
+Persistent=true
+AccuracySec=1min
+Unit=kepco-srm.service
+[Install]
+WantedBy=timers.target

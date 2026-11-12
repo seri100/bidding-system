@@ -1,0 +1,8 @@
+# /etc/systemd/system/seri-healthcheck.timer
+[Unit]
+Description=Run seri healthcheck every 5 minutes
+[Timer]
+AccuracySec=30s
+Unit=seri-healthcheck.service
+[Install]
+WantedBy=timers.target

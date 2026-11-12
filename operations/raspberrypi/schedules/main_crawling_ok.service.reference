@@ -1,0 +1,10 @@
+# /etc/systemd/system/main_crawling_ok.service
+[Unit]
+Description=Main Crawling OK Script
+After=network.target
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server6/main_crawling_ok.py
+WorkingDirectory=/home/pi/seri_Alarm_Server6
+User=pi
+[Install]
+WantedBy=multi-user.target

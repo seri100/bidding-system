@@ -1,0 +1,9 @@
+# /etc/systemd/system/main_send-healthcheck.service
+[Unit]
+Description=Main Send Healthcheck (check logs after first run)
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/n_data
+ExecStart=/bin/bash -lc '/home/pi/n_data/tools/main_send_healthcheck.sh'

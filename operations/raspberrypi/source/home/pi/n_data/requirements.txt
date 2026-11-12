@@ -1,0 +1,19 @@
+
+openpyxl
+
+pandas
+
+requests
+
+python-dotenv
+
+pymysql
+
+# 선택 사항
+
+# beautifulsoup4
+
+# lxml
+
+# pytz
+

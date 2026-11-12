@@ -1,3 +1,5 @@
+[전체 운영·설치·복원 매뉴얼](operations/OPERATIONS_MANUAL.md) | [검증 결과](operations/VALIDATION.md)
+
 \# 📋 공고 검색 시스템 (Bid Announcement Search System)
 
 

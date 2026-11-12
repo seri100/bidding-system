@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-schedule-sync.timer
+[Unit]
+Description=Run bid schedule folder sync at 08:00 on weekdays
+[Timer]
+OnCalendar=Mon..Fri *-*-* 08:00:00
+Persistent=true
+AccuracySec=1min
+Unit=bid-schedule-sync.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,10 @@
+# /etc/systemd/system/gon-auto-cleanup.service
+[Unit]
+Description=Backup and cleanup GON_AUTO xlsx files
+After=mnt-vol1.mount
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server3/gon_auto_cleanup.py

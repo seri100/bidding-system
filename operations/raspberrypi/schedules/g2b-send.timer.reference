@@ -1,0 +1,9 @@
+# /etc/systemd/system/g2b-send.timer
+[Unit]
+Description=Schedule g2b-send.service (Weekdays 07-21 every 15m)
+[Timer]
+OnCalendar=Mon..Fri 07..21:00/15
+Persistent=true
+Unit=g2b-send.service
+[Install]
+WantedBy=timers.target

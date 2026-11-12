@@ -1,0 +1,12 @@
+# /etc/systemd/system/kiscon-daily.service
+[Unit]
+Description=KISCON 73000 신규등록 업체 수집
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/kiscon_auto
+ExecStart=/usr/bin/flock -n -E 99 /tmp/kiscon_daily.lock /home/pi/kiscon_auto/venv/bin/python /home/pi/kiscon_auto/kiscon_daily.py --output-dir /mnt/vol1/kiscon --days-back 3
+[Install]
+WantedBy=multi-user.target

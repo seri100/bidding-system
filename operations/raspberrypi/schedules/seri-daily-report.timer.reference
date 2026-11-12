@@ -1,0 +1,9 @@
+# /etc/systemd/system/seri-daily-report.timer
+[Unit]
+Description=Run seri-daily-report.service every morning at 08:40
+[Timer]
+OnCalendar=*-*-* 08:40:00
+Persistent=true
+Unit=seri-daily-report.service
+[Install]
+WantedBy=timers.target

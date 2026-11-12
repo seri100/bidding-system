@@ -1,0 +1,7 @@
+# /etc/systemd/system/n_data-raw-watchdog.service
+[Unit]
+Description=N_DATA RAW Watchdog
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/home/pi/n_data_collector/raw_watchdog.sh

@@ -1,0 +1,10 @@
+# /etc/systemd/system/exroad-gcal-sync.timer
+[Unit]
+Description=Run EXROAD Google Calendar Sync
+[Timer]
+OnCalendar=Mon..Fri *-*-* 08..18:45:00
+Persistent=true
+AccuracySec=1min
+Unit=exroad-gcal-sync.service
+[Install]
+WantedBy=timers.target

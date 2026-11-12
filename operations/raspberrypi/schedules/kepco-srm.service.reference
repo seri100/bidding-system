@@ -1,0 +1,12 @@
+# /etc/systemd/system/kepco-srm.service
+[Unit]
+Description=KEPCO SRM Fire and Mechanical Bid Collector
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid_elec
+ExecStart=/usr/bin/flock -n -E 99 /tmp/kepco-srm.lock /bin/bash /home/pi/bid_elec/run_kepco_srm.sh
+[Install]
+WantedBy=multi-user.target

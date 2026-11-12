@@ -1,0 +1,8 @@
+# /etc/systemd/system/lh6-merge.timer
+[Unit]
+Description=Run LH Daily Merge at 20:05 KST
+[Timer]
+OnCalendar=*-*-* 20:05
+Persistent=true
+[Install]
+WantedBy=timers.target

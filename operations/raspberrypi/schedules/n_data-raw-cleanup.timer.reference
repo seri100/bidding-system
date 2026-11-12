@@ -1,0 +1,8 @@
+# /etc/systemd/system/n_data-raw-cleanup.timer
+[Unit]
+Description=Run RAW Cleanup daily
+[Timer]
+OnCalendar=daily
+Persistent=true
+[Install]
+WantedBy=timers.target

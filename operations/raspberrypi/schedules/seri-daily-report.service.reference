@@ -1,0 +1,10 @@
+# /etc/systemd/system/seri-daily-report.service
+[Unit]
+Description=Seri Alarm Server6 - Daily Health Report
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+ExecStart=/usr/bin/python3 -u /home/pi/seri_daily_report.py
+WorkingDirectory=/home/pi

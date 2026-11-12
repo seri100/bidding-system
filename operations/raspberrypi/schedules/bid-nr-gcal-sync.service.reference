@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-nr-gcal-sync.service
+[Unit]
+Description=Safely sync National Rail Authority notices to Google Calendar
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid-schedule-sync
+ExecStart=/usr/bin/flock -w 120 /tmp/bid-nr-gcal-sync.lock /usr/bin/python3 -u /home/pi/bid-schedule-sync/bid_nr_gcal_sync.py

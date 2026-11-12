@@ -1,0 +1,7 @@
+# /etc/systemd/system/seri-healthcheck.service
+[Unit]
+Description=Seri - periodic healthcheck (self-heal)
+[Service]
+Type=oneshot
+User=pi
+ExecStart=/bin/bash -lc '/home/pi/seri_Alarm_Server/scripts/healthcheck_timer.sh'

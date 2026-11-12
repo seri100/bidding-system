@@ -1,0 +1,2529 @@
+{
+  "captured_at": "20261112_115442",
+  "host": "raspberrypi",
+  "os": "PRETTY_NAME=\"Raspbian GNU/Linux 10 (buster)\"\nNAME=\"Raspbian GNU/Linux\"\nVERSION_ID=\"10\"\nVERSION=\"10 (buster)\"\nVERSION_CODENAME=buster\nID=raspbian\nID_LIKE=debian\nHOME_URL=\"http://www.raspbian.org/\"\nSUPPORT_URL=\"http://www.raspbian.org/RaspbianForums\"\nBUG_REPORT_URL=\"http://www.raspbian.org/RaspbianBugs\"\n",
+  "python": "Python 3.7.3",
+  "roots": [
+    "/home/pi/bid-d2b",
+    "/home/pi/bid-nr",
+    "/home/pi/bid-schedule-sync",
+    "/home/pi/bid-water",
+    "/home/pi/bid_elec",
+    "/home/pi/bidsync",
+    "/home/pi/exroad",
+    "/home/pi/fire_assoc",
+    "/home/pi/g2b",
+    "/home/pi/gongo",
+    "/home/pi/khnp_auto",
+    "/home/pi/kiscon_auto",
+    "/home/pi/n_data",
+    "/home/pi/road",
+    "/home/pi/seri_Alarm_Server",
+    "/home/pi/seri_Alarm_Server10",
+    "/home/pi/seri_Alarm_Server2",
+    "/home/pi/seri_Alarm_Server3",
+    "/home/pi/seri_Alarm_Server6",
+    "/home/pi/server-21"
+  ],
+  "nas_roots": [
+    "/mnt/vol1/bid/n_data",
+    "/mnt/vol1/bid/bid-d2b",
+    "/mnt/vol1/bid/bid-nr",
+    "/mnt/vol1/bid/bid-water",
+    "/mnt/vol1/bid/bid_elec",
+    "/mnt/vol1/bid/exroad",
+    "/mnt/vol1/bid/gongo",
+    "/mnt/vol1/bid/seri_Alarm_Server6",
+    "/mnt/vol1/bid/server-21"
+  ],
+  "units": [
+    {
+      "unit": "alarmserver.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/alarmserver.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-gon-auto.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-gon-auto.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-nr-cleanup.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-nr-cleanup.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-nr-gcal-sync.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-nr-gcal-sync.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-nr.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-nr.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-schedule-sync.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-schedule-sync.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-water.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/bid-water.service",
+      "active": "failed"
+    },
+    {
+      "unit": "bidalert.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/bidalert.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "bidalert7.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/bidalert7.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "cifs-vol1.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/cifs-vol1.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "d2b-collect.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/d2b-collect.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "d2b-output-sync.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/d2b-output-sync.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "daum_mail_daily.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/daum_mail_daily.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "daum_mail_smc.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/daum_mail_smc.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "daum_mail_sync.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/daum_mail_sync.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "exroad-cleanup.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/exroad-cleanup.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "exroad-gcal-sync.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/exroad-gcal-sync.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "exroad-notify.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/exroad-notify.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "fire_assoc_new.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/fire_assoc_new.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "g2b-outbox-sender.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/g2b-outbox-sender.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "g2b-send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/g2b-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "gd2512.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/gd2512.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "gon-auto-cleanup.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/gon-auto-cleanup.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "gon-auto-maint.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/gon-auto-maint.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "gon_auto_maint.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/gon_auto_maint.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "kepco-srm.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/kepco-srm.service",
+      "active": "failed"
+    },
+    {
+      "unit": "khnp-auto.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/khnp-auto.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "kiscon-daily.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/kiscon-daily.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "land_crawl.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/land_crawl.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh-crawl.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh-crawl.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh-main.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh-main.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh-send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh6-main.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/lh6-main.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh6-merge.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/lh6-merge.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh6-notify.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/lh6-notify.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh_crawling.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh_crawling.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_crawling6.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_crawling6.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_crawling_ok.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_crawling_ok.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send-healthcheck.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send-healthcheck.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send2-raw-collector.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send2-raw-collector.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send2.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send2.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send2_shadow.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send2_shadow.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send_autocheck.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send_autocheck.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send_healthcheck.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send_healthcheck.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send_test.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/main_send_test.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-cleanup.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/n_data-raw-cleanup.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-collector.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/n_data-raw-collector.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-watchdog.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/n_data-raw-watchdog.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data_test-main-send.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/n_data_test-main-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "ndata-main-send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/ndata-main-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "outbox_sender_clean.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/outbox_sender_clean.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "rclone-ipdisk.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/rclone-ipdisk.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "rclone-vol1.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/rclone-vol1.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "run-gd1-after-mount.service",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/run-gd1-after-mount.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "run-gd1.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/run-gd1.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "send_road_exbid.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/send_road_exbid.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-alarm-main-send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-alarm-main-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-daily-report.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/seri-daily-report.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-gon-auto.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/seri-gon-auto.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-healthcheck.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/seri-healthcheck.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-lh.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-lh.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-n-data-main-send.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-n-data-main-send.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri6-exports-daily.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/seri6-exports-daily.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri_alarm.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri_alarm.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri_alarm_server6.service",
+      "state": "static",
+      "fragment": "/etc/systemd/system/seri_alarm_server6.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "server11-main-crawling.service",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/server11-main-crawling.service",
+      "active": "inactive"
+    },
+    {
+      "unit": "backup-to-nas.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/backup-to-nas.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-gon-auto.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/bid-gon-auto.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "bid-nr-cleanup.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/bid-nr-cleanup.timer",
+      "active": "active"
+    },
+    {
+      "unit": "bid-nr-gcal-sync.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/bid-nr-gcal-sync.timer",
+      "active": "active"
+    },
+    {
+      "unit": "bid-nr.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/bid-nr.timer",
+      "active": "active"
+    },
+    {
+      "unit": "bid-schedule-sync.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/bid-schedule-sync.timer",
+      "active": "active"
+    },
+    {
+      "unit": "bid-water.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/bid-water.timer",
+      "active": "active"
+    },
+    {
+      "unit": "d2b-collect.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/d2b-collect.timer",
+      "active": "active"
+    },
+    {
+      "unit": "d2b-output-sync.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/d2b-output-sync.timer",
+      "active": "active"
+    },
+    {
+      "unit": "daum_mail_daily.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/daum_mail_daily.timer",
+      "active": "active"
+    },
+    {
+      "unit": "daum_mail_smc.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/daum_mail_smc.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "daum_mail_sync.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/daum_mail_sync.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "exroad-cleanup.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/exroad-cleanup.timer",
+      "active": "active"
+    },
+    {
+      "unit": "exroad-gcal-sync.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/exroad-gcal-sync.timer",
+      "active": "active"
+    },
+    {
+      "unit": "exroad-notify.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/exroad-notify.timer",
+      "active": "active"
+    },
+    {
+      "unit": "fire_assoc_new.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/fire_assoc_new.timer",
+      "active": "active"
+    },
+    {
+      "unit": "g2b-outbox-daily-report.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/g2b-outbox-daily-report.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "g2b-outbox-sender.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/g2b-outbox-sender.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "g2b-send.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/g2b-send.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "gd2512.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/gd2512.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "gon-auto-cleanup.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/gon-auto-cleanup.timer",
+      "active": "active"
+    },
+    {
+      "unit": "gon-auto-maint.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/gon-auto-maint.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "gon_auto_maint.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/gon_auto_maint.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "kepco-srm.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/kepco-srm.timer",
+      "active": "active"
+    },
+    {
+      "unit": "khnp-auto.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/khnp-auto.timer",
+      "active": "active"
+    },
+    {
+      "unit": "kiscon-daily.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/kiscon-daily.timer",
+      "active": "active"
+    },
+    {
+      "unit": "land_crawl.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/land_crawl.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh-crawl.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh-crawl.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh-main.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh-main.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh6-main.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/lh6-main.timer",
+      "active": "active"
+    },
+    {
+      "unit": "lh6-merge.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh6-merge.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh6-notify.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh6-notify.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "lh_crawling.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/lh_crawling.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_crawling6.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_crawling6.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send-healthcheck.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send-healthcheck.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/main_send.timer",
+      "active": "active"
+    },
+    {
+      "unit": "main_send2-raw-collector.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send2-raw-collector.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send2.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send2.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send2_shadow.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send2_shadow.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "main_send_autocheck.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/main_send_autocheck.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-cleanup.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/n_data-raw-cleanup.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-collector.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/n_data-raw-collector.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data-raw-watchdog.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/n_data-raw-watchdog.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "n_data_test-main-send.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/n_data_test-main-send.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "outbox_sender.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/outbox_sender.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "outbox_sender_clean.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/outbox_sender_clean.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "run-gd1.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/run-gd1.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "send_road_exbid.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/send_road_exbid.timer",
+      "active": "active"
+    },
+    {
+      "unit": "seri-daily-report.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/seri-daily-report.timer",
+      "active": "active"
+    },
+    {
+      "unit": "seri-gon-auto-wd.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/seri-gon-auto-wd.timer",
+      "active": "active"
+    },
+    {
+      "unit": "seri-gon-auto-we.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/seri-gon-auto-we.timer",
+      "active": "active"
+    },
+    {
+      "unit": "seri-healthcheck.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-healthcheck.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-lh.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-lh.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-n-data-main-send-weekend.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-n-data-main-send-weekend.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri-n-data-main-send.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri-n-data-main-send.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri6-exports-daily.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri6-exports-daily.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "seri_alarm_server6.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/seri_alarm_server6.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "server11-main-crawling.timer",
+      "state": "disabled",
+      "fragment": "/etc/systemd/system/server11-main-crawling.timer",
+      "active": "inactive"
+    },
+    {
+      "unit": "server21-merge-result.timer",
+      "state": "enabled",
+      "fragment": "/etc/systemd/system/server21-merge-result.timer",
+      "active": "inactive"
+    }
+  ],
+  "active_units": [
+    "backup-to-nas.service",
+    "backup-to-nas.timer",
+    "bid-nr-cleanup.service",
+    "bid-nr-cleanup.timer",
+    "bid-nr-gcal-sync.service",
+    "bid-nr-gcal-sync.timer",
+    "bid-nr.service",
+    "bid-nr.timer",
+    "bid-schedule-sync.service",
+    "bid-schedule-sync.timer",
+    "bid-water.service",
+    "bid-water.timer",
+    "d2b-collect.service",
+    "d2b-collect.timer",
+    "d2b-output-sync.service",
+    "d2b-output-sync.timer",
+    "daum_mail_daily.service",
+    "daum_mail_daily.timer",
+    "exroad-cleanup.service",
+    "exroad-cleanup.timer",
+    "exroad-gcal-sync.service",
+    "exroad-gcal-sync.timer",
+    "exroad-notify.service",
+    "exroad-notify.timer",
+    "fire_assoc_new.service",
+    "fire_assoc_new.timer",
+    "g2b-outbox-daily-report.service",
+    "g2b-outbox-daily-report.timer",
+    "gon-auto-cleanup.service",
+    "gon-auto-cleanup.timer",
+    "kepco-srm.service",
+    "kepco-srm.timer",
+    "khnp-auto.service",
+    "khnp-auto.timer",
+    "kiscon-daily.service",
+    "kiscon-daily.timer",
+    "lh6-main.service",
+    "lh6-main.timer",
+    "main_send.service",
+    "main_send.timer",
+    "run-gd1-after-mount.service",
+    "send_road_exbid.service",
+    "send_road_exbid.timer",
+    "seri-daily-report.service",
+    "seri-daily-report.timer",
+    "seri-gon-auto-wd.timer",
+    "seri-gon-auto-we.timer",
+    "seri-gon-auto.service",
+    "server21-merge-result.service",
+    "server21-merge-result.timer"
+  ],
+  "missing_paths": [
+    "/home/pi/road",
+    "/home/pi/seri_Alarm_Server10"
+  ],
+  "copy_failures": [],
+  "excluded": [
+    "raw data",
+    "attachments",
+    "logs",
+    "historical backups",
+    "large data >20MiB except state/history"
+  ],
+  "source_files": [
+    {
+      "source": "/home/pi/bid-d2b/d2b_calendar.py",
+      "path": "source/home/pi/bid-d2b/d2b_calendar.py",
+      "redacted": false,
+      "sha256": "83c8c9ffdf78e37b51e0a2014c2316eb0e797b39af3559135dd1975abdeb3676"
+    },
+    {
+      "source": "/home/pi/bid-d2b/d2b_collect.py",
+      "path": "source/home/pi/bid-d2b/d2b_collect.py",
+      "redacted": true,
+      "sha256": "46de46c022757b3c7425ff5ef68fdefcb4cdcf1b0692a4a3371ee5e3603408e5"
+    },
+    {
+      "source": "/home/pi/bid-d2b/d2b_notify.py",
+      "path": "source/home/pi/bid-d2b/d2b_notify.py",
+      "redacted": false,
+      "sha256": "e0d2a68902f9e244bc2e568244e90e2790afef13bc4ca17641ca29b4adeadf93"
+    },
+    {
+      "source": "/home/pi/bid-nr/bid_nr_cleanup.py",
+      "path": "source/home/pi/bid-nr/bid_nr_cleanup.py",
+      "redacted": false,
+      "sha256": "fdb77f55ff98f3e73fd054bfc18710afb9a386ece0c076c883b0ff54e9350970"
+    },
+    {
+      "source": "/home/pi/bid-nr/main_nr.py",
+      "path": "source/home/pi/bid-nr/main_nr.py",
+      "redacted": true,
+      "sha256": "b8a8d244c383c644bb5518ea52331da84ec9112e1c2e55b371521a54aa2777d2"
+    },
+    {
+      "source": "/home/pi/bid-nr/main_nr_patch_20260730.py",
+      "path": "source/home/pi/bid-nr/main_nr_patch_20260730.py",
+      "redacted": true,
+      "sha256": "7627f2aeb25ff0fecace59d4c2e4ebb17040fd98676b33b72d12ed840d336cef"
+    },
+    {
+      "source": "/home/pi/bid-nr/main_nr_첨부문서수집_20260914.py",
+      "path": "source/home/pi/bid-nr/main_nr_첨부문서수집_20260914.py",
+      "redacted": true,
+      "sha256": "3e3226120d1973864885264a89ecb3b0beda926d084d3624f9c6b9a64ccd5ba9"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/bid_nr_gcal_sync.py",
+      "path": "source/home/pi/bid-schedule-sync/bid_nr_gcal_sync.py",
+      "redacted": true,
+      "sha256": "0ef1d9649c07cee6186e6bda2ce4157f7d46001ba25c023daefc732d133b7977"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/calendar_bid_folder_sync.py",
+      "path": "source/home/pi/bid-schedule-sync/calendar_bid_folder_sync.py",
+      "redacted": true,
+      "sha256": "a2aafd7a2535ebad8ac9d79b1a7303edb6a06cdf9a5c363e1a7050aa29b0324a"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/calendar_correct_kwater.py",
+      "path": "source/home/pi/bid-schedule-sync/calendar_correct_kwater.py",
+      "redacted": false,
+      "sha256": "8e2be6852e7522318ec40544502fc4260e6fcfcf5db40b1cd7f97b628af98484"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/calendar_post_verify.py",
+      "path": "source/home/pi/bid-schedule-sync/calendar_post_verify.py",
+      "redacted": false,
+      "sha256": "42c426915a886d4c6173b9a3518e19d852cc24e0be2ad5b28e7d66c15f7dadcc"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/calendar_preflight.py",
+      "path": "source/home/pi/bid-schedule-sync/calendar_preflight.py",
+      "redacted": false,
+      "sha256": "114e78dddb79a46365199dd2f322f1d829a67953ed60756c98a28823f1428126"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/calendar_resume_approved.py",
+      "path": "source/home/pi/bid-schedule-sync/calendar_resume_approved.py",
+      "redacted": false,
+      "sha256": "55fcea87c2918e009c9d5659564c0a96534709d646b77bb9ee9d403626cfff7a"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/exroad_gcal_sync.py",
+      "path": "source/home/pi/bid-schedule-sync/exroad_gcal_sync.py",
+      "redacted": false,
+      "sha256": "142f7145905fb6cc0b4c62a52f0513474719d533ea40a02b68d9b9f12f10e7f9"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/fix_exroad_202607881_calendar.py",
+      "path": "source/home/pi/bid-schedule-sync/fix_exroad_202607881_calendar.py",
+      "redacted": false,
+      "sha256": "14df847ac0ef5340799b31409c28895acc62fa9176b00f280cb6b69ba4252c0e"
+    },
+    {
+      "source": "/home/pi/bid-schedule-sync/institution_calendar_bridge.py",
+      "path": "source/home/pi/bid-schedule-sync/institution_calendar_bridge.py",
+      "redacted": true,
+      "sha256": "1f9f4f91c53891b8498630d7fe1b122475ea8ff9114c7d28f05dbe3051d7c953"
+    },
+    {
+      "source": "/home/pi/bid-water/check_bid_water_schedule.sh",
+      "path": "source/home/pi/bid-water/check_bid_water_schedule.sh",
+      "redacted": false,
+      "sha256": "bec9d3a3ccdbfa935c69b59b76aba2cecbc9b6d14d9144fa75a932a43b69c064"
+    },
+    {
+      "source": "/home/pi/bid-water/configure_output_to_zshare.sh",
+      "path": "source/home/pi/bid-water/configure_output_to_zshare.sh",
+      "redacted": true,
+      "sha256": "9d7c1f28a6777558ab1efb0a7206a7adfc1a133dc2313fb43f1e0db1d5eb786c"
+    },
+    {
+      "source": "/home/pi/bid-water/install_systemd_linux.sh",
+      "path": "source/home/pi/bid-water/install_systemd_linux.sh",
+      "redacted": false,
+      "sha256": "a1709e9c0fe8a42e21d632c4d8d605f3d56109715c4f73179571ee9030c867fd"
+    },
+    {
+      "source": "/home/pi/bid-water/main_water.py",
+      "path": "source/home/pi/bid-water/main_water.py",
+      "redacted": true,
+      "sha256": "800c8dc14e966c6c77ec5ef770152a94937a30eb345b32fc473091b8c001d41f"
+    },
+    {
+      "source": "/home/pi/bid-water/requirements.txt",
+      "path": "source/home/pi/bid-water/requirements.txt",
+      "redacted": false,
+      "sha256": "597e63a840904c8fb67567388381156d8f778a011370a6fd34acc9d7cc28f6cd"
+    },
+    {
+      "source": "/home/pi/bid-water/run_bid_water.sh",
+      "path": "source/home/pi/bid-water/run_bid_water.sh",
+      "redacted": true,
+      "sha256": "c5fba75220a71eb824b198d0f471d010ddd5bffa8de010ac4c34386cc37b16f7"
+    },
+    {
+      "source": "/home/pi/bid-water/setup_raspberrypi.sh",
+      "path": "source/home/pi/bid-water/setup_raspberrypi.sh",
+      "redacted": true,
+      "sha256": "e646b31a77dfe7f09d892ea2258bb594cb5f057d2c1016c490f3afc16aaea99c"
+    },
+    {
+      "source": "/home/pi/bid-water/uninstall_bid_water_timer.sh",
+      "path": "source/home/pi/bid-water/uninstall_bid_water_timer.sh",
+      "redacted": false,
+      "sha256": "c97d767b9c2f8f2b360f466ed27b902ecd6b4b1aa6360715ed65e9815c6d43d8"
+    },
+    {
+      "source": "/home/pi/bid_elec/kepco_agreement_enrich.py",
+      "path": "source/home/pi/bid_elec/kepco_agreement_enrich.py",
+      "redacted": false,
+      "sha256": "3100640d6de1020fa427be249733d5e0dc27c67430758a7dbf1ab99809c8ca6c"
+    },
+    {
+      "source": "/home/pi/bid_elec/kepco_agreement_parser.py",
+      "path": "source/home/pi/bid_elec/kepco_agreement_parser.py",
+      "redacted": false,
+      "sha256": "dbaaf1851f91943e6ea33b4071556804b24235720b2c4e028b5b7e260f8f8544"
+    },
+    {
+      "source": "/home/pi/bid_elec/kepco_all_attachments.py",
+      "path": "source/home/pi/bid_elec/kepco_all_attachments.py",
+      "redacted": false,
+      "sha256": "2f59e5b58f9f41df9718f1b19bda36e7e438503bcfbe93848174cb4a4a4e3819"
+    },
+    {
+      "source": "/home/pi/bid_elec/kepco_srm_collect.py",
+      "path": "source/home/pi/bid_elec/kepco_srm_collect.py",
+      "redacted": true,
+      "sha256": "7aa5668ab00f34915d1842b4cf6e3c340d1440515a35107f9d3d661473db6fdd"
+    },
+    {
+      "source": "/home/pi/bid_elec/kepco_srm_operate.py",
+      "path": "source/home/pi/bid_elec/kepco_srm_operate.py",
+      "redacted": false,
+      "sha256": "b785097df6db3a2c5f34dc8f55fc78e8ad135e0a186b743d23624011f1ddcb51"
+    },
+    {
+      "source": "/home/pi/bid_elec/run_kepco_srm.sh",
+      "path": "source/home/pi/bid_elec/run_kepco_srm.sh",
+      "redacted": false,
+      "sha256": "cd9f19d9288ae0c53f9f4f2de47c65cc06ae9f6df224c56c37dd3daee1d81694"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/01_JoinPublicAnnounce.js",
+      "path": "source/home/pi/bid_elec/srm_modules/01_JoinPublicAnnounce.js",
+      "redacted": true,
+      "sha256": "404deb4c129fda328ab45703c4333682a8b762cfc5a96ff6837b34884f033ffa"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/02_JoinPublicAnnounceViewModel.js",
+      "path": "source/home/pi/bid_elec/srm_modules/02_JoinPublicAnnounceViewModel.js",
+      "redacted": true,
+      "sha256": "8bfc2564232c485d71efdee41e456af1831bb58988aff49a25f215cf3800a760"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/03_JoinPublicAnnounceViewController.js",
+      "path": "source/home/pi/bid_elec/srm_modules/03_JoinPublicAnnounceViewController.js",
+      "redacted": true,
+      "sha256": "884ed9f9a5e2078f7842f335c9641a86a6d209ef6c28a0a998b1b247c1ddb83f"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/04_JoinPublicAnnounceList.js",
+      "path": "source/home/pi/bid_elec/srm_modules/04_JoinPublicAnnounceList.js",
+      "redacted": true,
+      "sha256": "3453e725851a16cf1c715b13165e8137794d2f3c12624f09e194a18a9f7634cc"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/05_JoinPublicAnnounceListViewModel.js",
+      "path": "source/home/pi/bid_elec/srm_modules/05_JoinPublicAnnounceListViewModel.js",
+      "redacted": true,
+      "sha256": "a0abcba1caea1a1d4c99c685157dbd6eb50230e2efdaee63d9f4780a484eb409"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/06_JoinPublicAnnounceListViewController.js",
+      "path": "source/home/pi/bid_elec/srm_modules/06_JoinPublicAnnounceListViewController.js",
+      "redacted": true,
+      "sha256": "3cbcaf3dafba7814261ea82c57f88569a255ec0fc30c23d3caa595f7cd6ad118"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_modules/07_JoinPublicAnnounce.js",
+      "path": "source/home/pi/bid_elec/srm_modules/07_JoinPublicAnnounce.js",
+      "redacted": true,
+      "sha256": "9227fa4267cea814553508d23c3e4c1092e33d4f957b630045529a16486c4ade"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/001_resources_cmmn_js_simpleBrowser.js",
+      "path": "source/home/pi/bid_elec/srm_probe/001_resources_cmmn_js_simpleBrowser.js",
+      "redacted": false,
+      "sha256": "66cb53336e94a84696c02ed9dfc5b9a1b8a239ad37950d6f1c2941a307b9bf01"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/002_resources_cmmn_js_weblog.js",
+      "path": "source/home/pi/bid_elec/srm_probe/002_resources_cmmn_js_weblog.js",
+      "redacted": false,
+      "sha256": "b4cd5bb121b6fa21d9423c3dcf7e2c6faf3cd4dc9f34582eb66c2f78bdad2efd"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/003_extjs_swfobject.js",
+      "path": "source/home/pi/bid_elec/srm_probe/003_extjs_swfobject.js",
+      "redacted": false,
+      "sha256": "cafd612ebd6bc497a7a05d3dfef133a0b793f1e04e277b31c424d6d8892a1d48"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/004_resources_es6-promise-2.0.0.min.js",
+      "path": "source/home/pi/bid_elec/srm_probe/004_resources_es6-promise-2.0.0.min.js",
+      "redacted": false,
+      "sha256": "a0304c5261904d3257bf1262b9d97f2f73f5c399e206baf1fb00c44b53d5b095"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/005_ext-all.js",
+      "path": "source/home/pi/bid_elec/srm_probe/005_ext-all.js",
+      "redacted": true,
+      "sha256": "4a1035f8a46ebd2f859f0a4c11149da1e30b62cd8600459cc2a823fae110464d"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/006_etnajs.js",
+      "path": "source/home/pi/bid_elec/srm_probe/006_etnajs.js",
+      "redacted": true,
+      "sha256": "86b3abf12a9a955fb3dd6252bc97e4acd9d0032752052b4293692f0b7f4977bb"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/007_etnajs-cmmn.js",
+      "path": "source/home/pi/bid_elec/srm_probe/007_etnajs-cmmn.js",
+      "redacted": true,
+      "sha256": "f499f00b88f1ef1ad47efa4bd521fc2a4671872f5869b63e7daeb786fa22d362"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/008_extjs_override.js",
+      "path": "source/home/pi/bid_elec/srm_probe/008_extjs_override.js",
+      "redacted": false,
+      "sha256": "a652b30c7f57d173c8b01576fa113bea6a3eab7311d5aed61ad91238c431fd8e"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/009_extjs_profile-override.js",
+      "path": "source/home/pi/bid_elec/srm_probe/009_extjs_profile-override.js",
+      "redacted": false,
+      "sha256": "9031c236e088da97101cad74340aeebf3afc3c40dfa990bed8668cc3d446424e"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/010_extjs_serviceBidScheduler.js",
+      "path": "source/home/pi/bid_elec/srm_probe/010_extjs_serviceBidScheduler.js",
+      "redacted": true,
+      "sha256": "85d1c154e38c4a73844b4d98c81c9157daa96ea0494b873518e922519a823129"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/011_stateful.js",
+      "path": "source/home/pi/bid_elec/srm_probe/011_stateful.js",
+      "redacted": false,
+      "sha256": "46122cf0e419e6cb89dc2a83031a8f4ce4ef630e54cfa8c65dfa947492a2b779"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/012_require.js",
+      "path": "source/home/pi/bid_elec/srm_probe/012_require.js",
+      "redacted": false,
+      "sha256": "b694e7c330a9e95312752bf70299ec9edfcc421f0e012415426cba06c83537ee"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/013_MessageSource-production.js",
+      "path": "source/home/pi/bid_elec/srm_probe/013_MessageSource-production.js",
+      "redacted": false,
+      "sha256": "4afe62ec46fe8b83c34d8fd14df23da303beb76fe7704d98fc639a7a92c9e291"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/014_login_js_jquery-1.11.2.min.js",
+      "path": "source/home/pi/bid_elec/srm_probe/014_login_js_jquery-1.11.2.min.js",
+      "redacted": false,
+      "sha256": "2ecd295d295bec062cedebe177e54b9d6b19fc0a841dc5c178c654c9ccff09c0"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/015_Mdi-production.js",
+      "path": "source/home/pi/bid_elec/srm_probe/015_Mdi-production.js",
+      "redacted": true,
+      "sha256": "047d1909970b82f07b962d7f2606886ecd04fcb2ba2c73887b17bec857807e15"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/016_api.js",
+      "path": "source/home/pi/bid_elec/srm_probe/016_api.js",
+      "redacted": true,
+      "sha256": "b2b7f8bd01a91a944ba35f33b10ca7a9488d1035810777689ba5aeb68353b858"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/017_ext-bootstrap.js",
+      "path": "source/home/pi/bid_elec/srm_probe/017_ext-bootstrap.js",
+      "redacted": false,
+      "sha256": "c623e783e50908f7b0e532bfba388c9b88f4ec1dac5d55615b5631c42b38d227"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/018_extjs_messagesource-override.js",
+      "path": "source/home/pi/bid_elec/srm_probe/018_extjs_messagesource-override.js",
+      "redacted": false,
+      "sha256": "0dd0f28c421dc3af72ae21b9c5eadb948eaf99dae600ffc8dbe96d2e06c850df"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_probe/019_extjs_locale_etna-lang-ko.js",
+      "path": "source/home/pi/bid_elec/srm_probe/019_extjs_locale_etna-lang-ko.js",
+      "redacted": true,
+      "sha256": "ce5a2d42929367c186e807464db80621e4fc5872eb1327d97bd7080f9a58728c"
+    },
+    {
+      "source": "/home/pi/bid_elec/srm_store_test.py",
+      "path": "source/home/pi/bid_elec/srm_store_test.py",
+      "redacted": true,
+      "sha256": "982ef932a5e07712252fa896f12562d113b0be0aa89c34cae3343a93865155e8"
+    },
+    {
+      "source": "/home/pi/bidsync/collect_award_db_fixed-260713.py",
+      "path": "source/home/pi/bidsync/collect_award_db_fixed-260713.py",
+      "redacted": true,
+      "sha256": "eb27e9286bafee08aa13592268469c2c66d89a34b08ee0a3b918ee878a58c12a"
+    },
+    {
+      "source": "/home/pi/bidsync/collect_award_db_fixed.py",
+      "path": "source/home/pi/bidsync/collect_award_db_fixed.py",
+      "redacted": true,
+      "sha256": "39c1549d709fae1c3de39f670e6c74f96c386a1c147be4bb19049b2081c9c912"
+    },
+    {
+      "source": "/home/pi/bidsync/daily_sync_final_insert_cnstwk.py",
+      "path": "source/home/pi/bidsync/daily_sync_final_insert_cnstwk.py",
+      "redacted": false,
+      "sha256": "15346f7dc92ad89c64d47ef77fe1c53fbec084c6fb6d45bb3f289f276cf721cd"
+    },
+    {
+      "source": "/home/pi/bidsync/daily_sync_final_insert_thng.py",
+      "path": "source/home/pi/bidsync/daily_sync_final_insert_thng.py",
+      "redacted": false,
+      "sha256": "b9d65bfe2c95b3104ea90b8828f91b02f67a2c01c6079bc43f4f578000ff6bfd"
+    },
+    {
+      "source": "/home/pi/bidsync/run_cnstwk.sh",
+      "path": "source/home/pi/bidsync/run_cnstwk.sh",
+      "redacted": false,
+      "sha256": "3d9792b78c6e72d14a274046226aff6a2892854d60e870853019ace5437fffce"
+    },
+    {
+      "source": "/home/pi/bidsync/run_cnstwk_retry.sh",
+      "path": "source/home/pi/bidsync/run_cnstwk_retry.sh",
+      "redacted": false,
+      "sha256": "c0d7b75bf52bd9f19d43f227c3be5d5bd4016442b1963a935c1e5961c838687e"
+    },
+    {
+      "source": "/home/pi/bidsync/run_thng.sh",
+      "path": "source/home/pi/bidsync/run_thng.sh",
+      "redacted": false,
+      "sha256": "f2213cf577437a2d14764e5a62cf766564350fff4b4867c118a688ab4cb54be3"
+    },
+    {
+      "source": "/home/pi/exroad/audit_exroad_official.py",
+      "path": "source/home/pi/exroad/audit_exroad_official.py",
+      "redacted": false,
+      "sha256": "8eece266a632ede3f4738a4794f8dffe706607f84a2e64c384b885c251a53f28"
+    },
+    {
+      "source": "/home/pi/exroad/exroad_cleanup.sh",
+      "path": "source/home/pi/exroad/exroad_cleanup.sh",
+      "redacted": true,
+      "sha256": "38931822f61b70f382293b66ddd72bcbcf821ed095d75fccbd27f7d9b46cc8eb"
+    },
+    {
+      "source": "/home/pi/exroad/exroad_notify.py",
+      "path": "source/home/pi/exroad/exroad_notify.py",
+      "redacted": true,
+      "sha256": "554f7024ab471d56404151d71f85ccb3bed37d89e329c4b4fb72942b92ec157f"
+    },
+    {
+      "source": "/home/pi/exroad/hwp_patch_install/install_exroad_hwp_patch.sh",
+      "path": "source/home/pi/exroad/hwp_patch_install/install_exroad_hwp_patch.sh",
+      "redacted": false,
+      "sha256": "a48332e0aee09e8d7b054393b7a56d3f83c108c88251042dacc370e9fe0bf86d"
+    },
+    {
+      "source": "/home/pi/exroad/hwp_patch_install/patched/exroad_notify.py",
+      "path": "source/home/pi/exroad/hwp_patch_install/patched/exroad_notify.py",
+      "redacted": true,
+      "sha256": "114240920861731d7e1badc1593d6a136b404234e4e83ec5b0aead848867b037"
+    },
+    {
+      "source": "/home/pi/exroad/hwp_patch_install/patched/send_exroad_ready.py",
+      "path": "source/home/pi/exroad/hwp_patch_install/patched/send_exroad_ready.py",
+      "redacted": false,
+      "sha256": "b08f8aa88ecb388b1bc2d81a136d9947762a35f1163b20c0e86765709e21bb0c"
+    },
+    {
+      "source": "/home/pi/fire_assoc/fire_assoc_new.py",
+      "path": "source/home/pi/fire_assoc/fire_assoc_new.py",
+      "redacted": true,
+      "sha256": "76ce18e97ec4840e6e172af070cc60b45b383702b6b1ba3d5c70f8e4be288402"
+    },
+    {
+      "source": "/home/pi/g2b/g2b_selector_probe.py",
+      "path": "source/home/pi/g2b/g2b_selector_probe.py",
+      "redacted": true,
+      "sha256": "8d8526de503daf7448dc029e5d6f971e52ae310c576a7a63764465d31df1f958"
+    },
+    {
+      "source": "/home/pi/g2b/publicdata_notice.py",
+      "path": "source/home/pi/g2b/publicdata_notice.py",
+      "redacted": true,
+      "sha256": "81f19e30cd15cc54ec122c349e1dd325185a852fdb903922c062f5ed44b8cc33"
+    },
+    {
+      "source": "/home/pi/g2b/run_publicdata.sh",
+      "path": "source/home/pi/g2b/run_publicdata.sh",
+      "redacted": true,
+      "sha256": "9f5d81a8806013803874e5d057b85ccd5faac9f4edbf55bc1f54ae1220d0fb2e"
+    },
+    {
+      "source": "/home/pi/gongo/bid_collector.py",
+      "path": "source/home/pi/gongo/bid_collector.py",
+      "redacted": true,
+      "sha256": "720b052b91f2f2f2eb6c606dd4d587c3f43fb6f6d100fbd462c63deba4faf7ad"
+    },
+    {
+      "source": "/home/pi/gongo/config.py",
+      "path": "source/home/pi/gongo/config.py",
+      "redacted": true,
+      "sha256": "bba5d59f2acb8b0d53f5a837e5e8d7441f07e86ab9149c644f740429ead0321c"
+    },
+    {
+      "source": "/home/pi/gongo/filter_ghp_ehp.py",
+      "path": "source/home/pi/gongo/filter_ghp_ehp.py",
+      "redacted": true,
+      "sha256": "13ae1cced358222e99849daef799b5f305099aa448eb93eb593eaff248c2961d"
+    },
+    {
+      "source": "/home/pi/gongo/install_bid_sync.sh",
+      "path": "source/home/pi/gongo/install_bid_sync.sh",
+      "redacted": false,
+      "sha256": "e6b87b6841ea1d73c8925fae82e9dc9d2b82fe4cef7ab76b8706fe470be54478"
+    },
+    {
+      "source": "/home/pi/gongo/mount_network.sh",
+      "path": "source/home/pi/gongo/mount_network.sh",
+      "redacted": true,
+      "sha256": "b748c2217cbca44363d2d000171f97df2b7654022f1d53782a2ec1068cbb8a60"
+    },
+    {
+      "source": "/home/pi/gongo/setup_cron.sh",
+      "path": "source/home/pi/gongo/setup_cron.sh",
+      "redacted": true,
+      "sha256": "78d439163802a483a293f14bcbaee541c2a21847ba958f8f9fbfd46b6c55e8ad"
+    },
+    {
+      "source": "/home/pi/gongo/sync_bids_to_cloudflare.py",
+      "path": "source/home/pi/gongo/sync_bids_to_cloudflare.py",
+      "redacted": true,
+      "sha256": "a38e3ad3241316e85627ac70db82d5a55501f47fc15056c5e40432837d92e4c2"
+    },
+    {
+      "source": "/home/pi/khnp_auto/install.sh",
+      "path": "source/home/pi/khnp_auto/install.sh",
+      "redacted": false,
+      "sha256": "3796f6b2f352ae684b28e7cbede9e6fb25c51f9039f2bf31f0bdf362e916e77e"
+    },
+    {
+      "source": "/home/pi/khnp_auto/khnp_auto.py",
+      "path": "source/home/pi/khnp_auto/khnp_auto.py",
+      "redacted": false,
+      "sha256": "a1033bc3f54e09e76c3e5294215a4cf321b3b521d634162c0754ceec0d86dfb9"
+    },
+    {
+      "source": "/home/pi/khnp_auto/requirements.txt",
+      "path": "source/home/pi/khnp_auto/requirements.txt",
+      "redacted": false,
+      "sha256": "8cb48e362dc73e1cd8ef2b19afc7d815c4d26010f69426741f10b631613e4859"
+    },
+    {
+      "source": "/home/pi/khnp_auto/test_khnp_auto.py",
+      "path": "source/home/pi/khnp_auto/test_khnp_auto.py",
+      "redacted": false,
+      "sha256": "4e63fa554f5793e8cc801723b4fb295cc55d67a428a5f0e3187fb28d4915fc98"
+    },
+    {
+      "source": "/home/pi/kiscon_auto/kiscon_daily.py",
+      "path": "source/home/pi/kiscon_auto/kiscon_daily.py",
+      "redacted": false,
+      "sha256": "b3390d83282c075f7c82cef12b3f62479334ad03361a69d8d513a5cc213ba565"
+    },
+    {
+      "source": "/home/pi/kiscon_auto/requirements.txt",
+      "path": "source/home/pi/kiscon_auto/requirements.txt",
+      "redacted": false,
+      "sha256": "daf92cda8a6f22810075cdc8d3e36cdf8f60f7ac6fe21684f791f2c51d1b7dc8"
+    },
+    {
+      "source": "/home/pi/n_data/251115-main_send.py",
+      "path": "source/home/pi/n_data/251115-main_send.py",
+      "redacted": true,
+      "sha256": "8b629ca2d298a4c99d004b19542ebe64034bd337cd5c6a77d46fe414ce1abdb6"
+    },
+    {
+      "source": "/home/pi/n_data/251117-main_send.py",
+      "path": "source/home/pi/n_data/251117-main_send.py",
+      "redacted": true,
+      "sha256": "6150d6adb439aa890fea13bf2fa4e73bcd8380edb32edd6e7f41b7f451f96935"
+    },
+    {
+      "source": "/home/pi/n_data/251118_1944main_send.py",
+      "path": "source/home/pi/n_data/251118_1944main_send.py",
+      "redacted": true,
+      "sha256": "4d9b63a3ad62b8dae7ea91f8120cc6c1966eefb37adc555869a30738dd17bf0f"
+    },
+    {
+      "source": "/home/pi/n_data/251119-1058main_send.py",
+      "path": "source/home/pi/n_data/251119-1058main_send.py",
+      "redacted": true,
+      "sha256": "e294c5bfdae22c7da5b02231598d6ad5c6ed203534fbe41d3c9473d346ede548"
+    },
+    {
+      "source": "/home/pi/n_data/251122-main_send.py",
+      "path": "source/home/pi/n_data/251122-main_send.py",
+      "redacted": true,
+      "sha256": "8845904f062fb6df6ed5ba5f93dc2f062b8d18c8b360010cc1b3784603838321"
+    },
+    {
+      "source": "/home/pi/n_data/251126-main_send.py",
+      "path": "source/home/pi/n_data/251126-main_send.py",
+      "redacted": false,
+      "sha256": "fc059b97d9687ea781ba54ace3419988e836b63d13b75f596bf7f315ef4dba2f"
+    },
+    {
+      "source": "/home/pi/n_data/251127-main_send.py",
+      "path": "source/home/pi/n_data/251127-main_send.py",
+      "redacted": true,
+      "sha256": "6bc2ffc0ce668b124408abaf97a4935a2c2fb437f31037024cd5e7971ba14b0a"
+    },
+    {
+      "source": "/home/pi/n_data/251210_main_send.py",
+      "path": "source/home/pi/n_data/251210_main_send.py",
+      "redacted": true,
+      "sha256": "e036abbe00b8dc0c899de789c54e4b223a6521588d83120ea509eed9e8ec8436"
+    },
+    {
+      "source": "/home/pi/n_data/260406_main_send.py",
+      "path": "source/home/pi/n_data/260406_main_send.py",
+      "redacted": true,
+      "sha256": "1793c8f14aa60fc13f544507c5c6506fe7bea8e3749743dcb5cd328047bdb420"
+    },
+    {
+      "source": "/home/pi/n_data/_deploy_change_notice_20260714/apply_n_data_change_notice_patch.py",
+      "path": "source/home/pi/n_data/_deploy_change_notice_20260714/apply_n_data_change_notice_patch.py",
+      "redacted": true,
+      "sha256": "b44a815aa019db20ad73f7bca574bb608141584a38b97afea7448bf4a6db3228"
+    },
+    {
+      "source": "/home/pi/n_data/_deploy_change_notice_20260714/deploy_on_raspberrypi.sh",
+      "path": "source/home/pi/n_data/_deploy_change_notice_20260714/deploy_on_raspberrypi.sh",
+      "redacted": false,
+      "sha256": "25d1facf6d336346d42fc16c635a8c2da0e4ff2a8bced877893596fc86c97e86"
+    },
+    {
+      "source": "/home/pi/n_data/_deploy_change_notice_20260714/test_n_data_change_notice_patch.py",
+      "path": "source/home/pi/n_data/_deploy_change_notice_20260714/test_n_data_change_notice_patch.py",
+      "redacted": false,
+      "sha256": "6fbf22b18d2a99ee00e18b6a55d9aadc306fa3a5359459d272de62b15ba38c0f"
+    },
+    {
+      "source": "/home/pi/n_data/alligo.py",
+      "path": "source/home/pi/n_data/alligo.py",
+      "redacted": true,
+      "sha256": "82abeb6869b0abda6b0b3fe134e5380046225d579c2d0571e4d4d02c65aa0595"
+    },
+    {
+      "source": "/home/pi/n_data/api_country_fetch.py",
+      "path": "source/home/pi/n_data/api_country_fetch.py",
+      "redacted": false,
+      "sha256": "f04d21721e5ba9e545e5a109fdb1fba9975e3a4d3f977a205c8e2191e17f9666"
+    },
+    {
+      "source": "/home/pi/n_data/api_crawler.py",
+      "path": "source/home/pi/n_data/api_crawler.py",
+      "redacted": false,
+      "sha256": "942dbe55f3f5dc84eb164f98597c400ee741a94b4c0c18f6c4116541c7566deb"
+    },
+    {
+      "source": "/home/pi/n_data/apply_dedup_guard_patch.py",
+      "path": "source/home/pi/n_data/apply_dedup_guard_patch.py",
+      "redacted": true,
+      "sha256": "e436326024ef9e4c499269985c34918e6785d38e415d83d3f4fabb385abe75ce"
+    },
+    {
+      "source": "/home/pi/n_data/calendar_helper.py",
+      "path": "source/home/pi/n_data/calendar_helper.py",
+      "redacted": false,
+      "sha256": "c7e5b86c86ac521edd29c7bc5d01321b5d8dd4a2fba8a58ed93f8ebdbd8d556c"
+    },
+    {
+      "source": "/home/pi/n_data/daily_merge_excels.py",
+      "path": "source/home/pi/n_data/daily_merge_excels.py",
+      "redacted": false,
+      "sha256": "fc9f1383883490fe0f347bb1f384b8ac9365fe028bc0e0edebdb1ce8f0af6fa5"
+    },
+    {
+      "source": "/home/pi/n_data/daum_mail/daum_mail_sync.py",
+      "path": "source/home/pi/n_data/daum_mail/daum_mail_sync.py",
+      "redacted": true,
+      "sha256": "f770327dd0c616de30da2dc249466a07258a31a11bbae05eec308c5a6e379b7e"
+    },
+    {
+      "source": "/home/pi/n_data/error_alert_monitor.py",
+      "path": "source/home/pi/n_data/error_alert_monitor.py",
+      "redacted": true,
+      "sha256": "9a15e2e5e52a64095c7ed70ca7fe32e21ebfcfa895195b8cef7c904e5514f5e1"
+    },
+    {
+      "source": "/home/pi/n_data/fix_dedup_no_send_guard.py",
+      "path": "source/home/pi/n_data/fix_dedup_no_send_guard.py",
+      "redacted": false,
+      "sha256": "2ff02581bfa3ddb34bbd715ad051943a357479c55c480f6f4ab44c22fb2738ad"
+    },
+    {
+      "source": "/home/pi/n_data/fix_region_and_rotate.py",
+      "path": "source/home/pi/n_data/fix_region_and_rotate.py",
+      "redacted": false,
+      "sha256": "ebd057a19a1081e1b7f1e2fc7ebfa1e1caaf98793068430a4382ec24fd76f59f"
+    },
+    {
+      "source": "/home/pi/n_data/fix_send_guard_sqlite_lock.py",
+      "path": "source/home/pi/n_data/fix_send_guard_sqlite_lock.py",
+      "redacted": false,
+      "sha256": "052796008aa767cb3484bd4ac39736439e38ccbc77a51121e35db8b2397aef55"
+    },
+    {
+      "source": "/home/pi/n_data/fixed_main_send.py",
+      "path": "source/home/pi/n_data/fixed_main_send.py",
+      "redacted": false,
+      "sha256": "417594059aee4550689ad5807783efa75ff9831cf27f7ddb2e9fc29bfcde59f3"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_amount_refresh.py",
+      "path": "source/home/pi/n_data/g2b_amount_refresh.py",
+      "redacted": false,
+      "sha256": "16a8a483f21a58dcf507bba85eb4f01f53bd343ee0c661132f17224c32461611"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_api.py",
+      "path": "source/home/pi/n_data/g2b_api.py",
+      "redacted": false,
+      "sha256": "6d69561a99fbf33c29f503fb661f7e32a18eac63a174923ce4bf29f580154794"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_api02.py",
+      "path": "source/home/pi/n_data/g2b_api02.py",
+      "redacted": true,
+      "sha256": "827082ee578e07a8b7f3afc6cd52e3ffe60c378148b3935a2b61575056db6220"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_cancel_sync.py",
+      "path": "source/home/pi/n_data/g2b_cancel_sync.py",
+      "redacted": false,
+      "sha256": "93e135c5072c392422ae30f9fff84fab79022a4c44c4e7797930881ea0996778"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_inspection.py",
+      "path": "source/home/pi/n_data/g2b_inspection.py",
+      "redacted": false,
+      "sha256": "02911d44502a54d4ca692c465d0ae2c5d11c1377ef779042bee518ef39360a05"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_joint_region.py",
+      "path": "source/home/pi/n_data/g2b_joint_region.py",
+      "redacted": true,
+      "sha256": "145128770d33320a33e9b62795c42423e6735525dde17138093dc6884e130d89"
+    },
+    {
+      "source": "/home/pi/n_data/g2b_score_cap.py",
+      "path": "source/home/pi/n_data/g2b_score_cap.py",
+      "redacted": false,
+      "sha256": "0a8c5846c4ab2495cdffcde935a166d58191923a4f84730e8f6cba7acf169f16"
+    },
+    {
+      "source": "/home/pi/n_data/gcal_sync.py",
+      "path": "source/home/pi/n_data/gcal_sync.py",
+      "redacted": false,
+      "sha256": "8f5e3cb2960d6397d65f6c84c22f5eca16788bcd8a548add31e63b6853028a13"
+    },
+    {
+      "source": "/home/pi/n_data/industry_infer_guard.py",
+      "path": "source/home/pi/n_data/industry_infer_guard.py",
+      "redacted": false,
+      "sha256": "37d615700df71b3e8595898ac6b04149491e644284cddf2c2839fde70c8203c7"
+    },
+    {
+      "source": "/home/pi/n_data/install_cancel_notice_fix.sh",
+      "path": "source/home/pi/n_data/install_cancel_notice_fix.sh",
+      "redacted": false,
+      "sha256": "b7667f44456b501370857dab12eeaa558071f9f8ab3ea2cd1ba0721d1db1a4cb"
+    },
+    {
+      "source": "/home/pi/n_data/joint_region_status.py",
+      "path": "source/home/pi/n_data/joint_region_status.py",
+      "redacted": false,
+      "sha256": "80c667d5586eeea010d2adbbd8ccc502cad8753ceecb1c496130d808d437ceca"
+    },
+    {
+      "source": "/home/pi/n_data/kakao_dispatch.py",
+      "path": "source/home/pi/n_data/kakao_dispatch.py",
+      "redacted": true,
+      "sha256": "e7a8d94389f93006560cacd26961e075215bfb186c51776e53205dffe1fd6652"
+    },
+    {
+      "source": "/home/pi/n_data/kakao_notify.py",
+      "path": "source/home/pi/n_data/kakao_notify.py",
+      "redacted": false,
+      "sha256": "3eff6217e50d048872e39703e884e289c02bbad13a6bc709f4748674d2de61f3"
+    },
+    {
+      "source": "/home/pi/n_data/kakao_send_tb0485.py",
+      "path": "source/home/pi/n_data/kakao_send_tb0485.py",
+      "redacted": true,
+      "sha256": "f4ca9379e0059cd2c4c8706cac5f0dfb64697442f4fd4dd54597fa001d219739"
+    },
+    {
+      "source": "/home/pi/n_data/kakao_send_uc8365.py",
+      "path": "source/home/pi/n_data/kakao_send_uc8365.py",
+      "redacted": true,
+      "sha256": "ad07cfe1909de1d01fbf4fc0f3a37eaeb8620d9aec7d34ae814b1092848596e6"
+    },
+    {
+      "source": "/home/pi/n_data/kakao_sender.py",
+      "path": "source/home/pi/n_data/kakao_sender.py",
+      "redacted": false,
+      "sha256": "0ebb47ec87ab677693558a715a650109cd12d68c441b028626594a0e7fbeb7dc"
+    },
+    {
+      "source": "/home/pi/n_data/key_loader.py",
+      "path": "source/home/pi/n_data/key_loader.py",
+      "redacted": false,
+      "sha256": "8fb1b6afa5c5bd162e9336e07b2be610a201dbaa9a7886465e82e0ee5e698976"
+    },
+    {
+      "source": "/home/pi/n_data/main_crawler.py",
+      "path": "source/home/pi/n_data/main_crawler.py",
+      "redacted": false,
+      "sha256": "8f393d613c22759b7f4b89c8b9799d766f59af8da90de07ed2131a4ba0b80f4a"
+    },
+    {
+      "source": "/home/pi/n_data/main_send.py",
+      "path": "source/home/pi/n_data/main_send.py",
+      "redacted": true,
+      "sha256": "f55bd6e448b9d54e6d103012f019a3f283051f37f87384f02fa24de26291e2f4"
+    },
+    {
+      "source": "/home/pi/n_data/main_send_2601061016.py",
+      "path": "source/home/pi/n_data/main_send_2601061016.py",
+      "redacted": false,
+      "sha256": "6cce9d93c1f4e5d0e43aa6182d7d0c2e7944afc56c87465dddfdb9a56b684452"
+    },
+    {
+      "source": "/home/pi/n_data/main_send_clean_cancel_fixed.py",
+      "path": "source/home/pi/n_data/main_send_clean_cancel_fixed.py",
+      "redacted": true,
+      "sha256": "6ea2c16807e5834bfbcc8f8141dd5ad2fe32c84f4b400de1d2bf22817df139f1"
+    },
+    {
+      "source": "/home/pi/n_data/maintain_n_data.sh",
+      "path": "source/home/pi/n_data/maintain_n_data.sh",
+      "redacted": false,
+      "sha256": "e3b1650ee4bf3c223eb9d2e03b8db0eec18058cffcbf0e05dcc6fe906d2ce2b8"
+    },
+    {
+      "source": "/home/pi/n_data/maintenance_daily.sh",
+      "path": "source/home/pi/n_data/maintenance_daily.sh",
+      "redacted": false,
+      "sha256": "a6af499d8d70547a46a19c1c3dba047fc784435dc42c8434fcd5de184f1afc23"
+    },
+    {
+      "source": "/home/pi/n_data/merge_daily_raw.py",
+      "path": "source/home/pi/n_data/merge_daily_raw.py",
+      "redacted": false,
+      "sha256": "6352c78b12ee98b9fbf0b75461a84a2eca7df651dd2f054b51bd186f44d0eb81"
+    },
+    {
+      "source": "/home/pi/n_data/modules/__init__.py",
+      "path": "source/home/pi/n_data/modules/__init__.py",
+      "redacted": false,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/home/pi/n_data/modules/calendar_sync.py",
+      "path": "source/home/pi/n_data/modules/calendar_sync.py",
+      "redacted": true,
+      "sha256": "fe4b7281c40eb5dd66b29780c20968993a79149a5f7c44d22bfd178104562fcd"
+    },
+    {
+      "source": "/home/pi/n_data/modules/dedup_key.py",
+      "path": "source/home/pi/n_data/modules/dedup_key.py",
+      "redacted": false,
+      "sha256": "015c3c921ba359f4f3b17d641542aad8b9569d16ea3681218264831ecd644705"
+    },
+    {
+      "source": "/home/pi/n_data/modules/message_formatter.py",
+      "path": "source/home/pi/n_data/modules/message_formatter.py",
+      "redacted": false,
+      "sha256": "a096d2411eb265215d411628153e6b17fc3ed8bf6ff05fff2f57ffd1d2b85f85"
+    },
+    {
+      "source": "/home/pi/n_data/modules/notice_model.py",
+      "path": "source/home/pi/n_data/modules/notice_model.py",
+      "redacted": false,
+      "sha256": "4d9606245669e4d4e2d2cad9777cdca83ab08cb3caea4ebb605964f47645a230"
+    },
+    {
+      "source": "/home/pi/n_data/nara_missing_tracker.py",
+      "path": "source/home/pi/n_data/nara_missing_tracker.py",
+      "redacted": false,
+      "sha256": "514fd56550e308ec215792d885d8a14fc07b53f8381bb6180340878db0cda486"
+    },
+    {
+      "source": "/home/pi/n_data/nara_public_collect.py",
+      "path": "source/home/pi/n_data/nara_public_collect.py",
+      "redacted": true,
+      "sha256": "2733320f777e413353ee76d9491172776475dec160c4320543046ccec92b46fe"
+    },
+    {
+      "source": "/home/pi/n_data/nara_public_collect_hotfix.py",
+      "path": "source/home/pi/n_data/nara_public_collect_hotfix.py",
+      "redacted": false,
+      "sha256": "566ec41b41e02d938642b0c15f52f27cf67a60026aad7251a672a24ea24bd20c"
+    },
+    {
+      "source": "/home/pi/n_data/nara_web_fallback.py",
+      "path": "source/home/pi/n_data/nara_web_fallback.py",
+      "redacted": true,
+      "sha256": "346b07be942b21ca907c1d74ea0cf18618e393c6631c8200a7f0012ad300916d"
+    },
+    {
+      "source": "/home/pi/n_data/notifier.py",
+      "path": "source/home/pi/n_data/notifier.py",
+      "redacted": true,
+      "sha256": "48e954852f29509d8bd990bfc17cd1d6b1d068286321f3390d8f510323a2e839"
+    },
+    {
+      "source": "/home/pi/n_data/outbox_sender.py",
+      "path": "source/home/pi/n_data/outbox_sender.py",
+      "redacted": true,
+      "sha256": "3e01084b02046185212e359d4554fc75af6bf2df9d37178cd0c63a5e0f01e4e3"
+    },
+    {
+      "source": "/home/pi/n_data/patch_holder_tail.sh",
+      "path": "source/home/pi/n_data/patch_holder_tail.sh",
+      "redacted": false,
+      "sha256": "7e9d5b47c1b9390a356972fd8653af6e9a01d45e92a4560307de6c6373c24288"
+    },
+    {
+      "source": "/home/pi/n_data/patch_log_dedupe.sh",
+      "path": "source/home/pi/n_data/patch_log_dedupe.sh",
+      "redacted": false,
+      "sha256": "97dca4f911312b941579a57334f774369b9a9a852e3364815130c5a273ce88b8"
+    },
+    {
+      "source": "/home/pi/n_data/patch_log_safe.sh",
+      "path": "source/home/pi/n_data/patch_log_safe.sh",
+      "redacted": false,
+      "sha256": "b84faf52bfb67c249b42c63e7ebe0781867d4b61255a9dcf4cc24afa4f21b164"
+    },
+    {
+      "source": "/home/pi/n_data/patch_read_lock_holder_lastline.sh",
+      "path": "source/home/pi/n_data/patch_read_lock_holder_lastline.sh",
+      "redacted": false,
+      "sha256": "3501df9644b3cbf7e77a5cdba1c6fc830f07db6207864eb4d9ca9383162cc7b0"
+    },
+    {
+      "source": "/home/pi/n_data/patch_read_lock_holder_lastline_v2.sh",
+      "path": "source/home/pi/n_data/patch_read_lock_holder_lastline_v2.sh",
+      "redacted": false,
+      "sha256": "2fd0abe25683119e95cb60196c4500803ad1b84ffe9549c431a4e96e3bcbf0ba"
+    },
+    {
+      "source": "/home/pi/n_data/peek_today.py",
+      "path": "source/home/pi/n_data/peek_today.py",
+      "redacted": false,
+      "sha256": "c3c2804893bf7ce6caa44ad601b8480978f7e022dfbd38035f47b3092b72f347"
+    },
+    {
+      "source": "/home/pi/n_data/probe_g2b.py",
+      "path": "source/home/pi/n_data/probe_g2b.py",
+      "redacted": false,
+      "sha256": "96f7ecbb0f1f4a38c747d837ff7544d7c11e2187f81c1ad30a42928740b2b26f"
+    },
+    {
+      "source": "/home/pi/n_data/refine_region_by_prtcpt_api.py",
+      "path": "source/home/pi/n_data/refine_region_by_prtcpt_api.py",
+      "redacted": true,
+      "sha256": "ed1ee7f7bf3947d1814d2a3cf1640020f74d98baeb4f7aef859ae9c0c0535db2"
+    },
+    {
+      "source": "/home/pi/n_data/region_pick_and_log.py",
+      "path": "source/home/pi/n_data/region_pick_and_log.py",
+      "redacted": true,
+      "sha256": "0b884070fd4f656f9b0727d8e4f2ceef82f9a3990318f2d0097477446d45c9c9"
+    },
+    {
+      "source": "/home/pi/n_data/region_pick_and_log_paged.py",
+      "path": "source/home/pi/n_data/region_pick_and_log_paged.py",
+      "redacted": true,
+      "sha256": "93c468c4f7b9f5c3f1291b884126c91de5dc57b23a2507f509e14870c62a79e5"
+    },
+    {
+      "source": "/home/pi/n_data/requirements.txt",
+      "path": "source/home/pi/n_data/requirements.txt",
+      "redacted": false,
+      "sha256": "2092da5f844827679cc12be306d61503a289d230521a08b623ae7c81beecb361"
+    },
+    {
+      "source": "/home/pi/n_data/run_main_send.sh",
+      "path": "source/home/pi/n_data/run_main_send.sh",
+      "redacted": false,
+      "sha256": "4260e28bafe927b270841f1453435cd1e8d9a2a5e523e30245c59f1e506c87c6"
+    },
+    {
+      "source": "/home/pi/n_data/run_main_send_test.sh",
+      "path": "source/home/pi/n_data/run_main_send_test.sh",
+      "redacted": true,
+      "sha256": "b264f1e36fe0504f974f2bfd5ed9862cd9a90991b5dc17fb6b126c09377ce1b1"
+    },
+    {
+      "source": "/home/pi/n_data/run_send_road_exbid.sh",
+      "path": "source/home/pi/n_data/run_send_road_exbid.sh",
+      "redacted": false,
+      "sha256": "a32c25956746350814f31705ef41ce88cb162472065ed3521916a96ca76b8f95"
+    },
+    {
+      "source": "/home/pi/n_data/schedule_report.sh",
+      "path": "source/home/pi/n_data/schedule_report.sh",
+      "redacted": false,
+      "sha256": "193825a4e6f6f2545f7e07d93c7bd79fd3047fd688633e1310c35449ef1835a9"
+    },
+    {
+      "source": "/home/pi/n_data/scripts/test_mode_off.sh",
+      "path": "source/home/pi/n_data/scripts/test_mode_off.sh",
+      "redacted": false,
+      "sha256": "544fd922d2cc0e7ed5c073cecece864813246200311ef3385ecf8b7db32dbd86"
+    },
+    {
+      "source": "/home/pi/n_data/scripts/test_mode_on.sh",
+      "path": "source/home/pi/n_data/scripts/test_mode_on.sh",
+      "redacted": true,
+      "sha256": "e688da54318c18274f84054c0eba23e00ba319c24e3027271be240663950a74b"
+    },
+    {
+      "source": "/home/pi/n_data/send_exroad_ready.py",
+      "path": "source/home/pi/n_data/send_exroad_ready.py",
+      "redacted": false,
+      "sha256": "2396f8ca6d3795f8cbe73bdae7b99be6d82ee6a38ddee88445d8653bae9b227b"
+    },
+    {
+      "source": "/home/pi/n_data/send_road_exbid.py",
+      "path": "source/home/pi/n_data/send_road_exbid.py",
+      "redacted": true,
+      "sha256": "075cbc31f28a9d654d7bd92155856d83908a12523771484b2bc0d1c83ea4282c"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/251124-excel_export.py",
+      "path": "source/home/pi/n_data/seri_n_data/251124-excel_export.py",
+      "redacted": true,
+      "sha256": "e6c93b4bdf83d483879309dd5dbdb83c91434cdf25c6fc3f2a6c78fdffc55dc4"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/__init__.py",
+      "path": "source/home/pi/n_data/seri_n_data/__init__.py",
+      "redacted": false,
+      "sha256": "8b084a9f378124b2b1a51563bf3c22444eb7ff33692017da28b2136ae56987ed"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/config.py",
+      "path": "source/home/pi/n_data/seri_n_data/config.py",
+      "redacted": true,
+      "sha256": "c23809a1b933fab2788044050c940ba9f579396927f204579c2911ea902fe166"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/db.py",
+      "path": "source/home/pi/n_data/seri_n_data/db.py",
+      "redacted": true,
+      "sha256": "0633034affff719c031e801c1206d080e1a9ca3c06dae1d40b121153d057f8e8"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/excel_export.py",
+      "path": "source/home/pi/n_data/seri_n_data/excel_export.py",
+      "redacted": false,
+      "sha256": "9ed7a3149c546998268a40829fc6b485c46ce8f7ddc161401d5c2ca16da7f369"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/fetcher.py",
+      "path": "source/home/pi/n_data/seri_n_data/fetcher.py",
+      "redacted": false,
+      "sha256": "e4f8224a218d6cbeca2de030f1b81ecd1933ca7f75fda044070ad9751b4bd5e3"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/lockutil.py",
+      "path": "source/home/pi/n_data/seri_n_data/lockutil.py",
+      "redacted": false,
+      "sha256": "e0d656b1856e194f59d2c2e34ffd0a45e351c1ac6109811c480cde3216b52bab"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/outbox_shadow.py",
+      "path": "source/home/pi/n_data/seri_n_data/outbox_shadow.py",
+      "redacted": true,
+      "sha256": "0ddd5b58ee6d72dc140e8b98c42125d38a1bec440691e364b17be8836401db85"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/region_filter.py",
+      "path": "source/home/pi/n_data/seri_n_data/region_filter.py",
+      "redacted": false,
+      "sha256": "add4897bcf0f4068a0f3c80ea385b59249335d71bc5e2ad2fe08888f15465daf"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/region_filter_260106.py",
+      "path": "source/home/pi/n_data/seri_n_data/region_filter_260106.py",
+      "redacted": true,
+      "sha256": "46bbdecbe9d6bb43493e25028cbb5a334a09e2c650eb17b9adc01c81008418be"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/reporter.py",
+      "path": "source/home/pi/n_data/seri_n_data/reporter.py",
+      "redacted": false,
+      "sha256": "d34047d8cc198624f8aeaac7cd2c3d0cb324c35f77e2e659364070c42446cb26"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/sender.py",
+      "path": "source/home/pi/n_data/seri_n_data/sender.py",
+      "redacted": true,
+      "sha256": "27435840a67a9d973512395faba39b7e419683f3881d922b8419a7dbf7c372a5"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/test_region.py",
+      "path": "source/home/pi/n_data/seri_n_data/test_region.py",
+      "redacted": false,
+      "sha256": "2a568d5d0b59fbf3c9a843d8e3e0945edaff1a247e8f15fa0324829bb48b83cb"
+    },
+    {
+      "source": "/home/pi/n_data/seri_n_data/utils.py",
+      "path": "source/home/pi/n_data/seri_n_data/utils.py",
+      "redacted": false,
+      "sha256": "02ff4cc7af3979ecb83cb285f78a7132e818d793f3905c400f132737449bd1dd"
+    },
+    {
+      "source": "/home/pi/n_data/test_gcal_lh.py",
+      "path": "source/home/pi/n_data/test_gcal_lh.py",
+      "redacted": false,
+      "sha256": "8492d4ed0003a558c66c0472e764da943902cc3540db44d115de12057b03b96e"
+    },
+    {
+      "source": "/home/pi/n_data/test_gcal_sync.py",
+      "path": "source/home/pi/n_data/test_gcal_sync.py",
+      "redacted": false,
+      "sha256": "1b09091ebb3dd4a63529fe3eb8b16fb5141d13e8eac6dc411726664df198810e"
+    },
+    {
+      "source": "/home/pi/n_data/test_matplotlib.py",
+      "path": "source/home/pi/n_data/test_matplotlib.py",
+      "redacted": false,
+      "sha256": "0b37d772e20c054927be8d2de259abea39e5bd64c0bc3934cb803c1631d6f42e"
+    },
+    {
+      "source": "/home/pi/n_data/tools/auto_check_main_send.sh",
+      "path": "source/home/pi/n_data/tools/auto_check_main_send.sh",
+      "redacted": true,
+      "sha256": "ee3f1360607c56bdab68668fae7e382e6b39899a670ce2860ef5d80d79660b78"
+    },
+    {
+      "source": "/home/pi/n_data/tools/change_notice_patch_20260714/apply_n_data_change_notice_patch.py",
+      "path": "source/home/pi/n_data/tools/change_notice_patch_20260714/apply_n_data_change_notice_patch.py",
+      "redacted": true,
+      "sha256": "b44a815aa019db20ad73f7bca574bb608141584a38b97afea7448bf4a6db3228"
+    },
+    {
+      "source": "/home/pi/n_data/tools/change_notice_patch_20260714/test_n_data_change_notice_patch.py",
+      "path": "source/home/pi/n_data/tools/change_notice_patch_20260714/test_n_data_change_notice_patch.py",
+      "redacted": false,
+      "sha256": "6fbf22b18d2a99ee00e18b6a55d9aadc306fa3a5359459d272de62b15ba38c0f"
+    },
+    {
+      "source": "/home/pi/n_data/tools/healthcheck.sh",
+      "path": "source/home/pi/n_data/tools/healthcheck.sh",
+      "redacted": true,
+      "sha256": "7699532fc4d4f614668d1691c41aaad65748c340ef88f17e1f3dac17af2fc765"
+    },
+    {
+      "source": "/home/pi/n_data/tools/main_send_healthcheck.sh",
+      "path": "source/home/pi/n_data/tools/main_send_healthcheck.sh",
+      "redacted": false,
+      "sha256": "6f6d02636e5b1f8b949f10f9040a295b434cfb6636f2a7dc851b83ec99e78e07"
+    },
+    {
+      "source": "/home/pi/n_data/user_job.py",
+      "path": "source/home/pi/n_data/user_job.py",
+      "redacted": false,
+      "sha256": "378761ebd4f19ca1e0bf81d22b6b66b4fae95eceada39d6982ab629e9fff4af3"
+    },
+    {
+      "source": "/home/pi/run_bid_and_sync.sh",
+      "path": "source/home/pi/run_bid_and_sync.sh",
+      "redacted": false,
+      "sha256": "a15a837e79dc9c7241850f22bffd70d1461229868ee6b2359654cbd706551024"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server/filter_patch.py",
+      "path": "source/home/pi/seri_Alarm_Server/filter_patch.py",
+      "redacted": false,
+      "sha256": "7d555b06e59e42b64cb217859cb7d356acf2873910dea50ecd361225f3f834ee"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server/pi_main_send_systemd_kit_serverroot_sat/install_systemd.sh",
+      "path": "source/home/pi/seri_Alarm_Server/pi_main_send_systemd_kit_serverroot_sat/install_systemd.sh",
+      "redacted": false,
+      "sha256": "33f990e8c21b3491eb510b45d0d37751128045d14e6e376a7a7e6e662516027c"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server/pi_main_send_systemd_kit_serverroot_sat/run_main_send.sh",
+      "path": "source/home/pi/seri_Alarm_Server/pi_main_send_systemd_kit_serverroot_sat/run_main_send.sh",
+      "redacted": false,
+      "sha256": "31e244a1a12af44adca7c44815b3d0c2426531018b63f3ea4f6e2622a342d555"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server/run_main_send.sh",
+      "path": "source/home/pi/seri_Alarm_Server/run_main_send.sh",
+      "redacted": false,
+      "sha256": "924f8e6e973f3e3187b420710ef0f61656f58e375ea08e8db029e3e40b37d0a3"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/alligo.py",
+      "path": "source/home/pi/seri_Alarm_Server2/alligo.py",
+      "redacted": true,
+      "sha256": "4f4fef71f0010067286999999f0722378542732907eba5a333a18e78ca871f78"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/alligo_client.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/alligo_client.py",
+      "redacted": true,
+      "sha256": "19e3aa98c871173294e7902e9d3e08704fe2c892e09a712480d549223b2e2e68"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/config.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/config.py",
+      "redacted": true,
+      "sha256": "f0ba3d60fa5e41ddf582c259f3ef0991e2237be3af526d3088cfc8091b6eaab2"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/dedup.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/dedup.py",
+      "redacted": true,
+      "sha256": "c7f1242c671b1a9817c068fecefdaff428489f33b990c9215908de0460bddbf7"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/formatter.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/formatter.py",
+      "redacted": false,
+      "sha256": "a972ba1c6af47194ac8262392396c86e3da1b974b987a9592ed1dd6a5c6aeed3"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/kakao_vars.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/kakao_vars.py",
+      "redacted": false,
+      "sha256": "c14c16ae79aa20c000891e5445e555f8a35a1fe194b32eda78aedd55c74306dc"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/lh_collector.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/lh_collector.py",
+      "redacted": false,
+      "sha256": "34b82895ffebb59eb2763553ccd6ee4e87eddc286a6edb62a3ee371774a1e7a1"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/lh_fetcher.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/lh_fetcher.py",
+      "redacted": true,
+      "sha256": "1563a67d899ad86643e208f9e22f944ec4d8a8be58c41b382e6e89ee8ed67fa6"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/logger.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/logger.py",
+      "redacted": false,
+      "sha256": "8c184525c46f8fbfa01d10d7fc5356ce4971f96e22ec151554b5943ee54ca57e"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/message_formatter.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/message_formatter.py",
+      "redacted": false,
+      "sha256": "a77f0c465a010f649c7db023b3af7f4f6320a62a07ac2535eb8b96b6052a7396"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/app/notifier.py",
+      "path": "source/home/pi/seri_Alarm_Server2/app/notifier.py",
+      "redacted": false,
+      "sha256": "389ebed0c1a8e88c526babfb1fb3b2d2d3683df6acf88ef3037d793e5369927e"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/fix_lh_ssl.sh",
+      "path": "source/home/pi/seri_Alarm_Server2/fix_lh_ssl.sh",
+      "redacted": false,
+      "sha256": "9bbb14868799a8a18d4cfa29ad852a9b917f562de033a560bf15d60728be5fb1"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/lh_main.py",
+      "path": "source/home/pi/seri_Alarm_Server2/lh_main.py",
+      "redacted": true,
+      "sha256": "439ab7eb7c700c7c07f172b9df97103383aaa42ebb932b3b9dae3b75592e9d3c"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/main.py",
+      "path": "source/home/pi/seri_Alarm_Server2/main.py",
+      "redacted": false,
+      "sha256": "28837f56d26fbf744c59ba570e6e527f16e11051c6360b0f257d0ac3591a9ea5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/main_crawling.py",
+      "path": "source/home/pi/seri_Alarm_Server2/main_crawling.py",
+      "redacted": true,
+      "sha256": "d438495774976e0b87885da4edb9860aa90d2aabfab51386f6f4280249bb87f5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/main_crawling_251226_1.py",
+      "path": "source/home/pi/seri_Alarm_Server2/main_crawling_251226_1.py",
+      "redacted": true,
+      "sha256": "d438495774976e0b87885da4edb9860aa90d2aabfab51386f6f4280249bb87f5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/requirements.txt",
+      "path": "source/home/pi/seri_Alarm_Server2/requirements.txt",
+      "redacted": false,
+      "sha256": "4e483cf89dd0d08b9c18a89d4c9cd8eb87abd175c6b80381ca8af4801e680d1e"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/run.sh",
+      "path": "source/home/pi/seri_Alarm_Server2/run.sh",
+      "redacted": false,
+      "sha256": "dfb0eea9c026415bc6ae8f25d7d003eace685d21ce81ae271f31ff2fe9b5578a"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/run_lh_send.py",
+      "path": "source/home/pi/seri_Alarm_Server2/run_lh_send.py",
+      "redacted": true,
+      "sha256": "3889088768db7cd6cdbd63dfd60033c0f1fdce91a5b21d8aeb636ac3873f6b1f"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server2/update_lh_ca.sh",
+      "path": "source/home/pi/seri_Alarm_Server2/update_lh_ca.sh",
+      "redacted": false,
+      "sha256": "c0d0163455e363d2815755d1b62edf91108065c40cbb2a4215e8aca1d8b6b582"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/250916_gd.py",
+      "path": "source/home/pi/seri_Alarm_Server3/250916_gd.py",
+      "redacted": true,
+      "sha256": "77d9e3d0665c12a89e31c00929cbf1fb6a29c46327f015a0ec9e4a88d6b5cb06"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/b_250916_gd.py",
+      "path": "source/home/pi/seri_Alarm_Server3/b_250916_gd.py",
+      "redacted": false,
+      "sha256": "2c13f295b956aa51914e3e1fa005c051ae7a12c6fe95c0193f6ca3eacf3e98a9"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd-1 (2).py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd-1 (2).py",
+      "redacted": false,
+      "sha256": "2888dabda3456913925e0c3556513170f2322d504b4ffcaa38dbcc7d257a4e08"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd-1.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd-1.py",
+      "redacted": true,
+      "sha256": "7edb6aec03da5c58102ce3cabfb76513efe4da621b3a7a03089abb95bc2003af"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd-2.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd-2.py",
+      "redacted": true,
+      "sha256": "7edb6aec03da5c58102ce3cabfb76513efe4da621b3a7a03089abb95bc2003af"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd.py",
+      "redacted": true,
+      "sha256": "0198f26bfdf858a7c3cbdd719e4fd7f17d07356baaf35e9cb34ea164fd81d3c7"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd1.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd1.py",
+      "redacted": false,
+      "sha256": "fa1e17c744f7983d11bfc1a3daa6b0a97b9b1b7ef4724774c9ff47a56e059217"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd_2512.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd_2512.py",
+      "redacted": true,
+      "sha256": "0b3806c62a4b68fc56240e6b78cae3f6eddfe3194c3cfa8a207b9ea46d2219af"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd_3_converted.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd_3_converted.py",
+      "redacted": false,
+      "sha256": "5edab4718522a5527dea541422089d1aa59bcd0d788d3a68c997495a02acfc40"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gd_refactored_log.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gd_refactored_log.py",
+      "redacted": true,
+      "sha256": "855afcde459797453ac3a4eb7785b8a02d89b01616cdce237862d1bde3c2378a"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gon_auto_cleanup.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gon_auto_cleanup.py",
+      "redacted": false,
+      "sha256": "d9114b685f2a7f6b2c033675c23b11b0a0d537337b51a989320d88526d42c5f7"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/gon_auto_maint.py",
+      "path": "source/home/pi/seri_Alarm_Server3/gon_auto_maint.py",
+      "redacted": true,
+      "sha256": "16961bb5033ca9b83e16705ed1eda242ae77e0ca3ec752d290ea15f267f100f5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/main_gongo.py",
+      "path": "source/home/pi/seri_Alarm_Server3/main_gongo.py",
+      "redacted": true,
+      "sha256": "cf4915d1fd49875884466539d6063d5e8b9d991b531d83cf88716d9c3e761ad7"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/push_to_ftp.sh",
+      "path": "source/home/pi/seri_Alarm_Server3/push_to_ftp.sh",
+      "redacted": true,
+      "sha256": "8dfbaa9d31c4c9e8732a02eb56fa7dda0fa97ab0e841e656d22ba5baa03b1a0d"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/run_gd1.sh",
+      "path": "source/home/pi/seri_Alarm_Server3/run_gd1.sh",
+      "redacted": true,
+      "sha256": "b1e1d679816a189432d7f175f7bc7e3bcd6994a360078c19884072337f48d8a5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/run_gongo.sh",
+      "path": "source/home/pi/seri_Alarm_Server3/run_gongo.sh",
+      "redacted": true,
+      "sha256": "171d41f701355e82c903c5e2d387f2f7f38dce6ae41804d667d25be1471f5b4b"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server3/run_main_send.sh",
+      "path": "source/home/pi/seri_Alarm_Server3/run_main_send.sh",
+      "redacted": false,
+      "sha256": "db54f04555a5e058af6a8602325a7af0e679329028659815868b7113e8229985"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/251128-main_crawling.py",
+      "path": "source/home/pi/seri_Alarm_Server6/251128-main_crawling.py",
+      "redacted": true,
+      "sha256": "a7ff52ccc54dddfc05c1d89858cf45052fe1ea2e786c7dcbe4e86da8c1caa10a"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/alligo.py",
+      "path": "source/home/pi/seri_Alarm_Server6/alligo.py",
+      "redacted": true,
+      "sha256": "d802824b18ad550f153c3263116f9ce4a431309f99236345cae35da694c92d75"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/alligo_client.py",
+      "path": "source/home/pi/seri_Alarm_Server6/alligo_client.py",
+      "redacted": true,
+      "sha256": "266cd803a235b1596d0b1d0959f2051b58dee213f10b4d62ac8857eba6a6f18b"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/alligo_token_manager.py",
+      "path": "source/home/pi/seri_Alarm_Server6/alligo_token_manager.py",
+      "redacted": true,
+      "sha256": "2ebb4ac29c9a4a573b78cb8e7df837361598913838b4baceefb4b4e5d718c89c"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/land_notify.py",
+      "path": "source/home/pi/seri_Alarm_Server6/land_notify.py",
+      "redacted": true,
+      "sha256": "71b29b089e5a5cde757fc200efb669284eb3085ba3c056e35ad8a8552f0bfd31"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/251203-lh_main.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/251203-lh_main.py",
+      "redacted": true,
+      "sha256": "5f963bae579a8eef6efc975bd254f673fda52530261df3f6a9d184ae25db05d0"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/:USERPROFILE\\Desktop\\lh_fetch_gw_adapter.py",
+      "path": "source/renamed/88cfe4e6bfee.py",
+      "redacted": false,
+      "sha256": "0d399ba54fb96a5120516755a5726e41824ccfa3de29b4a9ee50a72d18863d79"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/:USERPROFILE\\Desktop\\lh_main.py",
+      "path": "source/renamed/d5c2c4156a73.py",
+      "redacted": true,
+      "sha256": "4950e97d30cc7406eada31682d98e7ccba657aed0d689de787791e4ec4de41de"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/__init__.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/__init__.py",
+      "redacted": false,
+      "sha256": "8e5b3c2089dc7340e6368ffa776630e1eae476970e4d6416a19b24427d9bef24"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/alligo.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/alligo.py",
+      "redacted": true,
+      "sha256": "b2cc8c39cd9f9042eb5537864f97670584e1df7885f439cb720dabe785406e7d"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/kakao_send_tb0485.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/kakao_send_tb0485.py",
+      "redacted": true,
+      "sha256": "696ab5750d6e7c2e587ee7f75fcb836eee20763b2f2ee9fdbfa582f380d4a9b3"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_attachments.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_attachments.py",
+      "redacted": true,
+      "sha256": "d76564ce79a954431d2632c5599a433abb0ea15756aa77bddbb48f7f77018de5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_calendar_backfill_2602007.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_calendar_backfill_2602007.py",
+      "redacted": true,
+      "sha256": "df51c5f382c7dd91618ec0fe474e37f32c70bf33158134fda46358007b38f3a3"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_calendar_oauth_attendee_test.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_calendar_oauth_attendee_test.py",
+      "redacted": true,
+      "sha256": "f2c75cde598eac61fcf694b612c08c97271caeaa0d05d0d131dc384d4311a5ec"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_calendar_oauth_test.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_calendar_oauth_test.py",
+      "redacted": true,
+      "sha256": "1cf433f9480b08518fb13488e9383c934acb57b18eda33c88b08206f55e84ac4"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_calendar_sync.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_calendar_sync.py",
+      "redacted": true,
+      "sha256": "7d14fb24b561d76ab4271a7696a45db4e975a9ce0e3664b6d034d0422a25d9b8"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_daily_merge.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_daily_merge.py",
+      "redacted": true,
+      "sha256": "b173b199fec111d4c974ce2ec804c1bfd70733b1838ceeb62c63a631989a34b5"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_excel.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_excel.py",
+      "redacted": false,
+      "sha256": "1ec460e4103797456a91bc72817ae9efa444e9f62d8fa51df8d3063c1e5cd3d2"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_fetch.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_fetch.py",
+      "redacted": true,
+      "sha256": "e6b648d6267e543a868f77892fea84f3ae7995baae954f9895e286bf19639463"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_fetch_gw_adapter.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_fetch_gw_adapter.py",
+      "redacted": false,
+      "sha256": "94c3672350412655ad7eec18344c0494eebdbd0820f164d2012edf1a922e3633"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_gw_fetch.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_gw_fetch.py",
+      "redacted": false,
+      "sha256": "70bce2a40225ad2a0c241650788cde91094bfd58072d69aa01f7a733374c9981"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_main.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_main.py",
+      "redacted": true,
+      "sha256": "740dce241dec2f7a0968b679fb3ea892aee2c0b276bb2c4c2ba7202029cedb98"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_notice_doc.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_notice_doc.py",
+      "redacted": false,
+      "sha256": "4ed1cf7e31ee71238d793553aa05c19e6a9571dd7bddf9dca3bc3c1b6f2a3f0b"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_notify.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_notify.py",
+      "redacted": true,
+      "sha256": "efc9bbcb9a034ebd569f52a52bf7d35c8a39b159c91e26ac14e85aaaff5f098f"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_notify_only.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_notify_only.py",
+      "redacted": true,
+      "sha256": "024dbc1850239958cc56a819c944d0d2a5a0373081abd7515963208926b5c4f1"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_parser.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_parser.py",
+      "redacted": true,
+      "sha256": "76f0cf0657a0a06a0c33e37fe02da43369c255b9cd83a43b9742016e6d8f623b"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh/lh_retry_queue.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh/lh_retry_queue.py",
+      "redacted": false,
+      "sha256": "3a9977a325fe4bcdaeaeb476c7d143c3958f45bd6610acc1633679aacf43eb50"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/lh_export_notify.py",
+      "path": "source/home/pi/seri_Alarm_Server6/lh_export_notify.py",
+      "redacted": true,
+      "sha256": "cbd60a6c6258e390536c31a6c3a0028e977d09a0fa2a50e068497e2c7015c339"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/main_crawling.py",
+      "path": "source/home/pi/seri_Alarm_Server6/main_crawling.py",
+      "redacted": true,
+      "sha256": "abebcecf74374ad16149cba9cde5a1121dba33ee77d95a6db25750673ccf36d0"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/merge_daily_exports.py",
+      "path": "source/home/pi/seri_Alarm_Server6/merge_daily_exports.py",
+      "redacted": true,
+      "sha256": "bcbf64be3e028a08cd7b69a0d03c07e6b01084e24644ba326bcb576a94ac97b1"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/organize_exports_by_day.sh",
+      "path": "source/home/pi/seri_Alarm_Server6/organize_exports_by_day.sh",
+      "redacted": true,
+      "sha256": "dd35a16bc2f697f6691b9a79924578503bfa6f03fd07fccb4a6eab8e677ccbee"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/prune_exports_30d.sh",
+      "path": "source/home/pi/seri_Alarm_Server6/prune_exports_30d.sh",
+      "redacted": true,
+      "sha256": "35f13a8670f1d7759e42add6f561191b8b2c9e5c940bc01accc8f89307ebd73e"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/requirements.txt",
+      "path": "source/home/pi/seri_Alarm_Server6/requirements.txt",
+      "redacted": false,
+      "sha256": "4e483cf89dd0d08b9c18a89d4c9cd8eb87abd175c6b80381ca8af4801e680d1e"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/run_land_crawl.py",
+      "path": "source/home/pi/seri_Alarm_Server6/run_land_crawl.py",
+      "redacted": true,
+      "sha256": "e73c29dbf411f0ac6dbef651c09e5e1c6ae221597b980ffac5215cc2effbc4b9"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/run_main_crawling6.sh",
+      "path": "source/home/pi/seri_Alarm_Server6/run_main_crawling6.sh",
+      "redacted": false,
+      "sha256": "254f6d22412dc22e21baf7fcb2f4531c8eebf5b361b00ec8afce91887536aef1"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/shared_paths.py",
+      "path": "source/home/pi/seri_Alarm_Server6/shared_paths.py",
+      "redacted": false,
+      "sha256": "848aa7e26339ff991224ceb2c9b6ac02d3f31d55a634d56ae10e582dbb326290"
+    },
+    {
+      "source": "/home/pi/seri_Alarm_Server6/sync_exports_to_nas.sh",
+      "path": "source/home/pi/seri_Alarm_Server6/sync_exports_to_nas.sh",
+      "redacted": true,
+      "sha256": "e314ede4e1986a97b41f503c2379ac21c7896bb6d958bf9f2e58b403d826ddf5"
+    },
+    {
+      "source": "/home/pi/seri_daily_report.py",
+      "path": "source/home/pi/seri_daily_report.py",
+      "redacted": true,
+      "sha256": "bc8e801e960aa56490e7ff01b488e7409bfa12eda301b4344d00a28d5a0d6fd0"
+    },
+    {
+      "source": "/home/pi/server-21/get_notice_daily.py",
+      "path": "source/home/pi/server-21/get_notice_daily.py",
+      "redacted": false,
+      "sha256": "5217696b5b42b58f6cdbb878405fe3f8979c33f688bd1e2c7d185eca675de541"
+    },
+    {
+      "source": "/home/pi/server-21/get_openg_result_daily.py",
+      "path": "source/home/pi/server-21/get_openg_result_daily.py",
+      "redacted": true,
+      "sha256": "40ff048fc44c6c02e76bc2c2f5021d92728553b7636c4196623f2e9cc0bc7ea5"
+    },
+    {
+      "source": "/home/pi/server-21/merge_co_with_gon_auto.py",
+      "path": "source/home/pi/server-21/merge_co_with_gon_auto.py",
+      "redacted": false,
+      "sha256": "982efd732f2e118961d75059c75cb06d0a3119a3391df3b51d4f808afee78eea"
+    },
+    {
+      "source": "/home/pi/server-21/merge_notice_with_gd.py",
+      "path": "source/home/pi/server-21/merge_notice_with_gd.py",
+      "redacted": false,
+      "sha256": "c63872b8f6a55f4aa692f3079ef93ef8ce79f1bdd8b90863edb48ffc0d5fadbc"
+    },
+    {
+      "source": "/home/pi/server-21/merge_result_with_notice.py",
+      "path": "source/home/pi/server-21/merge_result_with_notice.py",
+      "redacted": false,
+      "sha256": "dc07f7b648c522054277476f4fd5cf19b7d53b0ba2d1678346bd8fde03fbc1ad"
+    },
+    {
+      "source": "/usr/local/sbin/cleanup_exbid_backups.sh",
+      "path": "source/usr/local/sbin/cleanup_exbid_backups.sh",
+      "redacted": false,
+      "sha256": "984299bc8825043238520e10a2a017fae6884afdd242bc38ada38c9924390319"
+    },
+    {
+      "source": "/usr/local/sbin/mount_bid.sh",
+      "path": "source/usr/local/sbin/mount_bid.sh",
+      "redacted": false,
+      "sha256": "ff48a7630d773cadf8b34f8c728092e55be18923f15a7fc2db347d6f6f00ef39"
+    },
+    {
+      "source": "/usr/local/bin/seri-log-clean.sh",
+      "path": "source/usr/local/bin/seri-log-clean.sh",
+      "redacted": false,
+      "sha256": "02730e65582a7b5f65447f36989b28598c030f895eecaa03e7e9fbcce68b0517"
+    }
+  ],
+  "withheld_source_files": [
+    "/home/pi/n_data/251210-main_send.py",
+    "/home/pi/n_data/main_send_fixed.py",
+    "/home/pi/seri_Alarm_Server2/main_crawling_251225.py",
+    "/home/pi/seri_Alarm_Server2/main_crawling_251226.py"
+  ],
+  "snapshot_kind": "Sanitized review source; encrypted originals required for exact restore",
+  "public_audit": "Known config values, credential assignments, token-like literals, private keys, phone numbers, emails and credential URL parameters removed. Review snapshot; not a deployable secret configuration.",
+  "root_crontab_captured": true,
+  "nas_credentials_captured": true
+}

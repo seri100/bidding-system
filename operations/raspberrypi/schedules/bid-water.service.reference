@@ -1,0 +1,13 @@
+# /etc/systemd/system/bid-water.service
+[Unit]
+Description=K-water bid-water collector
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid-water
+EnvironmentFile=-/home/pi/bid-water/.env
+ExecStart=/home/pi/bid-water/run_bid_water.sh
+# /etc/systemd/system/bid-water.service.d/10-output-base.conf
+[Service]

@@ -1,0 +1,9 @@
+# /etc/systemd/system/land_crawl.timer
+[Unit]
+Description=Schedule land crawler runs (weekdays every 20 min from 07:00 to 20:59)
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..20:00/20:00
+Persistent=true
+Unit=land_crawl.service
+[Install]
+WantedBy=timers.target

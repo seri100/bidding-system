@@ -1,0 +1,10 @@
+# /etc/systemd/system/seri6-exports-daily.service
+[Unit]
+Description=Seri Alarm Server6 - Daily merge exports (wd/we) and prune
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server6
+ExecStart=/bin/bash -lc '/usr/bin/python3 /home/pi/seri_Alarm_Server6/merge_daily_exports.py >> /home/pi/seri_Alarm_Server6/logs/merge_daily_exports.log 2>&1'
+ExecStart=/bin/bash -lc '/home/pi/seri_Alarm_Server6/prune_exports_30d.sh >> /home/pi/seri_Alarm_Server6/logs/prune_exports_30d.log 2>&1'

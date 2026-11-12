@@ -1,0 +1,11 @@
+# /etc/systemd/system/rclone-vol1.service
+[Unit]
+Description=Rclone mount for ipdisk VOL1/bid to /mnt/vol1
+After=network-online.target
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/usr/bin/rclone mount ipdisk:/VOL1/bid /mnt/vol1 \
+[Install]
+WantedBy=multi-user.target

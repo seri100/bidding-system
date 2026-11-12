@@ -1,0 +1,8 @@
+# /etc/systemd/system/d2b-output-sync.timer
+[Unit]
+Description=Check D2B output every minute
+[Timer]
+AccuracySec=5s
+Unit=d2b-output-sync.service
+[Install]
+WantedBy=timers.target

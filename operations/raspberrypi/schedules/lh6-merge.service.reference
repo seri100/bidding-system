@@ -1,0 +1,10 @@
+# /etc/systemd/system/lh6-merge.service
+[Unit]
+Description=LH Daily Merge (make 1 merged file + archive raw)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server6/lh
+ExecStart=/usr/bin/python3 -u /home/pi/seri_Alarm_Server6/lh/lh_daily_merge.py

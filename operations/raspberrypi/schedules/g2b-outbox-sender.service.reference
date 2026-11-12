@@ -1,0 +1,12 @@
+# /etc/systemd/system/g2b-outbox-sender.service
+# /etc/systemd/system/g2b-outbox-sender.service
+[Unit]
+Description=G2B Outbox Sender (consume kakao.send_outbox)
+After=network.target mariadb.service
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/g2b_db
+EnvironmentFile=-/home/pi/g2b_db/outbox_sender.env
+EnvironmentFile=-/home/pi/g2b_db/aligo_settings.txt
+ExecStart=/bin/bash -lc '\

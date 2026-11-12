@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-gon-auto.service
+[Unit]
+Description=Run bid gon_auto script
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server3/250916_gd.py
+# /etc/systemd/system/bid-gon-auto.service.d/env-testmode.conf
+[Service]

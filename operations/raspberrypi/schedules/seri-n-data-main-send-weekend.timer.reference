@@ -1,0 +1,9 @@
+# /etc/systemd/system/seri-n-data-main-send-weekend.timer
+[Unit]
+Description=Seri N-Data weekend run (18:00 only)
+[Timer]
+OnCalendar=Sat,Sun 18:00
+Persistent=true
+Unit=seri-n-data-main-send.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/gd2512.service
+[Unit]
+Description=Run gd_2512.py (Bid Region Auto Split)
+After=network-online.target mnt-vol1.mount
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/seri_Alarm_Server3
+ExecStart=/usr/bin/flock -n /tmp/gd2512.lock /usr/bin/python3 /home/pi/seri_Alarm_Server3/gd_2512.py

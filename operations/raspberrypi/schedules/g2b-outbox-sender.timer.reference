@@ -1,0 +1,9 @@
+# /etc/systemd/system/g2b-outbox-sender.timer
+[Unit]
+Description=Run g2b-outbox-sender every 1 minute
+[Timer]
+AccuracySec=5s
+Persistent=true
+Unit=g2b-outbox-sender.service
+[Install]
+WantedBy=timers.target

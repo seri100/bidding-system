@@ -1,0 +1,12 @@
+# /etc/systemd/system/d2b-collect.service
+[Unit]
+Description=Collect D2B bid notices
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid-d2b
+ExecStart=/usr/bin/python3 /home/pi/bid-d2b/d2b_collect.py --days 14 --output /home/pi/bid-d2b/output
+# /etc/systemd/system/d2b-collect.service.d/calendar.conf
+[Service]

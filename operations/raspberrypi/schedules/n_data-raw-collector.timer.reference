@@ -1,0 +1,11 @@
+# /etc/systemd/system/n_data-raw-collector.timer
+[Unit]
+Description=Run N_DATA RAW Collector every 15 minutes (independent)
+[Timer]
+AccuracySec=5s
+Persistent=true
+Unit=n_data-raw-collector.service
+[Install]
+WantedBy=timers.target
+# /etc/systemd/system/n_data-raw-collector.timer.d/10-random-delay.conf
+[Timer]

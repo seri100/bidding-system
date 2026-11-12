@@ -1,0 +1,11 @@
+# /etc/systemd/system/rclone-ipdisk.service
+[Unit]
+Description=Rclone mount for ipdisk FTP to /mnt/ipdisk_seri6
+After=network-online.target
+[Service]
+Type=simple
+User=pi
+Group=pi
+ExecStart=/usr/bin/rclone mount ipdisk:/VOL1/bid/seri_Alarm_Server6 /mnt/ipdisk_seri6 --vfs-cache-mode writes --dir-cache-time 10s --allow-other --uid=1000 --gid=1000
+[Install]
+WantedBy=multi-user.target

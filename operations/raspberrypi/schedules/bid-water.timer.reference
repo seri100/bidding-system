@@ -1,0 +1,10 @@
+# /etc/systemd/system/bid-water.timer
+[Unit]
+Description=Run bid-water six times daily from Monday to Saturday
+[Timer]
+OnCalendar=Mon..Sat *-*-* 08,10,12,14,16,18:28:00
+Persistent=false
+AccuracySec=1min
+Unit=bid-water.service
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,9 @@
+# /etc/systemd/system/daum_mail_sync.service
+[Unit]
+Description=Daum Mail Bid Calendar Sync
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/n_data/daum_mail
+ExecStart=/usr/bin/python3 -u /home/pi/n_data/daum_mail/daum_mail_sync.py --days 1 --max 10 --include-subject "공공구매,판로지원" --apply

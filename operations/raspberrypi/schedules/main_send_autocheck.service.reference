@@ -1,0 +1,12 @@
+# /etc/systemd/system/main_send_autocheck.service
+[Unit]
+Description=Main Send AutoCheck (Mon 07:01 + wait 60s)
+After=main_send.service
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/n_data
+ExecStart=/bin/bash -lc '/usr/bin/flock -n -E 99 /tmp/main_send_autocheck.lock /home/pi/n_data/tools/auto_check_main_send.sh'
+# /etc/systemd/system/main_send_autocheck.service.d/10-notify.conf
+[Service]

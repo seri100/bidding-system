@@ -1,0 +1,46 @@
+# /etc/systemd/system/server11-main-crawling.timer
+[Unit]
+Description=Server-11 LH 소방공사 알림 타이머
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07:10:00
+OnCalendar=Mon..Fri *-*-* 07:30:00
+OnCalendar=Mon..Fri *-*-* 07:50:00
+OnCalendar=Mon..Fri *-*-* 08:10:00
+OnCalendar=Mon..Fri *-*-* 08:30:00
+OnCalendar=Mon..Fri *-*-* 08:50:00
+OnCalendar=Mon..Fri *-*-* 09:10:00
+OnCalendar=Mon..Fri *-*-* 09:30:00
+OnCalendar=Mon..Fri *-*-* 09:50:00
+OnCalendar=Mon..Fri *-*-* 10:10:00
+OnCalendar=Mon..Fri *-*-* 10:30:00
+OnCalendar=Mon..Fri *-*-* 10:50:00
+OnCalendar=Mon..Fri *-*-* 11:10:00
+OnCalendar=Mon..Fri *-*-* 11:30:00
+OnCalendar=Mon..Fri *-*-* 11:50:00
+OnCalendar=Mon..Fri *-*-* 12:10:00
+OnCalendar=Mon..Fri *-*-* 12:30:00
+OnCalendar=Mon..Fri *-*-* 12:50:00
+OnCalendar=Mon..Fri *-*-* 13:10:00
+OnCalendar=Mon..Fri *-*-* 13:30:00
+OnCalendar=Mon..Fri *-*-* 13:50:00
+OnCalendar=Mon..Fri *-*-* 14:10:00
+OnCalendar=Mon..Fri *-*-* 14:30:00
+OnCalendar=Mon..Fri *-*-* 14:50:00
+OnCalendar=Mon..Fri *-*-* 15:10:00
+OnCalendar=Mon..Fri *-*-* 15:30:00
+OnCalendar=Mon..Fri *-*-* 15:50:00
+OnCalendar=Mon..Fri *-*-* 16:10:00
+OnCalendar=Mon..Fri *-*-* 16:30:00
+OnCalendar=Mon..Fri *-*-* 16:50:00
+OnCalendar=Mon..Fri *-*-* 17:10:00
+OnCalendar=Mon..Fri *-*-* 17:30:00
+OnCalendar=Mon..Fri *-*-* 17:50:00
+OnCalendar=Mon..Fri *-*-* 18:10:00
+OnCalendar=Mon..Fri *-*-* 18:30:00
+OnCalendar=Mon..Fri *-*-* 18:50:00
+OnCalendar=Mon..Fri *-*-* 19:10:00
+OnCalendar=Sat,Sun *-*-* 19:10:00
+Unit=server11-main-crawling.service
+Persistent=true
+[Install]
+WantedBy=timers.target

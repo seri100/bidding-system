@@ -1,0 +1,10 @@
+# /etc/systemd/system/bidalert7.service
+[Unit]
+Description=Bid Alert Server7 - main_send.py
+After=network.target
+[Service]
+ExecStart=/usr/bin/python3 /home/pi/seri_Alarm_Server7/main_send.py
+WorkingDirectory=/home/pi/seri_Alarm_Server7
+User=pi
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+# /etc/systemd/system/fire_assoc_new.service
+[Unit]
+Description=Fire Association New Registration Crawler
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/fire_assoc
+ExecStart=/usr/bin/python3 -u /home/pi/fire_assoc/fire_assoc_new.py
+# /etc/systemd/system/fire_assoc_new.service.d/timeout.conf
+[Service]

@@ -1,0 +1,11 @@
+# /etc/systemd/system/bid-nr-gcal-sync.timer
+[Unit]
+Description=Run safe bid-nr Google Calendar sync twice hourly on weekdays
+[Timer]
+OnCalendar=Mon..Fri *-*-* 07..22:20:00
+OnCalendar=Mon..Fri *-*-* 07..22:50:00
+Persistent=true
+AccuracySec=1min
+Unit=bid-nr-gcal-sync.service
+[Install]
+WantedBy=timers.target

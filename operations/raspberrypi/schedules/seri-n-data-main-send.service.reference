@@ -1,0 +1,12 @@
+# /etc/systemd/system/seri-n-data-main-send.service
+[Unit]
+Description=Seri N-Data main_send.py 실행 (공공데이터의 공사공고 가져오기)
+After=network-online.target
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/n_data
+ExecStart=/usr/bin/python3 -u /home/pi/n_data/main_send.py --hours 1
+[Install]
+WantedBy=multi-user.target

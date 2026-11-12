@@ -1,0 +1,10 @@
+# /etc/systemd/system/exroad-gcal-sync.service
+[Unit]
+Description=EXROAD Google Calendar Sync
+After=network-online.target exroad-notify.service
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/bid-schedule-sync
+ExecStart=/usr/bin/flock -n -E 99 /tmp/exroad-gcal-sync.lock /usr/bin/python3 -u /home/pi/bid-schedule-sync/exroad_gcal_sync.py

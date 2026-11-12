@@ -1,0 +1,7 @@
+# /etc/systemd/system/n_data-raw-watchdog.timer
+[Unit]
+Description=Run RAW Watchdog every 10 min
+[Timer]
+Persistent=true
+[Install]
+WantedBy=timers.target

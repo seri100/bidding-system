@@ -1,0 +1,8 @@
+# /etc/systemd/system/gon_auto_maint.timer
+[Unit]
+Description=GON_AUTO 유지보수 자동 실행 타이머 (매일 00:20)
+[Timer]
+OnCalendar=*-*-* 00:20:00
+Persistent=true
+[Install]
+WantedBy=timers.target
