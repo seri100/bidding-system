@@ -1,0 +1,30 @@
+name: n_data offline checks
+on:
+  pull_request:
+    paths:
+      - 'raspberrypi/n_data/**'
+      - '.github/workflows/n-data-offline.yml'
+  push:
+    paths:
+      - 'raspberrypi/n_data/**'
+      - '.github/workflows/n-data-offline.yml'
+permissions:
+  contents: read
+jobs:
+  offline:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Python 3.7 syntax compatibility
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+          for path in Path('raspberrypi/n_data').rglob('*.py'):
+              ast.parse(path.read_text(encoding='utf-8'), feature_version=7)
+          PY
+      - name: Offline regression checks (no API/browser/send)
+        run: python -m unittest discover -s raspberrypi/n_data/tests -v

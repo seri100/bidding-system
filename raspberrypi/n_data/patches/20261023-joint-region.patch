@@ -1,0 +1,159 @@
+--- a/main_send.py
++++ b/main_send.py
+@@ -1396,24 +1396,6 @@
+ 
+ 
+ 
+-    # VERIFIED_JOINT_REGION_R26BK01788813
+-
+-    # 나라장터 상세화면 확인: 서울특별시, 지역의무공동도급 49%.
+-
+-    if (
+-
+-        row.get("공고번호") == "R26BK01788813"
+-
+-        and row.get("차수") == "000"
+-
+-        and not str(row.get("공동도급지역") or "").strip()
+-
+-    ):
+-
+-        row["공동도급지역"] = "서울특별시"
+-
+-
+-
+     return row
+ 
+ 
+@@ -1507,6 +1489,7 @@
+                     "jntcontrctDutyRgnNm3",
+ 
+                     "rgnDutyJntcontrctRt",
++                    "rgnDutyJntcontrctYn",
+ 
+                 ):
+ 
+@@ -1908,7 +1891,7 @@
+ 
+     알림톡 표시용 공동도급지역.
+ 
+-    공동도급지역이 있으면 우선 표시하고, 없으면 참가제한/공사현장 지역을 보조로 사용한다.
++    확인된 공동도급지역을 모두 표시한다. 참가제한/현장 지역은 사용하지 않는다.
+ 
+     """
+ 
+@@ -1928,31 +1911,14 @@
+ 
+ 
+ 
+-    for k in [
+-
+-        "공동도급지역",
+-
+-        "jntcontrctDutyRgnNm1",
+-
+-        "공동도급지역_추가",
+-
+-    ]:
+-
+-        v = _clean(row.get(k))
+-
+-        if v:
+-
+-            return v
+-
+-
+-
+-    return ""
+-
+-
+-
+-
+-
+-
++    values = []
++    for k in ("공동도급지역", "공동도급지역_추가",
++              "jntcontrctDutyRgnNm1", "jntcontrctDutyRgnNm2", "jntcontrctDutyRgnNm3"):
++        for value in _clean(row.get(k)).split("|"):
++            value = _clean(value)
++            if value and value not in values:
++                values.append(value)
++    return " | ".join(values)
+ 
+ 
+ 
+@@ -3892,6 +3858,13 @@
+     # 원공고 발송 이력/리포트를 바탕으로 한 번은 처리한다.
+     rows = inject_known_cancel_notices(rows)
+ 
++    # JOINT_WEB_ENRICH_V1: 수신자 판정 전 상세화면의 실제 공동도급지역을 보완.
++    # 조회 실패는 별도 대기열에 남기고, 지역 공란으로 먼저 발송하지 않는다.
++    from g2b_joint_region import enrich_rows as enrich_joint_regions
++    rows = enrich_joint_regions(
++        rows, NAS_BASE / "state", normalize_row, log, cancelled=is_cancel_notice
++    )
++
+     # 캘린더/리포트에 사용할 공사 기초금액 상세정보를 공고별 1회 조회한다.
+     # 취소공고는 원공고 정보가 보존되므로 별도 API 호출을 하지 않는다.
+     for row in rows:
+--- a/kakao_send_tb0485.py
++++ b/kakao_send_tb0485.py
+@@ -253,52 +253,14 @@
+ 
+ 
+     for k in keys:
+-
+-        v = fields.get(k)
+-
+-        if v is None:
+-
++        value = str(fields.get(k) or "").strip()
++        if not value or value.lower() in ("nan", "none", "null"):
+             continue
+-
+-
+-
+-        v = str(v).strip()
+-
+-
+-
+-        if not v or v.lower() in ("nan", "none", "null"):
+-
+-            continue
+-
+-
+-
+-        if v in ("없음", "해당없음", "전국"):
+-
+-            continue
+-
+-
+-
+-        # 여러 지역이 | 로 들어오면 첫 지역 중심으로 표시
+-
+-        if "|" in v:
+-
+-            parts = [x.strip() for x in v.split("|") if x.strip()]
+-
+-            parts = [x for x in parts if x not in ("없음", "해당없음", "전국")]
+-
+-            if parts:
+-
+-                v = parts[0]
+-
+-
+-
+-        return _short_region_name(v)
+-
+-
+-
++        parts = [x.strip() for x in value.split("|") if x.strip()]
++        parts = [x for x in parts if x not in ("없음", "해당없음", "전국")]
++        if parts:
++            return " / ".join(dict.fromkeys(_short_region_name(x) for x in parts))
+     return ""
+-
+-
+ 
+ 
+ 
