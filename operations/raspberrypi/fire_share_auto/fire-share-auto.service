@@ -1,0 +1,20 @@
+[Unit]
+Description=Export score-cap fire notices and regional companies
+After=network-online.target mnt-vol1.mount
+Wants=network-online.target
+RequiresMountsFor=/mnt/vol1
+
+[Service]
+Type=oneshot
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/n_data
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -u /home/pi/n_data/fire_share_auto.py
+TimeoutStartSec=15min
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+UMask=0022
+StandardOutput=journal
+StandardError=journal

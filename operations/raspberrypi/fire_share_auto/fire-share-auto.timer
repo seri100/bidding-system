@@ -1,0 +1,11 @@
+[Unit]
+Description=Check fire notice exports every five minutes
+
+[Timer]
+OnCalendar=*-*-* *:0/5:30
+Persistent=true
+AccuracySec=10s
+Unit=fire-share-auto.service
+
+[Install]
+WantedBy=timers.target

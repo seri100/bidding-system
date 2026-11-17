@@ -42,3 +42,17 @@ def enrich_score_cap(row, root, log=lambda text: None):
                 log('[SCORE_CAP][DOC_ERROR] %s-%s %s' % (no, order, type(exc).__name__))
     row['_score_cap_checked'] = bool(folders) and not errors
     return row
+
+
+# FIRE_SHARE_QUEUE_V1
+_FIRE_SHARE_ORIGINAL_ENRICH = enrich_score_cap
+def enrich_score_cap(row, root, log=lambda text: None):
+    result = _FIRE_SHARE_ORIGINAL_ENRICH(row, root, log)
+    if result.get('시공경험배점한도') is True:
+        try:
+            from fire_share_auto import enqueue
+            enqueue(result, root, logger=log)
+        except Exception as exc:
+            log('[FIRE_SHARE][QUEUE_RETRY] %s %s' %
+                (result.get('공고번호', ''), type(exc).__name__))
+    return result
