@@ -1,0 +1,25 @@
+{
+  "original_sha256": {
+    "main_send.py": "ce2f899c4b88e16b623561c95f49a2e97f13f63887f96e5881fd3d2faf47e75f",
+    "kakao_send_tb0485.py": "0b96f8023532d75872bf2353c09100ae5037bb49a9d09c600734e56a014e81fb"
+  },
+  "deployed_sha256": {
+    "kakao_send_tb0485.py": "a3d1e27dc33a4ebb2b4ca325a1af47aacb4a72cf3e00abf10a8f255c8b261ae6",
+    "main_send.py": "cbf849924f55a9f89edb8bc894e5d72a07f6df433c9d061667768e7e6376d0ac",
+    "g2b_joint_region.py": "cd70eb960abf1cc3169fda2d441b0c019878de4b31252ee192dd47b256630371",
+    "joint_region_status.py": "80c667d5586eeea010d2adbbd8ccc502cad8753ceecb1c496130d808d437ceca"
+  },
+  "applied_at_kst": "2026-10-23 20:00:53",
+  "backup_directory": "/home/pi/n_data/backup_joint_web_20261023_200053_641643",
+  "diagnostics_update": {
+    "applied_at_kst": "2026-10-23 20:55:02",
+    "backup_directory": "/home/pi/n_data/backup_joint_diag_20261023_205501_890619",
+    "previous_sha256": {
+      "g2b_joint_region.py": "aa8acc65676f5b665aa04f12bed8e689d1b81b2e63a2a1a6f48585a3c3d3f885"
+    },
+    "after_sha256": {
+      "g2b_joint_region.py": "cd70eb960abf1cc3169fda2d441b0c019878de4b31252ee192dd47b256630371",
+      "joint_region_status.py": "80c667d5586eeea010d2adbbd8ccc502cad8753ceecb1c496130d808d437ceca"
+    }
+  }
+}
